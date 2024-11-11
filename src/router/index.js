@@ -5,10 +5,23 @@ import Home from '../components/pages/user/Home.vue';
 import Dashboard from '../components/pages/admin/Dashboard.vue';
 import MainLayoutUser from '../components/layout/user/MainLayout.vue';
 import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
+import Jobs from '../components/pages/user/Jobs.vue';
 
 
 
 const routes = [
+  
+  {
+    path: '/admin',
+    component: MainLayoutAdmin, 
+    children: [
+      {
+        path: '', 
+        name: 'Dashboard',
+        component: Dashboard,
+      },
+    ],
+  },
   {
     path: '/',
     component: MainLayoutUser, 
@@ -18,16 +31,10 @@ const routes = [
         name: 'Home',
         component: Home,
       },
-    ],
-  },
-  {
-    path: '/admin',
-    component: MainLayoutAdmin, 
-    children: [
       {
-        path: '', 
-        name: 'Dashboard',
-        component: Dashboard,
+        path: '/jobs', 
+        name: 'Jobs',
+        component: Jobs,
       },
     ],
   },

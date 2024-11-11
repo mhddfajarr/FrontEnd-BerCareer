@@ -7,12 +7,11 @@
     />
     <div class="relative flex flex-col items-center justify-center h-full p-4">
       <h1 class="text-4xl sm:text-5xl font-bold mb-4">Find Your Dream Job</h1>
-      <p class="text-lg sm:text-xl mb-6">
+      <p class="text-lg px-4 sm:text-xl mb-6">
         Discover countless career opportunities and secure your ideal position.
         Let's grow and thrive together at Berca.
       </p>
-      <div class="mb-5 px-6 py-3">
-        <div class="text-center">
+      <div class="mb-5 px-6 py-3 text-center">
           <!-- Form content -->
           <div
             class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
@@ -37,14 +36,13 @@
             >
               Search
             </button>
-          </div>
         </div>
       </div>
     </div>
   </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
     <!-- Job Card 1 -->
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
           alt="Company logo for Akulaku Indonesia"
@@ -54,7 +52,7 @@
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Area Sales Leader - Ambon</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
             Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
@@ -77,59 +75,56 @@
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
+    </routerLink>
 
-    <!-- Job Card 2 -->
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
-          alt="Company logo for FIT HUB"
+          alt="Company logo for Akulaku Indonesia"
           class="w-12 h-12 rounded-full mr-4"
           height="50"
-          src="https://storage.googleapis.com/a1aa/image/AZUlDBGq1Xb9BFiJxjpo1YbTcjmH4RRPtTneXD22lefhxCfOB.jpg"
+          src="https://storage.googleapis.com/a1aa/image/cC4UpGmeWyxe0kaPhdaZ5s0pMnHusMzNRRcsfiEEZ1TaxCfOB.jpg"
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Housekeeping - Semarang</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
-            FIT HUB <i class="fas fa-check-circle text-teal-500"></i>
+            Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
         </div>
       </div>
       <div class="text-sm text-gray-600 space-y-2">
         <p>
           <i class="fas fa-user-clock text-purple-500"></i
-          ><span class="text-purple-500">Kontrak</span>
+          ><span class="text-purple-500">Penuh waktu</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Semarang</p>
-        <p><i class="fas fa-briefcase"></i> Min. Freshgrad</p>
-        <p><i class="fas fa-dollar-sign"></i> Rp3.243.968 - 3.243.969</p>
+        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
+        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
+        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
       </div>
       <div class="mt-4">
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 20 jam lalu
+          Rekruter aktif 1 jam lalu
         </span>
       </div>
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
+    </routerLink>
 
-    <!-- Job Card 3 -->
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
-          alt="Company logo for PT Jaring Synergi Mandiri"
+          alt="Company logo for Akulaku Indonesia"
           class="w-12 h-12 rounded-full mr-4"
           height="50"
-          src="https://storage.googleapis.com/a1aa/image/ntClAEB6Cn4fWyJJerCsNal1znFEje7GRmeUFwikeKi2FL8dC.jpg"
+          src="https://storage.googleapis.com/a1aa/image/cC4UpGmeWyxe0kaPhdaZ5s0pMnHusMzNRRcsfiEEZ1TaxCfOB.jpg"
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Telesales Agent (Tangerang)</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
-            PT Jaring Synergi Mandiri
-            <i class="fas fa-check-circle text-teal-500"></i>
+            Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
         </div>
       </div>
@@ -138,33 +133,33 @@
           <i class="fas fa-user-clock text-purple-500"></i
           ><span class="text-purple-500">Penuh waktu</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Tangerang</p>
+        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
         <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Rp5.000.000 - 7.000.000</p>
+        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
       </div>
       <div class="mt-4">
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 3 hari lalu
+          Rekruter aktif 1 jam lalu
         </span>
       </div>
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    </routerLink>
+
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
-          alt="Company logo for PT Jaring Synergi Mandiri"
+          alt="Company logo for Akulaku Indonesia"
           class="w-12 h-12 rounded-full mr-4"
           height="50"
-          src="https://storage.googleapis.com/a1aa/image/ntClAEB6Cn4fWyJJerCsNal1znFEje7GRmeUFwikeKi2FL8dC.jpg"
+          src="https://storage.googleapis.com/a1aa/image/cC4UpGmeWyxe0kaPhdaZ5s0pMnHusMzNRRcsfiEEZ1TaxCfOB.jpg"
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Telesales Agent (Tangerang)</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
-            PT Jaring Synergi Mandiri
-            <i class="fas fa-check-circle text-teal-500"></i>
+            Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
         </div>
       </div>
@@ -173,33 +168,33 @@
           <i class="fas fa-user-clock text-purple-500"></i
           ><span class="text-purple-500">Penuh waktu</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Tangerang</p>
+        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
         <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Rp5.000.000 - 7.000.000</p>
+        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
       </div>
       <div class="mt-4">
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 3 hari lalu
+          Rekruter aktif 1 jam lalu
         </span>
       </div>
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    </routerLink>
+
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
-          alt="Company logo for PT Jaring Synergi Mandiri"
+          alt="Company logo for Akulaku Indonesia"
           class="w-12 h-12 rounded-full mr-4"
           height="50"
-          src="https://storage.googleapis.com/a1aa/image/ntClAEB6Cn4fWyJJerCsNal1znFEje7GRmeUFwikeKi2FL8dC.jpg"
+          src="https://storage.googleapis.com/a1aa/image/cC4UpGmeWyxe0kaPhdaZ5s0pMnHusMzNRRcsfiEEZ1TaxCfOB.jpg"
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Telesales Agent (Tangerang)</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
-            PT Jaring Synergi Mandiri
-            <i class="fas fa-check-circle text-teal-500"></i>
+            Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
         </div>
       </div>
@@ -208,33 +203,33 @@
           <i class="fas fa-user-clock text-purple-500"></i
           ><span class="text-purple-500">Penuh waktu</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Tangerang</p>
+        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
         <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Rp5.000.000 - 7.000.000</p>
+        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
       </div>
       <div class="mt-4">
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 3 hari lalu
+          Rekruter aktif 1 jam lalu
         </span>
       </div>
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
-    <div class="bg-white rounded-lg shadow-lg p-4 relative">
+    </routerLink>
+
+    <routerLink to="Jobs" class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out">
       <div class="flex items-center mb-4">
         <img
-          alt="Company logo for PT Jaring Synergi Mandiri"
+          alt="Company logo for Akulaku Indonesia"
           class="w-12 h-12 rounded-full mr-4"
           height="50"
-          src="https://storage.googleapis.com/a1aa/image/ntClAEB6Cn4fWyJJerCsNal1znFEje7GRmeUFwikeKi2FL8dC.jpg"
+          src="https://storage.googleapis.com/a1aa/image/cC4UpGmeWyxe0kaPhdaZ5s0pMnHusMzNRRcsfiEEZ1TaxCfOB.jpg"
           width="50"
         />
         <div>
-          <h2 class="text-lg font-bold">Telesales Agent (Tangerang)</h2>
+          <h2 class="text-lg font-bold text-gray-700">Area Sales Leader - Ambon</h2>
           <p class="text-gray-600">
-            PT Jaring Synergi Mandiri
-            <i class="fas fa-check-circle text-teal-500"></i>
+            Akulaku Indonesia <i class="fas fa-check-circle text-teal-500"></i>
           </p>
         </div>
       </div>
@@ -243,19 +238,21 @@
           <i class="fas fa-user-clock text-purple-500"></i
           ><span class="text-purple-500">Penuh waktu</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Tangerang</p>
+        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
         <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Rp5.000.000 - 7.000.000</p>
+        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
       </div>
       <div class="mt-4">
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 3 hari lalu
+          Rekruter aktif 1 jam lalu
         </span>
       </div>
       <div class="absolute top-0 right-0 p-2">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
-    </div>
+    </routerLink>
+
+  
   </div>
 </template>
 
