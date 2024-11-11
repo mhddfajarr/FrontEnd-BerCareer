@@ -3,11 +3,13 @@
   <nav class="bg-slate-50 text-black p-4 border-b-2">
     <div class="container mx-auto flex justify-between items-center">
       <!-- Logo -->
-      <router-link to="/" ><img
-        src="/src/assets/images/berCareer-logo.png"
-        alt="Logo"
-        class="h-10"
-      /></router-link>
+      <router-link to="/" >
+        <img
+          src="/src/assets/images/berCareer-logo.png"
+          alt="Logo"
+          class="h-10"
+        />
+      </router-link>
 
       <!-- Navbar Links -->
       <ul class="flex space-x-4 items-center">
@@ -32,28 +34,36 @@
             <img
               src="https://marketplace.canva.com/EAFHfL_zPBk/1/0/1600w/canva-yellow-inspiration-modern-instagram-profile-picture-kpZhUIzCx_w.jpg"
               alt="Profile"
-              class="w-8 h-8 rounded-full mr-2"
+              class="w-10 h-10 rounded-full mr-2"
             />
             <span class="relative inline-block group">
-              <span class="font-semibold mb-0.5">{{ username }}</span>
-              <span
-                class="absolute left-0 bottom-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-200 ease-in-out"
-              ></span>
+              <span :class="[
+      'transition-all duration-300 color-primary text-slate-200 flex flex-col',
+      isDropdownVisible ? 'font-semibold mb-0.5 bg-primary rounded-full px-2 py-1 text-white' : 'text-slate-700 ',
+    ]" 
+              class="">{{ username }}</span>
             </span>
-            <i class="fas fa-caret-down ml-2"></i>
+            <i
+  :class="{
+    'fas fa-caret-left ml-2 transition-transform duration-300': !isDropdownVisible,
+    'fas fa-caret-left ml-2 transition-transform duration-300 -rotate-90': isDropdownVisible
+  }"
+></i>
           </button>
 
           <!-- Dropdown Menu -->
           <div
-            v-show="isDropdownVisible"
-            class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10"
-            ref="dropdownMenu"
-          >
+      v-show="isDropdownVisible"
+      class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 transition-all duration-300"
+      :class="{ 'slide-down': isDropdownVisible }"
+      ref="dropdownMenu"
+    >
             <ul>
               <li>
                 <router-link
                   to="Profile"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
                   >Profile</router-link
                 >
               </li>
@@ -61,6 +71,7 @@
                 <a
                   href="#"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
                   >Save Jobs</a
                 >
               </li>
@@ -68,6 +79,7 @@
                 <a
                   href="#"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
                   >Settings</a
                 >
               </li>
@@ -76,6 +88,7 @@
                 <router-link
                   to="login"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
                   >Logout</router-link
                 >
               </li>
@@ -86,7 +99,6 @@
     </div>
   </nav>
 </template>
-
 
 <script>
 export default {
@@ -100,6 +112,10 @@ export default {
     toggleDropdown() {
       // Toggle the dropdown visibility on click
       this.isDropdownVisible = !this.isDropdownVisible;
+    },
+    closeDropdown() {
+      // Close dropdown when a sub-menu item is clicked
+      this.isDropdownVisible = false;
     },
     handleOutsideClick(event) {
       const dropdown = this.$refs.dropdownMenu;
@@ -128,5 +144,17 @@ export default {
 </script>
 
 <style scoped>
-/* Optional styling if needed */
+.slide-down {
+  opacity: 0;
+  transform: translateY(-10px); /* Start slightly above */
+  animation: slideDown 0.5s forwards;
+}
+
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0); /* End at original position */
+  }
+}
 </style>
+
