@@ -1,10 +1,12 @@
 <template>
-    <Breadcrumbs/>
+  <Breadcrumbs />
   <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 py-5 px-5">
     <!-- Kolom 1: Card Utama dan Deskripsi Pekerjaan -->
     <div class="w-full lg:w-2/3">
       <!-- Card Utama -->
-      <div class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-primary">
+      <div
+        class="bg-white rounded-lg shadow-md p-6 border-t-4 border-t-primary"
+      >
         <div class="flex items-center mb-4">
           <!-- <img
             alt="Company logo"
@@ -18,9 +20,8 @@
               DISPATCHER ASSA - PADANG SIDEMPUAN
             </h1>
           </div>
-
         </div>
-
+        <hr class="my-4" />
         <div class="mb-4">
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-briefcase mr-2"></i>
@@ -46,10 +47,11 @@
           >
             Apply
           </button>
-          <button class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2">
-  Save Job
-</button>
-
+          <button
+            class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+          >
+            Save Job
+          </button>
         </div>
 
         <hr class="my-4" />
@@ -77,6 +79,7 @@
       class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md rounded-lg max-h-[250px] overflow-y-auto sticky top-0 border-t-4 border-primary"
     >
       <h2 class="text-lg font-bold mb-4">Benefit Perusahaan</h2>
+      <hr class="my-4" />
       <ul>
         <li class="flex items-center mb-2">
           <i class="fas fa-dollar-sign text-gray-600 mr-2"></i>
@@ -96,12 +99,12 @@
 </template>
 
 <script>
-import Breadcrumbs from '../../User/Breadcrumbs.vue';
+import Breadcrumbs from "../../User/Breadcrumbs.vue";
 
 export default {
   setup() {
     return {};
-  }, 
+  },
   components: {
     Breadcrumbs,
   },
