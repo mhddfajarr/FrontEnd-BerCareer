@@ -5,6 +5,8 @@ import Home from '../components/pages/user/Home.vue';
 import Dashboard from '../components/pages/admin/Dashboard.vue';
 import MainLayoutUser from '../components/layout/user/MainLayout.vue';
 import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
+import ManageJob from '../components/pages/admin/managejob.vue';
+import ManageJobseekers from '../components/pages/admin/ManageJobSeekers.vue';
 
 
 
@@ -25,9 +27,19 @@ const routes = [
     component: MainLayoutAdmin, 
     children: [
       {
-        path: '', 
+        path: '/dashboard', 
         name: 'Dashboard',
         component: Dashboard,
+      },
+      {
+        path: '/managejob', 
+        name: 'ManageJob',
+        component: ManageJob,
+      },
+      {
+        path: '/managejobseekers', 
+        name: 'ManageJobseekers',
+        component: ManageJobseekers,
       },
     ],
   },

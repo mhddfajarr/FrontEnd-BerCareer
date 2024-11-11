@@ -1,5 +1,15 @@
 <template>
-    <h1>dashboard</h1>
+    <div class="content-wrapper">
+    <div class="breadcrumbs text-sm">
+        <ul>
+            <li><a>Dashboard</a></li>
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    
+    <!-- /.content -->
+</div>
 </template>
 
 <script>
@@ -11,5 +21,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 
 </style>
