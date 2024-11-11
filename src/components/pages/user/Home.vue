@@ -42,35 +42,6 @@
       </div>
     </div>
   </div>
-  <div class="mb-5 px-6 py-3">
-    <div class="text-center">
-      <!-- Card wrapper -->
-      <div class="bg-white rounded-lg shadow-lg p-6">
-        <!-- Form content -->
-        <div
-          class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 w-full"
-        >
-          <input
-            type="text"
-            placeholder="Type your dream Role"
-            class="w-full text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
-          />
-          <select class="w-full bg-white px-4 py-2 rounded-xl border-2">
-            <option>Department</option>
-          </select>
-          <select class="w-full bg-white px-4 py-2 rounded-xl border-2">
-            <option>Location</option>
-          </select>
-          <button
-            class="w-full bg-primary hover:bg-primaryHover text-white px-6 py-2 rounded-xl"
-          >
-            Search
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
     <!-- Job Card 1 -->
     <div class="bg-white rounded-lg shadow-lg p-4 relative">

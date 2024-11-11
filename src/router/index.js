@@ -2,18 +2,32 @@ import { createWebHistory, createRouter } from 'vue-router';
 import Login from '../components/auth/Login.vue';
 import Register from '../components/auth/Register.vue';
 import Home from '../components/pages/user/Home.vue';
-import MainLayout from '../components/layout/MainLayout.vue';
+import Dashboard from '../components/pages/admin/Dashboard.vue';
+import MainLayoutUser from '../components/layout/user/MainLayout.vue';
+import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
+
 
 
 const routes = [
   {
     path: '/',
-    component: MainLayout, 
+    component: MainLayoutUser, 
     children: [
       {
         path: '', 
         name: 'Home',
         component: Home,
+      },
+    ],
+  },
+  {
+    path: '/admin',
+    component: MainLayoutAdmin, 
+    children: [
+      {
+        path: '', 
+        name: 'Dashboard',
+        component: Dashboard,
       },
     ],
   },
