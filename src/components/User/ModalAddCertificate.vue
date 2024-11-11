@@ -49,7 +49,9 @@
                   required
                 />
               </div>
-              <div class="mb-4">
+              
+            </div>
+            <div class="mb-4">
               <label for="description" class="block text-gray-700 font-semibold text-left">Description</label>
               <textarea
                 id="description"
@@ -57,7 +59,6 @@
                 rows="4"
                 required
               ></textarea>
-            </div>
             </div>
           </form>
         </div>

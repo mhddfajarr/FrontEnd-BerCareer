@@ -51,14 +51,15 @@
                 </div>
               </div>
   
-              <div class="flex flex-col items-center">
+              <div class="flex flex-col items-center" @dragover.prevent="handleDragOver"
+                  @dragleave="handleDragLeave"
+                  @drop.prevent="handleDrop">
                 <!-- Label dan area untuk drag & drop -->
                 <label
+                v-if="!imagePreview"
                   for="skill"
                   class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-primary transition-all duration-300"
-                  @dragover.prevent="handleDragOver"
-                  @dragleave="handleDragLeave"
-                  @drop.prevent="handleDrop"
+                  
                 >
                   <input
                     type="file"
