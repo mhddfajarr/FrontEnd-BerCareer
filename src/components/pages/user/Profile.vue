@@ -2,42 +2,45 @@
   <div class="max-w-6xl mx-auto p-6">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
       <!-- Profile Card -->
-      <div
-        class="bg-white p-6 rounded-lg shadow-md h-96 md:col-span-4 border-t-4 border-primary"
-      >
+      <div class="bg-white p-6 rounded-lg shadow-md h-[400px] md:col-span-4 border-t-4 border-primary">
         <div class="text-center">
           <img
             alt="Profile picture of John Doe"
-            class="w-24 h-24 mx-auto rounded-full"
+            class="w-28 h-28 mx-auto rounded-full"
             height="100"
             src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
             width="100"
           />
-          <h2 class="text-xl font-semibold mt-4">John Doe</h2>
+          <h2 class="text-xl font-semibold mt-4 text-gray-700">John Doe</h2>
           <p class="text-gray-600">Full Stack Developer</p>
           <p class="text-gray-600">Bay Area, San Francisco, CA</p>
-          <div class="mt-4">
-            <button
-              class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-md"
-            >
-              Edit Profile Picture
-            </button>
-          </div>
+          
         </div>
-        <div class="mt-6">
+        <div class="mt-6 mb-4">
           <ul class="space-y-4">
             <li class="flex items-center">
               <i class="fas fa-globe text-gray-600"></i>
-              <span class="ml-2">Website</span>
-              <span class="ml-auto text-gray-600">https://bootdey.com</span>
+              <span class="ml-2 text-gray-700">Website</span>
+              <span class="ml-auto text-gray-500">https://bootdey.com</span>
             </li>
             <li class="flex items-center">
               <i class="fab fa-github text-gray-600"></i>
-              <span class="ml-2">Github</span>
-              <span class="ml-auto text-gray-600">bootdey</span>
+              <span class="ml-2 text-gray-700">Github</span>
+              <span class="ml-auto text-gray-500">bootdey</span>
             </li>
           </ul>
         </div>
+            <button
+            @click="showModalCardProfile = true"
+            class="bg-gray-300 hover:bg-gray-400 w-full font-semibold text-gray-700 px-4 py-2 rounded-md"
+          >
+            Edit Card Profile
+          </button>
+          <ModalEditCardProfile
+            v-if="showModalCardProfile"
+            :showModal="showModalCardProfile"
+            @close="showModalCardProfile = false"
+          />
       </div>
 
       <!-- Profile Details -->
@@ -85,7 +88,7 @@
             @click="showModalProfile = true"
             class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
           >
-            Add Profile
+            Edit Profile
           </button>
           <ModalEditProfile
             v-if="showModalProfile"
@@ -124,7 +127,7 @@
             <h3 class="text-lg font-semibold text-gray-600">Education</h3>
             <div class="mt-4"></div>
             <div class="mt-6 text-end">
-                <button
+              <button
                 @click="showModalEducation = true"
                 class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
               >
@@ -187,7 +190,7 @@ import ModalEditProfile from "../../User/ModalAddProfile.vue";
 import ModalAddEducation from "../../User/ModalAddEducation.vue";
 import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
-
+import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
 
 
 export default {
@@ -198,19 +201,18 @@ export default {
       showModalEducation: false,
       showModalSkill: false,
       showModalCertificate: false,
+      showModalCardProfile: false,
 
     };
   },
-  methods: {
-  },
+  methods: {},
   components: {
     ModalEditProfile,
     ModalAddExperience,
     ModalAddEducation,
     ModalAddSkill,
     ModalAddCertificate,
-
-
+    ModalEditCardProfile
   },
 };
 </script>
