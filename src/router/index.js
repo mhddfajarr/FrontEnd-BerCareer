@@ -12,6 +12,7 @@ import Jobs from '../components/pages/user/Jobs.vue';
 import Profile from '../components/pages/user/Profile.vue';
 import SaveJobs from '../components/pages/user/SaveJob.vue';
 import Applied from '../components/pages/user/Applied.vue';
+import Settings from '../components/pages/user/Settings.vue';
 
 
 
@@ -72,6 +73,11 @@ const routes = [
         path: '/saveJobs', 
         name: "SaveJobs", 
         component: SaveJobs,
+      },
+      { 
+        path: '/settings', 
+        name: "Settings", 
+        component: Settings,
       },
       
       

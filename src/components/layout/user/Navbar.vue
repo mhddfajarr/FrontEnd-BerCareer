@@ -114,6 +114,14 @@
             ref="dropdownMenu"
           >
             <ul>
+              <li>
+                <router-link
+                  to="Profile"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
+                  >Profile</router-link
+                >
+              </li>
               <li class="block md:hidden">
                 <router-link
                   to="/saveJobs"
@@ -132,18 +140,10 @@
               </li>
               <li>
                 <router-link
-                  to="Profile"
+                  to="settings"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                   @click="closeDropdown"
-                  >Profile</router-link
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                  @click="closeDropdown"
-                  >Settings</a
+                  >Settings</router-link
                 >
               </li>
               <hr class="border border-gray-200" />
