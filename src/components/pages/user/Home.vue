@@ -284,7 +284,26 @@
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
     </routerLink>
+    
   </div>
+  <div class="relative w-full flex items-center justify-center mb-10">
+    <!-- Left Horizontal Line -->
+    <div class="flex-grow border-t-2 ml-10 border-primary"></div>
+
+    <!-- Button Centered -->
+    <div class="mx-4">
+    <button class="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-full shadow-lg border-2 transition duration-300 ease-in-out opacity-85 hover:opacity-100 flex items-center group">
+        See More
+        <i class="fas fa-caret-left ml-2 transition-transform duration-300 group-hover:-rotate-90"></i>
+    </button>
+</div>
+
+
+    <!-- Right Horizontal Line -->
+    <div class="flex-grow border-t-2 mr-10 border-primary"></div>
+</div>
+
+
 </template>
 
 <script>
