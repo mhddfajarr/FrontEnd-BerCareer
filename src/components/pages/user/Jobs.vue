@@ -17,7 +17,7 @@
           /> -->
           <div class="flex-1">
             <h1 class="text-2xl font-bold text-gray-700">
-              DISPATCHER ASSA - PADANG SIDEMPUAN
+              {{ jobs.title }}
             </h1>
           </div>
         </div>
@@ -25,19 +25,19 @@
         <div class="mb-4">
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-briefcase mr-2"></i>
-            <span>Kontrak</span>
+            <span>{{ jobs.type }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-map-marker-alt mr-2"></i>
-            <span>On-site • Padang Sidempuan</span>
+            <span>{{ jobs.location }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-briefcase mr-2"></i>
-            <span>Min. 1 years of experience</span>
+            <span>{{ jobs.requirement }}</span>
           </div>
           <div class="flex items-center text-gray-600">
             <i class="fas fa-money-bill-wave mr-2"></i>
-            <span>Negotiable</span>
+            <span>{{ jobs.salary }}</span>
           </div>
         </div>
 
@@ -100,15 +100,43 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
+import { getJobsById } from "../../../Api/UserService";
 
 export default {
-  setup() {
-    return {};
-  },
   components: {
     Breadcrumbs,
   },
+  data() {
+    return {
+      jobs: [],  // State untuk menyimpan data pekerjaan
+    };
+  },
+  mounted(){
+    window.scrollTo({
+      top: 0,  // Mengatur scroll ke posisi atas
+      behavior: 'smooth',  // Menambahkan efek smooth scroll
+    });
+  },
+  created() {
+    
+    console.log('Job ID:', this.$route.params.id);  // Menampilkan ID dari URL di console
+    this.fetchJobDetail();  // Memanggil fetchJobDetail saat komponen dibuat
+  },
+  methods: {
+    async fetchJobDetail() {
+      try {
+        const jobId = this.$route.params.id;  // Mengambil jobId dari URL
+        const data = await getJobsById(jobId);  // Mengambil data pekerjaan berdasarkan jobId
+        this.jobs = data.data; // Menyimpan data ke dalam state jobs
+        console.log(this.jobs)
+      } catch (error) {
+        console.error("Error fetching data:", error); // Menangani error jika gagal mengambil data
+      }
+    },
+  },
 };
 </script>
+
+
 
 <style lang="scss" scoped></style>

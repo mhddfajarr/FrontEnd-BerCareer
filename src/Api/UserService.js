@@ -13,3 +13,16 @@ export const getAllData = async () => {
   }
 };
 
+const API_URL_BY_ID = 'https://localhost:7147/api/Jobs/Detail';
+
+export const getJobsById = async (jobId) => {
+  try {
+    const response = await axios.get(`${API_URL_BY_ID}?jobId=${jobId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching job details:', error);
+    throw error; // Melempar error agar bisa ditangani di tempat pemanggilan
+  }
+};
+
+

@@ -34,6 +34,7 @@
           </select>
           <button
             class="w-full sm:w-auto bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
+            @click="scrollToSection"
           >
             Search
           </button>
@@ -71,14 +72,25 @@
   </div>
 
   <div v-if="filteredJobs.length === 0 && searchQuery.length > 0">
-    <p>No data found</p>
+    <div class="flex justify-center items-center h-40">
+      <div
+        class="bg-white p-6 rounded-lg shadow-md text-center w-full max-w-md"
+      >
+        <p class="text-3xl font-bold text-gray-800">No data found</p>
+      </div>
+    </div>
   </div>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
+
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6"
+    id="sectionCard"
+    ref="sectionCard"
+  >
     <!-- Job Card -->
     <router-link
       v-for="(job, index) in filteredVisibleJobs"
       :key="job.jobId"
-      to="Jobs"
+      :to="{ name: 'Jobs', params: { id: job.jobId } }"
       class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
     >
       <div class="flex items-center justify-center mb-2">
@@ -109,7 +121,7 @@
         </span>
       </div>
 
-      <div class="absolute top-0 right-0 p-3">
+      <div class="absolute top-0 right-0 p-3" @click="saveJob">
         <i class="far fa-bookmark text-gray-400"></i>
       </div>
     </router-link>
@@ -138,6 +150,7 @@
 
 <script>
 import { getAllData } from "../../../Api/UserService";
+import SaveJob from "./SaveJob.vue";
 
 export default {
   name: "Home",
@@ -147,7 +160,6 @@ export default {
       jobs: [], // State untuk menyimpan data jobs
       visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat
       itemsToShow: 6, // Jumlah item yang ditampilkan setiap kali tombol "Show More" diklik
-      showMoreButton: true, // Menyimpan status tombol Show More
     };
   },
   computed: {
@@ -187,6 +199,18 @@ export default {
       );
       this.visibleJobs = [...this.visibleJobs, ...nextItems]; // Menambahkan pekerjaan baru ke visibleJobs
     },
+    scrollToSection() {
+      const section = this.$refs.sectionCard;
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    },
+    saveJob(){
+      console.log("ya akan ditambahkan")
+    }
   },
 };
 </script>

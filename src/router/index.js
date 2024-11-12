@@ -54,7 +54,7 @@ const routes = [
         name: 'Home',
         component: Home,
       },{
-        path: '/jobs', 
+        path: '/jobs/:id', 
         name: 'Jobs',
         component: Jobs,
       },
