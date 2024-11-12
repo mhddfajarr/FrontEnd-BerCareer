@@ -108,8 +108,8 @@
         </span>
       </div>
 
-      <div class="absolute top-0 right-0 p-3" @click="saveJob">
-        <i class="far fa-bookmark text-gray-400"></i>
+      <div class="absolute top-0 right-0 p-3" @click="saveJob(job.jobId)">
+        <i :class="isSavedJob(job.jobId) ? 'fas fa-bookmark text-primary' : 'far fa-bookmark text-gray-400'"></i>
       </div>
     </router-link>
   </div>
@@ -136,55 +136,85 @@
 </template>
 
 <script>
-import { getAllData } from "../../../Api/UserService";
-import SaveJob from "./SaveJob.vue";
+import { getAllData, getSaveJob } from "../../../Api/UserService";
 
 export default {
   name: "Home",
   data() {
     return {
+      id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
+      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDI1NjgwLCJleHAiOjE3MzE0MjkyODAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.dqv6RpjFr85c3S1Gc6PcWnwdQqm1y4EXwFUgoZ_yaqI', // Menetapkan token secara langsung
       searchQuery: "",
       jobs: [], // State untuk menyimpan data jobs
       visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat
       itemsToShow: 6, // Jumlah item yang ditampilkan setiap kali tombol "Show More" diklik
+      savedJobs: [] // State untuk menyimpan pekerjaan yang disimpan
     };
   },
   computed: {
+    // Cek apakah job sudah disimpan
+    isSavedJob() {
+      return (jobId) => {
+        return this.savedJobs.some(savedJob => savedJob.jobId === jobId);
+      };
+    },
+    // Filter jobs berdasarkan search query
     filteredJobs() {
       if (!this.searchQuery) {
         return this.jobs; // Kembalikan semua item jika tidak ada query pencarian
       }
-      const filtered = this.jobs.filter(
+      return this.jobs.filter(
         (job) =>
           job.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || // Cocokkan title pekerjaan
           job.description.toLowerCase().includes(this.searchQuery.toLowerCase()) // Cocokkan deskripsi pekerjaan
       );
-      return filtered.length > 0 ? filtered : []; // Kembalikan array kosong jika tidak ada pekerjaan yang cocok
     },
+    // Tampilkan jobs yang sudah difilter sesuai dengan jumlah yang terlihat
     filteredVisibleJobs() {
       return this.filteredJobs.slice(0, this.visibleJobs.length); // Menampilkan pekerjaan yang difilter sesuai jumlah yang terlihat
     },
+    // Menampilkan tombol "Show More" jika masih ada pekerjaan yang bisa ditampilkan
     showMoreButton() {
-      // Cek apakah jumlah item yang difilter lebih dari atau sama dengan itemsToShow
       return this.filteredJobs.length > this.visibleJobs.length;
     },
   },
   async mounted() {
     try {
+      // Mendapatkan semua data pekerjaan
       const data = await getAllData();
-      this.jobs = data.data; // Menyimpan data ke dalam state jobs
+      this.jobs = data.data; // Menyimpan data pekerjaan ke dalam state jobs
       this.visibleJobs = this.jobs.slice(0, this.itemsToShow); // Menampilkan hanya 6 pekerjaan pertama
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+
+    try {
+      // Mendapatkan pekerjaan yang sudah disimpan oleh user
+      const data = await getSaveJob(this.id, this.token);
+      this.savedJobs = data.data; // Menyimpan data pekerjaan yang disimpan
+    } catch (error) {
+      console.error("Error fetching saved jobs:", error);
+    }
   },
   methods: {
+    // Fungsi untuk memuat lebih banyak pekerjaan
     loadMore() {
       const nextItems = this.filteredJobs.slice(
         this.visibleJobs.length,
         this.visibleJobs.length + this.itemsToShow
       );
       this.visibleJobs = [...this.visibleJobs, ...nextItems]; // Menambahkan pekerjaan baru ke visibleJobs
+    },
+    // Fungsi untuk menyimpan pekerjaan
+    saveJob(jobId) {
+      // Cek jika pekerjaan sudah ada di daftar yang disimpan, jika belum simpan pekerjaan
+      if (!this.isSavedJob(jobId)) {
+        // Lakukan aksi simpan pekerjaan, misalnya dengan API untuk menyimpan job
+        console.log(`Pekerjaan ${jobId} disimpan.`);
+        this.savedJobs.push({ jobId }); // Menambahkan job ke daftar yang disimpan (update state savedJobs)
+      } else {
+        console.log(`Pekerjaan ${jobId} sudah disimpan.`);
+      }
     },
     scrollToSection() {
       const section = this.$refs.sectionCard;
@@ -195,9 +225,8 @@ export default {
         });
       }
     },
-    saveJob() {
-      console.log("ya akan ditambahkan");
-    },
   },
 };
 </script>
+
+

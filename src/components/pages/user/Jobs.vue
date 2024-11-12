@@ -49,7 +49,8 @@
           </button>
           <button
             class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
-          >
+          @click="saveJob(jobs.jobId)"
+            >
             Save Job
           </button>
         </div>
@@ -101,14 +102,59 @@
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
 import { getJobsById } from "../../../Api/UserService";
+import { saveJobs } from '../../../Api/UserService';
+import { reactive } from 'vue';
+import Swal from "sweetalert2";
 
 export default {
   components: {
     Breadcrumbs,
   },
+  setup(){
+    // State reaktif untuk menyimpan id dan token
+    const state = reactive({
+      id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
+      // Menetapkan token secara langsung
+    });
+
+    // Method untuk menyimpan pekerjaan
+    const saveJob = async (jobId) => {
+  try { // Log token untuk memastikan
+    
+    
+    const data = {
+      userId: state.id,
+      jobId: jobId
+    };
+    console.log('Data yang dikirim:', data);
+    await saveJobs(data);
+    Swal.fire({
+            toast: true,
+            position: "top-end", // Posisi di pojok kanan atas
+            icon: "success",
+            title: "Success add job to favorite!",
+            showConfirmButton: false,
+            timer: 1500, // Menampilkan toast selama 1.5 detik
+            timerProgressBar: true,
+            didClose: () => {
+              // Setelah toast selesai, arahkan ke halaman Home
+              router.push({ name: "Home" });
+            },
+          });
+  } catch (error) {
+    console.error('Gagal menyimpan pekerjaan:', error);
+  }
+};
+
+
+    return {
+      ...state,
+      saveJob // Mengembalikan method untuk digunakan di template
+    };
+  },
   data() {
     return {
-      jobs: [],  // State untuk menyimpan data pekerjaan
+      jobs: [], 
     };
   },
   mounted(){
