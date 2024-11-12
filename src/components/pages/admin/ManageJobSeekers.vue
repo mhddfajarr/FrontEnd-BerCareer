@@ -9,13 +9,24 @@
     </div>
 
     <!-- Main content -->
+    
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="card"> <div class="card bg-base-100 shadow-xl border-t-4 border-t-primary">
+                    <div class="card"> <div class="card shadow-xl border-t-4 border-t-primary bg-white">
                         <div class="card-body">
-                            <h2 class="card-title">Fullstack Developer</h2>
+                            <div class="flex  justify-between">
+                                <details class="dropdown">
+                                <summary class="btn m-1"><i class="fas fa-solid fa-filter"></i></summary>
+                                <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                    <li><a>Fullstack Developer</a></li>
+                                    <li><a>IT Support</a></li>
+                                    <li><a>APP Support</a></li>
+                                </ul>
+                                </details>
+                                <h2 class="card-title">Fullstack Developer</h2>
+                            </div>
                         </div>
                             <!-- /.card-header -->
                             <div class="card-header">
@@ -42,12 +53,12 @@
                                                             <th></th>
                                                         </tr>
                                                         </thead>
-                                                        <tbody>
+                                                        <tbody class="bg-white">
                                                         <!-- row 1 -->
                                                         <tr>
                                                             <th>
                                                                 <label>
-                                                                    <input type="checkbox" class="checkbox" />
+                                                                    <input type="checkbox" class="checkbox bg-white" />
                                                                 </label>
                                                                 </th>
                                                                 <td>1</td>
@@ -99,7 +110,7 @@
                                             role="tab"
                                             class="tab"
                                             aria-label="Accepted" />
-                                        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6">
+                                        <div role="tabpanel" class="tab-content bg-base-100 border-base-300 rounded-box p-6 bg-white">
                                             Tab content 2
                                         </div>
                                     </div>
