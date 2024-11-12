@@ -4,7 +4,7 @@
       class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50"
     >
       <!-- Modal Container -->
-      <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-[50%]">
         <!-- Modal Header -->
         <div class="flex justify-between items-center border-b pb-3">
           <h3 class="text-xl font-semibold text-gray-700">Edit Card Profile</h3>
@@ -92,7 +92,7 @@
               </div>
             </div>
   
-            <div class="max-w-md mx-auto">
+            <div class="w-full mx-auto">
               <h2 class="text-lg text-gray-700 font-semibold mb-4">Social accounts</h2>
               <div class="flex items-center mb-4">
                 <i class="fas fa-link text-gray-500 mr-2"></i>
