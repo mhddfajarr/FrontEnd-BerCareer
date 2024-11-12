@@ -7,10 +7,24 @@ import MainLayoutUser from '../components/layout/user/MainLayout.vue';
 import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
 import ManageJob from '../components/pages/admin/managejob.vue';
 import ManageJobseekers from '../components/pages/admin/ManageJobSeekers.vue';
+import Jobs from '../components/pages/user/Jobs.vue';
+import Profile from '../components/pages/user/Profile.vue';
 
 
 
 const routes = [
+  
+  {
+    path: '/admin',
+    component: MainLayoutAdmin, 
+    children: [
+      {
+        path: '', 
+        name: 'Dashboard',
+        component: Dashboard,
+      },
+    ],
+  },
   {
     path: '/',
     component: MainLayoutUser, 
@@ -20,16 +34,19 @@ const routes = [
         name: 'Home',
         component: Home,
       },
-    ],
-  },
-  {
-    path: '/admin',
-    component: MainLayoutAdmin, 
-    children: [
       {
         path: '/dashboard', 
         name: 'Dashboard',
         component: Dashboard,
+      },{
+        path: '/jobs', 
+        name: 'Jobs',
+        component: Jobs,
+      },
+      {
+        path: '/profile', 
+        name: 'Profile',
+        component: Profile,
       },
       {
         path: '/managejob', 
