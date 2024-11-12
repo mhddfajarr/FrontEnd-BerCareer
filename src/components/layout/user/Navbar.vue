@@ -22,11 +22,11 @@
             Login
           </router-link>
         </li>
-        <li class="relative group">
+        <li class="relative group hidden md:block">
           <router-link
             to="/"
-            class="md:px-4 py-2 text-gray-700 relative"
-            :class="{ 'text-primary font-semibold': $route.path === '/' }"
+            class="px-4 py-2 text-gray-700 relative"
+            :class="{ 'text-primary': $route.path === '/' }"
           >
             Home
             <!-- Garis bawah saat path URL cocok -->
