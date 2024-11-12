@@ -14,7 +14,7 @@
       <div class="mb-5 px-6 py-3 text-center">
         <!-- Form content -->
         <div
-          class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
+          class="hidden md:flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
         >
           <input
             type="text"
@@ -40,6 +40,33 @@
       </div>
     </div>
   </div>
+  <div class="px-5 py-2 mb-4">
+    <div
+      class="bg-white p-4 rounded-lg shadow-md flex flex-col space-y-4 md:hidden"
+    >
+      <input
+        type="text"
+        placeholder="Type your dream Role"
+        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+      />
+      <select
+        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+      >
+        <option>Department</option>
+      </select>
+      <select
+        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+      >
+        <option>Location</option>
+      </select>
+      <button
+        class="w-full sm:w-auto bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
+      >
+        Search
+      </button>
+    </div>
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
     <!-- Job Card 1 -->
     <routerLink

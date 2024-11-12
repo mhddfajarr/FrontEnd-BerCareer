@@ -85,7 +85,7 @@
                         d="M3 16.5V21h18v-4.5M3 8.5V3h18v5.5M3 12h18M3 12h18M3 12h18M3 12h18"
                       />
                     </svg>
-                    <span class="font-semibold">Upload to Change Profile</span>
+                    <span class="font-semibold">Upload to Change Profile Picture</span>
                     <span class="text-sm">Drag & drop or click to select</span>
                   </div>
                 </label>

@@ -3,7 +3,7 @@
   <nav class="bg-slate-50 text-black p-4 border-b-2">
     <div class="container mx-auto flex justify-between items-center">
       <!-- Logo -->
-      <router-link to="/" >
+      <router-link to="/">
         <img
           src="/src/assets/images/berCareer-logo.png"
           alt="Logo"
@@ -12,8 +12,8 @@
       </router-link>
 
       <!-- Navbar Links -->
-      <ul class="flex space-x-4 items-center">
-        <!-- Login Button (placed next to profile) -->
+      <ul class="flex space-x-1 items-center px-7">
+        <!-- Login Button -->
         <li>
           <router-link
             to="login"
@@ -22,57 +22,89 @@
             Login
           </router-link>
         </li>
+        <li class="relative group">
+          <router-link
+            to="/"
+            class="md:px-4 py-2 text-gray-700 relative"
+            :class="{ 'text-primary font-semibold': $route.path === '/' }"
+          >
+            Home
+            <!-- Garis bawah saat path URL cocok -->
+            <div
+              class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
+              :class="{
+                'scale-x-100': $route.path === '/',
+                'scale-x-0': $route.path !== '/',
+              }"
+            ></div>
+          </router-link>
+        </li>
+        <li class="relative group hidden md:block">
+          <router-link
+            to="/saveJobs"
+            class="px-4 py-2 text-gray-700 relative"
+            :class="{ 'text-primary': $route.path === '/saveJobs' }"
+          >
+            Save Jobs
+            <div
+              class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
+              :class="{
+                'scale-x-100': $route.path === '/saveJobs',
+                'scale-x-0': $route.path !== '/saveJobs',
+              }"
+            ></div>
+          </router-link>
+        </li>
 
         <!-- Profile Dropdown -->
         <li class="relative">
-          <!-- Dropdown Trigger (Profile Icon) -->
           <button
             @click="toggleDropdown"
             class="flex items-center text-black focus:outline-none"
             ref="dropdownButton"
           >
             <img
-              src="https://marketplace.canva.com/EAFHfL_zPBk/1/0/1600w/canva-yellow-inspiration-modern-instagram-profile-picture-kpZhUIzCx_w.jpg"
+              src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
               alt="Profile"
               class="w-10 h-10 rounded-full mr-2"
             />
             <span class="relative inline-block group">
-              <span :class="[
-      'transition-all duration-300 color-primary text-slate-200 flex flex-col',
-      isDropdownVisible ? 'font-semibold mb-0.5 bg-primary rounded-full px-2 py-1 text-white' : 'text-slate-700 ',
-    ]" 
-              class="">{{ username }}</span>
+              <span
+                :class="[ 'transition-all duration-300 color-primary text-slate-200 flex flex-col', isDropdownVisible ? 'font-semibold mb-0.5 bg-primary rounded-full px-2 py-1 text-white' : 'text-slate-700 ' ]"
+                class="font-semibold"
+                >{{ username }}</span
+              >
             </span>
             <i
-  :class="{
-    'fas fa-caret-left ml-2 transition-transform duration-300': !isDropdownVisible,
-    'fas fa-caret-left ml-2 transition-transform duration-300 -rotate-90': isDropdownVisible
-  }"
-></i>
+              :class="{
+                'fas fa-caret-left ml-2 transition-transform duration-300': !isDropdownVisible,
+                'fas fa-caret-left ml-2 transition-transform duration-300 -rotate-90': isDropdownVisible,
+              }"
+            ></i>
           </button>
 
           <!-- Dropdown Menu -->
           <div
-      v-show="isDropdownVisible"
-      class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 transition-all duration-300"
-      :class="{ 'slide-down': isDropdownVisible }"
-      ref="dropdownMenu"
-    >
+            v-show="isDropdownVisible"
+            class="absolute -right-10 md:-right-2 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 transition-all duration-300"
+            :class="{ 'slide-down': isDropdownVisible }"
+            ref="dropdownMenu"
+          >
             <ul>
+              <li class="block md:hidden">
+                <router-link
+                  to="/saveJobs"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
+                  >Save Jobs</router-link
+                >
+              </li>
               <li>
                 <router-link
                   to="Profile"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                   @click="closeDropdown"
                   >Profile</router-link
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                  @click="closeDropdown"
-                  >Save Jobs</a
                 >
               </li>
               <li>
@@ -99,6 +131,7 @@
     </div>
   </nav>
 </template>
+
 
 <script>
 export default {
@@ -157,4 +190,3 @@ export default {
   }
 }
 </style>
-
