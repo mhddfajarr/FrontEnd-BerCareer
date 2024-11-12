@@ -1,12 +1,12 @@
     <template>
     <div class="content-wrapper">
-        <div class="breadcrumbs text-sm mb-5">
+        <div class="breadcrumbs text-sm mb-4">
         <ul>
             <li><a>Dashboard</a></li>
             <li><a>Manage Jobseekers</a></li>
         </ul>
         </div>
-
+        <h1 class="text-3xl font-bold text-primary mb-2">Manage Jobseekers</h1>
         <!-- Main content -->
 
         <section class="content">
@@ -18,11 +18,11 @@
                     <div class="card-body">
                     <div class="flex justify-between">
                         <details class="dropdown">
-                        <summary class="btn m-1">
+                        <summary class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none">
                             <i class="fas fa-solid fa-filter"></i>
                         </summary>
                         <ul
-                            class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+                            class="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow bg-white"
                         >
                             <li><a>Fullstack Developer</a></li>
                             <li><a>IT Support</a></li>
@@ -35,7 +35,7 @@
                     <!-- /.card-header -->
                     <div class="card-header">
                     <div class="card-body">
-                        <div role="tablist " class="tabs tabs-lifted">
+                        <div role="tablist " class="tabs tabs-lifted bg-white">
                         <input
                             type="radio"
                             name="my_tabs_2"
@@ -46,7 +46,7 @@
                         />
                         <div
                             role="tabpanel"
-                            class="tab-content bg-base-100 border-base-300 rounded-xl p-6"
+                            class="tab-content border-base-300 rounded-xl p-6 bg-white"
                         >
                             <div class="card-body-sm mt-2">
                             <div class="overflow-x-auto">
@@ -79,10 +79,10 @@
                                     </th>
                                     <td>1</td>
                                     <td>
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-center gap-3 bg-white">
                                         <div class="avatar">
                                             <div
-                                            class="mask mask-squircle h-12 w-12"
+                                            class="mask mask-squircle h-12 w-12 bg-white"
                                             >
                                             <img
                                                 src="https://img.daisyui.com/images/profile/demo/2@94.webp"
@@ -104,34 +104,34 @@
                                     <td>
                                         Zemlak, Daniel and Leannon
                                         <br />
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >Desktop Support Technician</span
                                         >
                                     </td>
                                     <td>Universitas Negeri London</td>
                                     <td>
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >C#</span
                                         >
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >PHP</span
                                         >
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >Javascript</span
                                         >
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >Makan Banyak</span
                                         >
                                     </td>
                                     <td>
-                                        <span class="badge badge-ghost badge-sm"
+                                        <span class="badge badge-ghost bg-slate-100 text-black border-none"
                                         >TOEFL</span
                                         >
                                     </td>
                                     <td>
                                         <input
                                         type="checkbox"
-                                        class="toggle toggle-success"
+                                        class="toggle toggle-success bg-white border-none"
                                         />
                                     </td>
                                     <th></th>
@@ -150,36 +150,24 @@
                         />
                         <div
                             role="tabpanel"
-                            class="tab-content bg-base-100 border-base-300 rounded-box p-6 bg-white"
+                            class="tab-content border-base-300 rounded-box p-6 bg-white "
                         >
                             Tab content 2
                         </div>
                         </div>
                         <div class="join justify-end">
                         <input
-                            class="join-item btn btn-square"
+                            class="join-item btn btn-square bg-white hover:bg-gray-400 border-none"
                             type="radio"
                             name="options"
                             aria-label="1"
                             checked="checked"
                         />
                         <input
-                            class="join-item btn btn-square"
+                            class="join-item btn btn-square bg-white hover:bg-gray-400 border-none"
                             type="radio"
                             name="options"
                             aria-label="2"
-                        />
-                        <input
-                            class="join-item btn btn-square"
-                            type="radio"
-                            name="options"
-                            aria-label="3"
-                        />
-                        <input
-                            class="join-item btn btn-square"
-                            type="radio"
-                            name="options"
-                            aria-label="4"
                         />
                         </div>
                     </div>

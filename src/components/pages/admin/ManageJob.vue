@@ -1,12 +1,12 @@
     <template>
     <div class="content-wrapper">
-        <div class="breadcrumbs text-sm mb-5">
+        <div class="breadcrumbs text-sm mb-4">
         <ul>
             <li><a>Dashboard</a></li>
             <li><a>Manage Job Portal</a></li>
         </ul>
         </div>
-
+        <h1 class="text-3xl font-bold text-primary mb-2">Manage Job Portal</h1>
         <!-- Main content -->
         <section class="content">
         <div class="container-fluid">
@@ -17,10 +17,11 @@
                     <!-- /.card-header -->
                     <div class="card-header">
                     <div class="card-body">
-                        <div class="flex justify-between">
+                        <div class="flex justify-between items-center space-x-4">
+                        <!-- Added space-x-4 for spacing between elements -->
                         <button
                             type="button"
-                            class="btn bg-primary border hover:bg-primaryHover text-white"
+                            class="btn bg-primary border hover:bg-primaryHover text-white border-none"
                             data-toggle="modal"
                             data-target="#modal-default"
                             data-tooltip="tooltip"
@@ -29,12 +30,31 @@
                         >
                             Add New Job
                         </button>
-                        <div class="form-control">
+
+                        <!-- Dropdown moved next to the search -->
+                        <div class="flex items-center space-x-2 bg-white">
+                            <!-- Flexbox to align dropdown and search input -->
+                            <details class="dropdown bg-white border-none">
+                            <summary class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none">
+                                <i class="fas fa-solid fa-filter"></i>
+                            </summary>
+                            <ul
+                                class="menu dropdown-content bg-white rounded-box z-[1] w-52 p-2 shadow border-none"
+                            >
+                                <li><a>Fullstack Developer</a></li>
+                                <li><a>IT Support</a></li>
+                                <li><a>APP Support</a></li>
+                            </ul>
+                            </details>
+
+                            <!-- Search input next to the dropdown -->
+                            <div class="form-control">
                             <input
-                            type="text"
-                            placeholder="Search"
-                            class="input input-bordered w-24 md:w-auto bg-white"
+                                type="text"
+                                placeholder="Search"
+                                class="input input-bordered w-24 md:w-auto bg-white"
                             />
+                            </div>
                         </div>
                         </div>
 
@@ -121,6 +141,7 @@
                         </div>
                         </div>
                     </div>
+
                     <div class="card-body">
                         <table class="table bg-white text-black">
                         <!-- head -->
@@ -152,19 +173,19 @@
                             <td>Minimal pengalaman 69 bulan di bidangnya</td>
                             <td>
                                 <span
-                                class="badge badge-ghost bg-slate-100 text-black"
+                                class="badge badge-ghost bg-slate-100 text-black border-none"
                                 >Rp. 5,000,000 - Rp. 5,100,000</span
                                 >
                             </td>
                             <td>
                                 <span
-                                class="badge badge-ghost bg-slate-100 text-black"
+                                class="badge badge-ghost bg-slate-100 text-black border-none"
                                 >Jakarta Pusat</span
                                 >
                             </td>
                             <td>
                                 <span
-                                class="badge badge-ghost bg-slate-100 text-black"
+                                class="badge badge-ghost bg-slate-100 text-black border-none"
                                 >100</span
                                 >
                             </td>
@@ -174,14 +195,14 @@
                         </table>
                         <div class="join justify-end">
                         <input
-                            class="join-item btn btn-square bg-white hover:bg-gray-400"
+                            class="join-item btn btn-square bg-white hover:bg-gray-400 border-none"
                             type="radio"
                             name="options"
                             aria-label="1"
                             checked="checked"
                         />
                         <input
-                            class="join-item btn btn-square bg-white hover:bg-gray-400"
+                            class="join-item btn btn-square bg-white hover:bg-gray-400 border-none"
                             type="radio"
                             name="options"
                             aria-label="2"

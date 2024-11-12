@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar bg-white flex items-center justify-between border-b border-gray-300">
+    <nav class="navbar bg-white flex items-center justify-between border-b border-gray-300 shadow-xl">
       <div class="flex-none">
         <button @click="$emit('toggleSidebar')" class="btn btn-square btn-ghost text-slate-600">
           <i class="fas fa-bars text-lg"></i>
@@ -63,7 +63,7 @@
                 <form id="quickForm">
                   <div class="card-body">
                     <h4 class="text-lg font-bold mb-2">Name</h4>
-                    <input v-model="newUniversityName" type="text" placeholder="Name" class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50" />
+                    <input v-model="newUniversityName" type="text" placeholder="" class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50" />
                     <h4 class="text-lg font-bold mb-2">Old Password</h4>
                     <input v-model="newUniversityName" type="text" placeholder="Old Password" class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50" />
                     <h4 class="text-lg font-bold mb-2">New Password</h4>
