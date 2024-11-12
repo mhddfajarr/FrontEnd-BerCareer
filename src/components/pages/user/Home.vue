@@ -20,20 +20,15 @@
             type="text"
             v-model="searchQuery"
             placeholder="Type your dream Role"
-            class="w-full sm:w-auto text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
+            class="w-full sm:w-[350px] text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
           />
           <select
-            class="w-full sm:w-auto bg-white text-gray-500 px-4 py-2 rounded-xl border-2"
-          >
-            <option>Department</option>
-          </select>
-          <select
-            class="w-full sm:w-auto bg-white text-gray-500 px-4 py-2 rounded-xl border-2"
+            class="w-full sm:w-[250px] bg-white text-gray-500 px-4 py-2 rounded-xl border-2"
           >
             <option>Location</option>
           </select>
           <button
-            class="w-full sm:w-auto bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
+            class="w-full sm:w-[200px] bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
             @click="scrollToSection"
           >
             Search
@@ -56,27 +51,19 @@
       <select
         class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
       >
-        <option>Department</option>
-      </select>
-      <select
-        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-      >
         <option>Location</option>
       </select>
-      <button
-        class="w-full sm:w-auto bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
-      >
-        Search
-      </button>
     </div>
   </div>
 
   <div v-if="filteredJobs.length === 0 && searchQuery.length > 0">
-    <div class="flex justify-center items-center h-40">
+    <div class="flex justify-center p-7 items-center h-80">
       <div
-        class="bg-white p-6 rounded-lg shadow-md text-center w-full max-w-md"
+        class="bg-white rounded-lg shadow-md text-center w-full h-full flex justify-center items-center"
       >
-        <p class="text-3xl font-bold text-gray-800">No data found</p>
+        <p class="text-xl px-5 md:text-2xl font-bold text-gray-500">
+          "Sorry, No jobs are available for this position at the moment"
+        </p>
       </div>
     </div>
   </div>
@@ -208,9 +195,9 @@ export default {
         });
       }
     },
-    saveJob(){
-      console.log("ya akan ditambahkan")
-    }
+    saveJob() {
+      console.log("ya akan ditambahkan");
+    },
   },
 };
 </script>
