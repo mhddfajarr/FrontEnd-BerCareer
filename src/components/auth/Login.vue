@@ -53,7 +53,7 @@
             v-if="!buttonLogin"
             type="submit"
             class="w-full bg-primary text-white font-bold py-2.5 px-4 rounded-xl hover:bg-primaryHover focus:outline-none transition-colors"
-            @click.prevent="login"
+            @click.prevent="loginUser"
           >
             Sign In
           </button>
@@ -108,69 +108,104 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { login } from '../../Api/AuthService'; // Mengimpor service API login
+import Swal from 'sweetalert2'; // Mengimpor SweetAlert2
 
 export default {
-setup() {
-  const email = ref('');
-  const emailError = ref('');
-  const password = ref('');
-  const passwordError = ref('');
-  const showPassword = ref(false);
-  const buttonLogin = ref(false);
-  const router = useRouter();
+  setup() {
+    const email = ref('');
+    const emailError = ref('');
+    const password = ref('');
+    const passwordError = ref('');
+    const showPassword = ref(false);
+    const buttonLogin = ref(false);
+    const router = useRouter();
 
+    // Validasi input email
+    const validateEmail = () => {
+      if (!email.value) {
+        emailError.value = "Email is required!";
+      } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+        emailError.value = "Invalid email address, use format example@domain.com!";
+      } else {
+        emailError.value = "";
+      }
+    };
 
-  const validateEmail = () => {
-    if (!email.value) {
-      emailError.value = "Email is required!";
-    } else if (!/\S+@\S+\.\S+/.test(email.value)) {
-      emailError.value = "Invalid email address, use format example@domain.com !";
-    } else {
-      emailError.value = ""; 
-    }
-  };
+    // Validasi input password
+    const validatePassword = () => {
+      if (!password.value) {
+        passwordError.value = "Password is required!";
+      } else {
+        passwordError.value = "";
+      }
+    };
 
-  const validatePassword = () => {
-    if (!password.value) {
-      passwordError.value = "Password is required!";
-    } else {
-      passwordError.value = ""; 
-    }
-  };
+    // Fungsi untuk login
+    const loginUser = async () => {
+      validateEmail();
+      validatePassword();
 
-  const login = () => {
-    validateEmail();
-    validatePassword();
-    if (!emailError.value && !passwordError.value) {
-      buttonLogin.value = true;
-      setTimeout(() => {
-          buttonLogin.value = false; 
-          router.push({ name: "Home"});
-        }, 1500);
-    }
-  };
+      // Jika tidak ada error, lanjutkan dengan login
+      if (!emailError.value && !passwordError.value) {
+        buttonLogin.value = true;
+        
+        try {
+          const userData = {
+            email: email.value,
+            password: password.value,
+          };
 
-  const togglePassword = () => {
-    showPassword.value = !showPassword.value;
-  };
+          // Memanggil API login dan mengirim data
+          const response = await login(userData);
 
-  return {
-    email,
-    emailError,
-    password,
-    passwordError,
-    showPassword,
-    buttonLogin,
-    validateEmail,
-    validatePassword,
-    login,
-    togglePassword
-  };
-},mounted() {
-  // Fokuskan input email setelah komponen dimuat
-  this.$nextTick(() => {
-    this.$refs.emailInput.focus();
-  });
-},
+          console.log('Login successful:', response);
+
+          // Jika login berhasil, simpan token atau data lain yang diperlukan
+          sessionStorage.setItem('authToken', response.token); // Menyimpan token (misalnya)
+
+          // Arahkan ke halaman Home atau halaman yang diinginkan
+          router.push({ name: 'Home' });
+
+        } catch (error) {
+          console.error('Login failed:', error);
+          // Tampilkan pesan error jika login gagal
+          Swal.fire({
+            title: 'Error',
+            text: error.response.data.message,
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+        } finally {
+          buttonLogin.value = false; // Matikan indikator loading
+        }
+      }
+    };
+
+    // Fungsi untuk toggle visibility password
+    const togglePassword = () => {
+      showPassword.value = !showPassword.value;
+    };
+
+    return {
+      email,
+      emailError,
+      password,
+      passwordError,
+      showPassword,
+      buttonLogin,
+      validateEmail,
+      validatePassword,
+      loginUser, // Menggunakan loginUser untuk login
+      togglePassword
+    };
+  },
+  mounted() {
+    // Fokuskan input email setelah komponen dimuat
+    this.$nextTick(() => {
+      this.$refs.emailInput.focus();
+    });
+  },
 };
 </script>
+

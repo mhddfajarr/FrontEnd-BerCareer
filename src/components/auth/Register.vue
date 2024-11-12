@@ -310,12 +310,7 @@ export default {
           email: email.value,
           password: password.value,
         };
-
-        // Kirim data pengguna ke createUser
-        const response = await createUser(user);
-        console.log('User created successfully:', response);
         
-        // Menampilkan notifikasi sukses dengan SweetAlert2
         Swal.fire({
           title: 'Registration successful!',
           text: 'You can log in now.',
@@ -327,18 +322,15 @@ export default {
         });
         
       } catch (error) {
-        console.error('Error creating user:', error);
-        // Menampilkan notifikasi error jika terjadi kesalahan
         Swal.fire({
-          title: 'Error',
-          text: 'There was an error during registration. Please try again.',
-          icon: 'error',
-          confirmButtonText: 'OK',
-        });
+        title: 'Registration failed!',
+        text: error.response.data.message, // Menampilkan pesan error dari response
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
       }
     };
 
-    // Fungsi login yang memanggil handleSubmit
     const login = async () => {
       validateFirstName();
       validateLastName();
