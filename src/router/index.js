@@ -2,8 +2,8 @@ import { createWebHistory, createRouter } from 'vue-router';
 import Login from '../components/auth/Login.vue';
 import Register from '../components/auth/Register.vue';
 import Home from '../components/pages/user/Home.vue';
-import LoginAdmin from '../components/pages/admin/LoginAdmin.vue';
-import Dashboard from '../components/pages/admin/dashboard.vue';
+// import LoginAdmin from '../components/pages/';
+import Dashboard from '../components/pages/admin/Dashboard.vue';
 import MainLayoutUser from '../components/layout/user/MainLayout.vue';
 import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
 import ManageJob from '../components/pages/admin/managejob.vue';
@@ -24,36 +24,6 @@ const routes = [
         name: 'Dashboard',
         component: Dashboard,
       },
-    ],
-  },
-  {
-    path: '/',
-    component: MainLayoutUser, 
-    children: [
-      {
-        path: '', 
-        name: 'Home',
-        component: Home,
-      },
-      {
-        path: '/loginadmin', 
-        name: 'LoginAdmin',
-        component: LoginAdmin,
-      },
-      {
-        path: '/dashboard', 
-        name: 'Dashboard',
-        component: Dashboard,
-      },{
-        path: '/jobs', 
-        name: 'Jobs',
-        component: Jobs,
-      },
-      {
-        path: '/profile', 
-        name: 'Profile',
-        component: Profile,
-      },
       {
         path: '/managejob', 
         name: 'ManageJob',
@@ -64,6 +34,32 @@ const routes = [
         name: 'ManageJobseekers',
         component: ManageJobseekers,
       },
+      // {
+      //   path: '/loginadmin', 
+      //   name: 'LoginAdmin',
+      //   component: LoginAdmin
+      // },
+    ],
+  },
+  {
+    path: '/',
+    component: MainLayoutUser, 
+    children: [
+      {
+        path: '', 
+        name: 'Home',
+        component: Home,
+      },{
+        path: '/jobs', 
+        name: 'Jobs',
+        component: Jobs,
+      },
+      {
+        path: '/profile', 
+        name: 'Profile',
+        component: Profile,
+      },
+      
     ],
   },
   { 

@@ -23,9 +23,9 @@
         <ul :class="[isSidebarVisible ? '' : 'mt-5']">
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/dashboard' }"
+            :class="{ active: $route.path === '/admin' }"
           >
-            <RouterLink to="Dashboard" class="w-full flex items-center">
+            <RouterLink to="admin" class="w-full flex items-center">
               <i
                 class="fas fa-home text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"
