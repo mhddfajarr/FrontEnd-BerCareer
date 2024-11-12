@@ -310,7 +310,7 @@ export default {
           email: email.value,
           password: password.value,
         };
-        
+        await createUser(user);
         Swal.fire({
           title: 'Registration successful!',
           text: 'You can log in now.',
