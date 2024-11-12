@@ -11,6 +11,7 @@ import ManageJobseekers from '../components/pages/admin/ManageJobSeekers.vue';
 import Jobs from '../components/pages/user/Jobs.vue';
 import Profile from '../components/pages/user/Profile.vue';
 import SaveJobs from '../components/pages/user/SaveJob.vue';
+import Applied from '../components/pages/user/Applied.vue';
 
 
 
@@ -57,6 +58,12 @@ const routes = [
         component: Jobs,
       },
       {
+        path: '/applied', // relative path, tidak perlu diawali dengan '/'
+        name: "Applied",
+        component: Applied,
+      },
+      
+      {
         path: '/profile', 
         name: 'Profile',
         component: Profile,
@@ -66,6 +73,7 @@ const routes = [
         name: "SaveJobs", 
         component: SaveJobs,
       },
+      
       
     ],
   },

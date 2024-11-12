@@ -4,9 +4,9 @@
         Save Jobs
     </h1>
 </div> -->
-    <div class="flex flex-col justify-center items-center h-full text-center">
+    <div class="flex flex-col justify-center items-center h-full text-center mt-32 md:mt-0">
      <img src="../../../assets/images/notFound.png" alt="Not Found" class="w-72 mt-10 h-auto">
-     <p  class="text-xl text-gray-700 font-bold mt-6">No Saved Jobs.<router-link to="/" class="bg-gray-300 hover:bg-gray-400 w-full font-semibold text-gray-700 px-2 ml-2 py-1 rounded-md"> Let's Apply!</router-link>  </p>
+     <p  class="text-xl text-gray-700 font-bold mt-6">No Saved Jobs.</p>
  </div>
  <div class="py-6">
  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">

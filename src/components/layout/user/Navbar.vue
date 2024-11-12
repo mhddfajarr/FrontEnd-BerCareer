@@ -55,6 +55,22 @@
             ></div>
           </router-link>
         </li>
+        <li class="relative group hidden md:block">
+        <router-link
+        to="/applied" 
+          class="px-4 py-2 text-gray-700 relative"
+          :class="{ 'text-primary': $route.path === '/applied' }"
+        >
+          Applied
+          <div
+            class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
+            :class="{
+              'scale-x-75': $route.path === '/applied',
+              'scale-x-0': $route.path !== '/applied',
+            }"
+          ></div>
+        </router-link>
+      </li>
 
         <!-- Profile Dropdown -->
         <li class="relative">
@@ -70,15 +86,22 @@
             />
             <span class="relative inline-block group">
               <span
-                :class="[ 'transition-all duration-300 color-primary text-slate-200 flex flex-col', isDropdownVisible ? 'font-semibold mb-0.5 bg-primary rounded-full px-2 py-1 text-white' : 'text-slate-700 ' ]"
+                :class="[
+                  'transition-all duration-300 color-primary text-slate-200 flex flex-col',
+                  isDropdownVisible
+                    ? 'font-semibold mb-0.5 bg-primary rounded-full px-2 py-1 text-white'
+                    : 'text-slate-700 ',
+                ]"
                 class="font-semibold"
                 >{{ username }}</span
               >
             </span>
             <i
               :class="{
-                'fas fa-caret-left ml-2 transition-transform duration-300': !isDropdownVisible,
-                'fas fa-caret-left ml-2 transition-transform duration-300 -rotate-90': isDropdownVisible,
+                'fas fa-caret-left ml-2 transition-transform duration-300':
+                  !isDropdownVisible,
+                'fas fa-caret-left ml-2 transition-transform duration-300 -rotate-90':
+                  isDropdownVisible,
               }"
             ></i>
           </button>
@@ -97,6 +120,14 @@
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                   @click="closeDropdown"
                   >Save Jobs</router-link
+                >
+              </li>
+              <li class="block md:hidden">
+                <router-link
+                  to="/applied"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  @click="closeDropdown"
+                  >Applied</router-link
                 >
               </li>
               <li>
@@ -131,7 +162,6 @@
     </div>
   </nav>
 </template>
-
 
 <script>
 export default {
