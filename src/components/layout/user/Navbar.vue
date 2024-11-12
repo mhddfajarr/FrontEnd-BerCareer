@@ -33,7 +33,7 @@
             <div
               class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
               :class="{
-                'scale-x-100': $route.path === '/',
+                'scale-x-75': $route.path === '/',
                 'scale-x-0': $route.path !== '/',
               }"
             ></div>
@@ -49,7 +49,7 @@
             <div
               class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
               :class="{
-                'scale-x-100': $route.path === '/saveJobs',
+                'scale-x-75': $route.path === '/saveJobs',
                 'scale-x-0': $route.path !== '/saveJobs',
               }"
             ></div>

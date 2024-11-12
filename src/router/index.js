@@ -10,6 +10,8 @@ import ManageJob from '../components/pages/admin/managejob.vue';
 import ManageJobseekers from '../components/pages/admin/ManageJobSeekers.vue';
 import Jobs from '../components/pages/user/Jobs.vue';
 import Profile from '../components/pages/user/Profile.vue';
+import SaveJobs from '../components/pages/user/SaveJob.vue';
+
 
 
 
@@ -59,6 +61,11 @@ const routes = [
         name: 'Profile',
         component: Profile,
       },
+      { 
+        path: '/saveJobs', 
+        name: "SaveJobs", 
+        component: SaveJobs,
+      },
       
     ],
   },
@@ -77,6 +84,7 @@ const routes = [
     name: "home", 
     component: Home,
   },
+ 
 ];
 
 const router = createRouter({
