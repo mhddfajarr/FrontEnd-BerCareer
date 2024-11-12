@@ -225,6 +225,7 @@ export default {
             icon: "error",
             confirmButtonText: "OK",
           });
+          buttonLogin.value = false;
         }
       }
     };

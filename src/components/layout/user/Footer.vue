@@ -1,7 +1,8 @@
 <template>
   <!-- Footer -->
    <div>
-  <footer class="bg-primary text-gray-200 container mx-auto px-10 py-10 md:px-0 md:pt-10 md:pb-2  text-sm">
+  <footer class="bg-primary text-gray-200 w-full px-10 py-10 md:px-0 md:pt-10 md:pb-2 text-sm">
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Newsletter Section -->
       <div class="flex flex-col items-center justify-center">

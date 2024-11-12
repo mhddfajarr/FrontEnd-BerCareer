@@ -18,6 +18,7 @@
         >
           <input
             type="text"
+            v-model="searchQuery"
             placeholder="Type your dream Role"
             class="w-full sm:w-auto text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
           />
@@ -40,6 +41,7 @@
       </div>
     </div>
   </div>
+
   <div class="px-5 py-2 mb-4">
     <div
       class="bg-white p-4 rounded-lg shadow-md flex flex-col space-y-4 md:hidden"
@@ -47,6 +49,7 @@
       <input
         type="text"
         placeholder="Type your dream Role"
+        v-model="searchQuery"
         class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
       />
       <select
@@ -67,251 +70,123 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
-    <!-- Job Card 1 -->
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-
-    <routerLink
-      to="Jobs"
-      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
-    >
-      <div class="flex items-center justify-center mb-2">
-        <div>
-          <h2 class="text-xl font-bold text-gray-700">
-            Area Sales Leader - Ambon
-          </h2>
-        </div>
-      </div>
-
-      <!-- Garis horizontal di bawah h2 -->
-      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
-
-      <div class="text-sm text-gray-600 space-y-2">
-        <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
-          <span class="text-purple-500"> Penuh waktu</span>
-        </p>
-        <p><i class="fas fa-map-marker-alt"></i> On-site • Ambon</p>
-        <p><i class="fas fa-briefcase"></i> Min. 1 years of experience</p>
-        <p><i class="fas fa-dollar-sign"></i> Negotiable</p>
-      </div>
-
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
-    </routerLink>
-    
+  <div v-if="filteredJobs.length === 0 && searchQuery.length > 0">
+    <p>No data found</p>
   </div>
-  <div class="relative w-full flex items-center justify-center mb-10">
-    <!-- Left Horizontal Line -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
+    <!-- Job Card -->
+    <router-link
+      v-for="(job, index) in filteredVisibleJobs"
+      :key="job.jobId"
+      to="Jobs"
+      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
+    >
+      <div class="flex items-center justify-center mb-2">
+        <div>
+          <h2 class="text-xl font-bold text-gray-700">{{ job.title }}</h2>
+        </div>
+      </div>
+
+      <!-- Garis horizontal di bawah h2 -->
+      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
+
+      <div class="text-sm text-gray-600 space-y-2">
+        <p>
+          <i class="fas fa-user-clock text-purple-500"></i>
+          <span class="text-purple-500">{{ job.type }}</span>
+        </p>
+        <p><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
+        <p>
+          <i class="fas fa-briefcase"></i> {{ job.experience }} years of
+          experience
+        </p>
+        <p><i class="fas fa-dollar-sign"></i> {{ job.salary }}</p>
+      </div>
+
+      <div class="mt-4">
+        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
+          Rekruter aktif 1 jam lalu
+        </span>
+      </div>
+
+      <div class="absolute top-0 right-0 p-3">
+        <i class="far fa-bookmark text-gray-400"></i>
+      </div>
+    </router-link>
+  </div>
+
+  <!-- Show More Button -->
+  <div
+    v-if="showMoreButton"
+    class="relative w-full flex items-center justify-center mb-10"
+  >
     <div class="flex-grow border-t-2 ml-10 border-primary"></div>
-
-    <!-- Button Centered -->
     <div class="mx-4">
-    <button class="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-full shadow-lg border-2 transition duration-300 ease-in-out opacity-85 hover:opacity-100 flex items-center group">
+      <button
+        @click="loadMore"
+        class="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-full shadow-lg border-2 transition duration-300 ease-in-out opacity-85 hover:opacity-100 flex items-center group"
+      >
         See More
-        <i class="fas fa-caret-left ml-2 transition-transform duration-300 group-hover:-rotate-90"></i>
-    </button>
-</div>
-
-
-    <!-- Right Horizontal Line -->
+        <i
+          class="fas fa-caret-left ml-2 transition-transform duration-300 group-hover:-rotate-90"
+        ></i>
+      </button>
+    </div>
     <div class="flex-grow border-t-2 mr-10 border-primary"></div>
-</div>
-
-
+  </div>
 </template>
 
 <script>
+import { getAllData } from "../../../Api/UserService";
+
 export default {
   name: "Home",
+  data() {
+    return {
+      searchQuery: "",
+      jobs: [], // State untuk menyimpan data jobs
+      visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat
+      itemsToShow: 6, // Jumlah item yang ditampilkan setiap kali tombol "Show More" diklik
+      showMoreButton: true, // Menyimpan status tombol Show More
+    };
+  },
+  computed: {
+    filteredJobs() {
+      if (!this.searchQuery) {
+        return this.jobs; // Kembalikan semua item jika tidak ada query pencarian
+      }
+      const filtered = this.jobs.filter(
+        (job) =>
+          job.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || // Cocokkan title pekerjaan
+          job.description.toLowerCase().includes(this.searchQuery.toLowerCase()) // Cocokkan deskripsi pekerjaan
+      );
+      return filtered.length > 0 ? filtered : []; // Kembalikan array kosong jika tidak ada pekerjaan yang cocok
+    },
+    filteredVisibleJobs() {
+      return this.filteredJobs.slice(0, this.visibleJobs.length); // Menampilkan pekerjaan yang difilter sesuai jumlah yang terlihat
+    },
+    showMoreButton() {
+      // Cek apakah jumlah item yang difilter lebih dari atau sama dengan itemsToShow
+      return this.filteredJobs.length > this.visibleJobs.length;
+    },
+  },
+  async mounted() {
+    try {
+      const data = await getAllData();
+      this.jobs = data.data; // Menyimpan data ke dalam state jobs
+      this.visibleJobs = this.jobs.slice(0, this.itemsToShow); // Menampilkan hanya 6 pekerjaan pertama
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  },
+  methods: {
+    loadMore() {
+      const nextItems = this.filteredJobs.slice(
+        this.visibleJobs.length,
+        this.visibleJobs.length + this.itemsToShow
+      );
+      this.visibleJobs = [...this.visibleJobs, ...nextItems]; // Menambahkan pekerjaan baru ke visibleJobs
+    },
+  },
 };
 </script>
-
-<style scoped>
-/* Tambahkan styling tambahan di sini jika diperlukan */
-</style>
