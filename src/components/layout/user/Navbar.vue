@@ -118,7 +118,7 @@
               <li>
                 <router-link
                   to="Profile"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-t-md"
                   @click="closeDropdown"
                   >Profile</router-link
                 >
@@ -150,7 +150,7 @@
               <hr class="border border-gray-200" />
               <li>
                 <button
-                  class="block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-md"
+                  class="block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-b-md"
                   @click="logout"
                 >
                   Logout
@@ -172,7 +172,7 @@ export default {
     return {
       cekLogin: localStorage.getItem('authToken') ? true : false,
       isDropdownVisible: false,
-      username: "Username", // Dynamic username if needed
+      username: "Username", 
     };
   },
   methods: {
@@ -188,8 +188,8 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("authToken");
-          this.cekLogin = false; // Set cekLogin to false immediately
-          this.$router.push("/login");
+          this.cekLogin = false; 
+          this.$router.push("/");
         }
       });
     },
@@ -199,14 +199,12 @@ export default {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
     closeDropdown() {
-      // Close dropdown when a sub-menu item is clicked
       this.isDropdownVisible = false;
     },
     handleOutsideClick(event) {
       const dropdown = this.$refs.dropdownMenu;
       const button = this.$refs.dropdownButton;
 
-      // Close dropdown if the click is outside the button or dropdown
       if (
         dropdown &&
         !dropdown.contains(event.target) &&
@@ -218,26 +216,22 @@ export default {
     },
   },
   watch: {
-    // Watch for changes in localStorage and update cekLogin reactively
     cekLogin(newValue) {
       if (newValue) {
-        localStorage.setItem("authToken", 'yourToken'); // You can set the token if needed here
+        localStorage.setItem("authToken", localStorage.getItem('authToken')); 
       } else {
         localStorage.removeItem("authToken");
       }
     }
   },
   mounted() {
-    // Add event listener for clicks outside the dropdown
     document.addEventListener("click", this.handleOutsideClick);
 
-    // Watch for changes in the localStorage token
     window.addEventListener('storage', () => {
       this.cekLogin = localStorage.getItem('authToken') ? true : false;
     });
   },
   beforeDestroy() {
-    // Remove event listener when the component is destroyed
     document.removeEventListener("click", this.handleOutsideClick);
   },
 };

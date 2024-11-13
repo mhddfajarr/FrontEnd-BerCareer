@@ -99,7 +99,7 @@
           <i class="fas fa-briefcase"></i> {{ job.experience }} years of
           experience
         </p>
-        <p><i class="fas fa-dollar-sign"></i> {{ job.salary }}</p>
+        <p><i class="fas fa-money-bill-wave mr-2"></i> {{ job.salary }}</p>
       </div>
 
       <div class="mt-4">

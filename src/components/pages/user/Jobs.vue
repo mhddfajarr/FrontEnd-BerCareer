@@ -137,7 +137,7 @@ export default {
           icon: "success",
           title: "Success add job to favorite!",
           showConfirmButton: false,
-          timer: 1500, // Toast duration
+          timer: 1500, 
           timerProgressBar: true
         });
       } catch (error) {
@@ -174,7 +174,7 @@ export default {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Success delete job!",
+          title: "Deleted save job!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true

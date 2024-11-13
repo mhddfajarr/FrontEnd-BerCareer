@@ -15,7 +15,7 @@ import Applied from '../components/pages/user/Applied.vue';
 import Settings from '../components/pages/user/Settings.vue';
 
 
-const token = localStorage.getItem('authToken');
+
 
 const routes = [
   
@@ -63,6 +63,7 @@ const routes = [
         name: "Applied",
         component: Applied,
         beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
           if (token) {
             next();
           } else {
@@ -76,6 +77,7 @@ const routes = [
         name: 'Profile',
         component: Profile,
         beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
           if (token) {
             next();
           } else {
@@ -88,6 +90,7 @@ const routes = [
         name: "SaveJobs", 
         component: SaveJobs,
         beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
           if (token) {
             next();
           } else {
@@ -100,6 +103,7 @@ const routes = [
         name: "Settings", 
         component: Settings,
         beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
           if (token) {
             next();
           } else {
@@ -116,6 +120,7 @@ const routes = [
     name: "login", 
     component: Login,
     beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('authToken');
       if (!token) {
         next();
       } else {
@@ -128,6 +133,7 @@ const routes = [
     name: "register", 
     component: Register,
     beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('authToken');
       if (!token) {
         next();
       } else {
