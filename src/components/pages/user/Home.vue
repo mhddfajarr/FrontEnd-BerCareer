@@ -136,7 +136,7 @@
 </template>
 
 <script>
-import { getAllData, getSaveJob } from "../../../Api/UserService";
+import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
 
 export default {
   name: "Home",

@@ -99,8 +99,8 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
-import { getJobsById } from "../../../Api/UserService";
-import { saveJobs } from '../../../Api/UserService';
+import { getJobsById } from "../../../Services/Api/UserService";
+import { saveJobs } from '../../../Services/Api/UserService';
 import { reactive } from 'vue';
 import Swal from "sweetalert2";
 

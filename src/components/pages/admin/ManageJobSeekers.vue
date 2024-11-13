@@ -189,7 +189,7 @@
     </template>
 
     <script>
-    import { getAllData } from "../../../Api/AdminService";
+    import { getAllData } from "../../../Services/Api/AdminService";
 
     export default {
     data() {

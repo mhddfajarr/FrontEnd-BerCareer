@@ -90,7 +90,7 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { login } from "../../Api/AuthService"; // Mengimpor service API login
+import { login } from "../../Services/Api/AuthService"; // Mengimpor service API login
 import Swal from "sweetalert2"; // Mengimpor SweetAlert2
 
 export default {

@@ -151,7 +151,7 @@
 
 <script>
 import { ref, computed, onMounted } from 'vue';
-import { getAllData, deleteJob } from "../../../Api/AdminService"; // Import API functions
+import { getAllData, deleteJob } from "../../../Services/Api/AdminService"; // Import API functions
 import Swal from 'sweetalert2';
 
 export default {
