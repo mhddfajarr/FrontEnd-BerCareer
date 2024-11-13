@@ -13,7 +13,6 @@
 
       <!-- Navbar Links -->
       <ul class="flex space-x-1 items-center px-7">
-        <!-- Login Button -->
         
         <li class="relative group hidden md:block">
           <router-link
@@ -34,7 +33,7 @@
         </li>
         <li v-if="!cekLogin">
           <router-link
-            to="login"
+            to="/login"
             class="bg-primary px-4 py-2 text-gray-100 hover:bg-primaryHover rounded-md"
           >
             Login
@@ -141,7 +140,7 @@
               </li>
               <li>
                 <router-link
-                  to="settings"
+                  to="/settings"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                   @click="closeDropdown"
                   >Settings</router-link
@@ -188,9 +187,8 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("authToken");
-          localStorage.setItem('logoutNotif', 'true');
           this.cekLogin = false; 
-          this.$router.push("/");
+          this.$router.push("/login");
         }
       });
     },
