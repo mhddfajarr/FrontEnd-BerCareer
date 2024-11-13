@@ -1,18 +1,32 @@
 <template>
   <div class="min-h-screen bg-slate-50 flex items-center justify-center p-5">
     <!-- Main content -->
-    <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 mb-8 sm:p-8 border">
+    <div
+      class="w-full max-w-md bg-white rounded-lg shadow-md p-6 mb-8 sm:p-8 border"
+    >
       <div class="mb-6 md:mb-8 flex justify-center">
-        <img src="/src/assets/images/berCareer-logo.png" alt="Logo" class="h-20" />
+        <img
+          src="/src/assets/images/berCareer-logo.png"
+          alt="Logo"
+          class="h-20"
+        />
       </div>
 
       <form class="space-y-4 md:space-y-6">
         <!-- Email input -->
         <div>
-          <label class="block text-gray-700 text-sm md:text-md font-bold mb-2" for="email">
+          <label
+            class="block text-gray-700 text-sm md:text-md font-bold mb-2"
+            for="email"
+          >
             Email
           </label>
-          <div :class="['input input-bordered flex items-center gap-2 bg-white w-full', { 'input-error': emailError }]">
+          <div
+            :class="[
+              'input input-bordered flex items-center gap-2 bg-white w-full',
+              { 'input-error': emailError },
+            ]"
+          >
             <input
               ref="emailInput"
               type="email"
@@ -22,15 +36,25 @@
               @input="validateEmail"
             />
           </div>
-          <p v-if="emailError" class="text-red-500 text-xs mt-2 ml-1">{{ emailError }}</p>
+          <p v-if="emailError" class="text-red-500 text-xs mt-2 ml-1">
+            {{ emailError }}
+          </p>
         </div>
 
         <!-- Password input -->
         <div>
-          <label class="block text-gray-700 text-sm md:text-md font-bold mb-2" for="password">
+          <label
+            class="block text-gray-700 text-sm md:text-md font-bold mb-2"
+            for="password"
+          >
             Password
           </label>
-          <div :class="['input input-bordered flex items-center gap-2 bg-white w-full', { 'input-error': passwordError }]">
+          <div
+            :class="[
+              'input input-bordered flex items-center gap-2 bg-white w-full',
+              { 'input-error': passwordError },
+            ]"
+          >
             <input
               :type="showPassword ? 'text' : 'password'"
               class="grow text-gray-600 w-full"
@@ -39,11 +63,17 @@
               @input="validatePassword"
             />
             <i
-              :class="showPassword ? 'fas fa-eye h-4 w-4 text-gray-400 cursor-pointer' : 'fas fa-eye-slash h-4 w-4 text-gray-400 cursor-pointer'"
+              :class="
+                showPassword
+                  ? 'fas fa-eye h-4 w-4 text-gray-400 cursor-pointer'
+                  : 'fas fa-eye-slash h-4 w-4 text-gray-400 cursor-pointer'
+              "
               @click="togglePassword"
             ></i>
           </div>
-          <p v-if="passwordError" class="text-red-500 text-xs mt-2 ml-1">{{ passwordError }}</p>
+          <p v-if="passwordError" class="text-red-500 text-xs mt-2 ml-1">
+            {{ passwordError }}
+          </p>
         </div>
 
         <!-- Sign In button -->
@@ -56,7 +86,11 @@
           >
             Sign In
           </button>
-          <span :class="buttonLogin ? 'loading loading-dots loading-lg text-primary' : ''"></span>
+          <span
+            :class="
+              buttonLogin ? 'loading loading-dots loading-lg text-primary' : ''
+            "
+          ></span>
         </div>
 
         <!-- Divider -->
@@ -68,8 +102,16 @@
 
         <!-- Google Login Button -->
         <div :class="buttonLogin ? 'hidden' : 'flex justify-center'">
-          <button type="button" class="w-full flex font-semibold items-center justify-center gap-2 bg-white text-black py-2.5 px-4 rounded-xl hover:bg-gray-100 focus:outline-none border-[1.4px] border-gray-200 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5">
+          <button
+            type="button"
+            @click="loginWithAuth0()"
+            class="w-full flex font-semibold items-center justify-center gap-2 bg-white text-black py-2.5 px-4 rounded-xl hover:bg-gray-100 focus:outline-none border-[1.4px] border-gray-200 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 48 48"
+              class="w-5 h-5"
+            >
               <!-- Google icon SVG here -->
             </svg>
             Continue with Google
@@ -78,8 +120,12 @@
 
         <div :class="buttonLogin ? 'hidden' : 'text-center sm:text-left'">
           <span class="text-sm text-gray-600">
-            Don’t have an account? 
-            <router-link to="register" class="text-primary hover:text-primaryHover font-semibold transition-colors">Register</router-link>
+            Don’t have an account?
+            <router-link
+              to="register"
+              class="text-primary hover:text-primaryHover font-semibold transition-colors"
+              >Register</router-link
+            >
           </span>
         </div>
       </form>
@@ -92,6 +138,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { login } from "../../Services/Api/AuthService"; // Mengimpor service API login
 import Swal from "sweetalert2"; // Mengimpor SweetAlert2
+import { useAuth0 } from "@auth0/auth0-vue";
 
 export default {
   setup() {
@@ -102,13 +149,15 @@ export default {
     const showPassword = ref(false);
     const buttonLogin = ref(false);
     const router = useRouter();
+    const { loginWithRedirect } = useAuth0();
 
     // Validasi input email
     const validateEmail = () => {
       if (!email.value) {
         emailError.value = "Email is required!";
       } else if (!/\S+@\S+\.\S+/.test(email.value)) {
-        emailError.value = "Invalid email address, use format example@domain.com!";
+        emailError.value =
+          "Invalid email address, use format example@domain.com!";
       } else {
         emailError.value = "";
       }
@@ -141,7 +190,7 @@ export default {
 
           console.log("Login successful:", response);
 
-          localStorage.setItem('authToken', response.data);
+          localStorage.setItem("authToken", response.data);
 
           // Menampilkan toast
           Swal.fire({
@@ -168,6 +217,10 @@ export default {
       }
     };
 
+    const loginWithAuth0 = () => {
+      loginWithRedirect();
+    };
+
     // Fungsi untuk toggle visibility password
     const togglePassword = () => {
       showPassword.value = !showPassword.value;
@@ -184,6 +237,7 @@ export default {
       validatePassword,
       loginUser, // Menggunakan loginUser untuk login
       togglePassword,
+      loginWithAuth0,
     };
   },
   mounted() {
@@ -192,5 +246,6 @@ export default {
       this.$refs.emailInput.focus();
     });
   },
+  methods: {},
 };
 </script>
