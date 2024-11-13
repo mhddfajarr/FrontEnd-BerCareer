@@ -2,7 +2,14 @@
   <div class="max-w-6xl mx-auto p-6">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
       <!-- Profile Card -->
-      <div class="bg-white p-6 rounded-lg shadow-md h-[400px] md:col-span-4 border-t-4 border-primary">
+      <div
+        class="bg-white px-6 rounded-lg shadow-md h-auto md:col-span-4 border-t-4 border-primary"
+      >
+        <div class="flex justify-center px-3 py-2">
+          <h1 class="text-xl font-bold text-gray-700">Card Profile</h1>
+        </div>
+        <!-- Garis dibawah tulisan -->
+        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
         <div class="text-center">
           <img
             alt="Profile picture of John Doe"
@@ -14,7 +21,6 @@
           <h2 class="text-xl font-semibold mt-4 text-gray-700">John Doe</h2>
           <p class="text-gray-600">Full Stack Developer</p>
           <p class="text-gray-600">Bay Area, San Francisco, CA</p>
-          
         </div>
         <div class="mt-6 mb-4">
           <ul class="space-y-4">
@@ -30,24 +36,30 @@
             </li>
           </ul>
         </div>
-            <button
-            @click="showModalCardProfile = true"
-            class="bg-gray-300 hover:bg-gray-400 w-full font-semibold text-gray-700 px-4 py-2 rounded-md"
-          >
-            Edit Card Profile
-          </button>
-          <ModalEditCardProfile
-            v-if="showModalCardProfile"
-            :showModal="showModalCardProfile"
-            @close="showModalCardProfile = false"
-          />
+        <button
+          @click="showModalCardProfile = true"
+          class="bg-gray-300 hover:bg-gray-400 w-full font-semibold text-gray-700 px-4 py-2 rounded-md mb-5 md:mt-5"
+        >
+          Edit Card Profile
+        </button>
+        <ModalEditCardProfile
+          v-if="showModalCardProfile"
+          :showModal="showModalCardProfile"
+          @close="showModalCardProfile = false"
+        />
       </div>
 
       <!-- Profile Details -->
       <div
-        class="bg-white p-6 rounded-lg shadow-md md:col-span-8 border-t-4 border-primary"
+        class="bg-white px-6 rounded-lg shadow-md md:col-span-8 border-t-4 border-primary"
       >
+      <div class="flex justify-center ">
+          <h1 class="text-xl font-bold text-gray-700 px-3 py-2">Profile</h1>
+        </div>
+
+        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
           <div>
             <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
             <p class="text-gray-500">Kenneth Valdez</p>
@@ -86,7 +98,7 @@
         <div class="mt-6 text-end">
           <button
             @click="showModalProfile = true"
-            class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
+            class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
           >
             Edit Profile
           </button>
@@ -192,7 +204,6 @@ import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
 
-
 export default {
   data() {
     return {
@@ -202,7 +213,6 @@ export default {
       showModalSkill: false,
       showModalCertificate: false,
       showModalCardProfile: false,
-
     };
   },
   methods: {},
@@ -212,7 +222,7 @@ export default {
     ModalAddEducation,
     ModalAddSkill,
     ModalAddCertificate,
-    ModalEditCardProfile
+    ModalEditCardProfile,
   },
 };
 </script>

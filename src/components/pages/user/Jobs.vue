@@ -17,7 +17,7 @@
           /> -->
           <div class="flex-1">
             <h1 class="text-2xl font-bold text-gray-700">
-              DISPATCHER ASSA - PADANG SIDEMPUAN
+              {{ jobs.title }}
             </h1>
           </div>
         </div>
@@ -25,23 +25,23 @@
         <div class="mb-4">
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-briefcase mr-2"></i>
-            <span>Kontrak</span>
+            <span>{{ jobs.type }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-map-marker-alt mr-2"></i>
-            <span>On-site • Padang Sidempuan</span>
+            <span>{{ jobs.location }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
             <i class="fas fa-briefcase mr-2"></i>
-            <span>Min. 1 years of experience</span>
+            <span>{{ jobs.requirement }}</span>
           </div>
           <div class="flex items-center text-gray-600">
             <i class="fas fa-money-bill-wave mr-2"></i>
-            <span>Negotiable</span>
+            <span>{{ jobs.salary }}</span>
           </div>
         </div>
 
-        <div class="flex items-center mb-4">
+        <div class="flex items-center mb-7 mt-7">
           <button
             class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-lg mr-2"
           >
@@ -49,8 +49,15 @@
           </button>
           <button
             class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
-          >
+          @click="saveJob(jobs.jobId)"
+            >
             Save Job
+          </button>
+          <button
+            class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+          @click="saveJob(jobs.jobId)"
+            >
+            Remove from favorite
           </button>
         </div>
 
@@ -58,18 +65,10 @@
 
         <!-- Card Deskripsi Pekerjaan -->
         <div class="text-gray-700">
-          <h2 class="text-xl font-bold mb-4">Requirements</h2>
+          <h2 class="text-xl font-bold mb-4">Description</h2>
           <p class="mb-4">
-            Melakukan &amp; memastikan proses pengiriman barang meliputi:
+            {{ jobs.description }}
           </p>
-          <ul class="list-disc list-inside">
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -100,15 +99,85 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
+import { getJobsById } from "../../../Api/UserService";
+import { saveJobs } from '../../../Api/UserService';
+import { reactive } from 'vue';
+import Swal from "sweetalert2";
 
 export default {
-  setup() {
-    return {};
-  },
   components: {
     Breadcrumbs,
   },
+  setup(){
+    // State reaktif untuk menyimpan id dan token
+    const state = reactive({
+      id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
+      // Menetapkan token secara langsung
+    });
+
+    // Method untuk menyimpan pekerjaan
+    const saveJob = async (jobId) => {
+  try { // Log token untuk memastikan
+    
+    
+    const data = {
+      userId: state.id,
+      jobId: jobId
+    };
+    console.log('Data yang dikirim:', data);
+    await saveJobs(data);
+    Swal.fire({
+            toast: true,
+            position: "top-end", // Posisi di pojok kanan atas
+            icon: "success",
+            title: "Success add job to favorite!",
+            showConfirmButton: false,
+            timer: 1500, // Menampilkan toast selama 1.5 detik
+            timerProgressBar: true
+          });
+  } catch (error) {
+    console.error('Gagal menyimpan pekerjaan:', error);
+  }
+};
+
+
+    return {
+      ...state,
+      saveJob // Mengembalikan method untuk digunakan di template
+    };
+  },
+  data() {
+    return {
+      buttonSaveJob: true,
+      jobs: [], 
+    };
+  },
+  mounted(){
+    window.scrollTo({
+      top: 0,  // Mengatur scroll ke posisi atas
+      behavior: 'smooth',  // Menambahkan efek smooth scroll
+    });
+  },
+  created() {
+    
+    console.log('Job ID:', this.$route.params.id);  // Menampilkan ID dari URL di console
+    this.fetchJobDetail();  // Memanggil fetchJobDetail saat komponen dibuat
+  },
+  methods: {
+    async fetchJobDetail() {
+      try {
+        const jobId = this.$route.params.id;  // Mengambil jobId dari URL
+        const data = await getJobsById(jobId);  // Mengambil data pekerjaan berdasarkan jobId
+        this.jobs = data.data; // Menyimpan data ke dalam state jobs
+        console.log(this.jobs)
+      } catch (error) {
+        console.error("Error fetching data:", error); // Menangani error jika gagal mengambil data
+      }
+    },
+  },
 };
 </script>
+
+
 
 <style lang="scss" scoped></style>
