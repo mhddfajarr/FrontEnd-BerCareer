@@ -188,6 +188,7 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("authToken");
+          localStorage.setItem('logoutNotif', 'true');
           this.cekLogin = false; 
           this.$router.push("/");
         }

@@ -109,7 +109,13 @@
       </div>
 
       <div class="absolute top-0 right-0 p-3" @click="saveJob(job.jobId)">
-        <i :class="isSavedJob(job.jobId) ? 'fas fa-bookmark text-primary' : 'far fa-bookmark text-gray-400'"></i>
+        <i
+          :class="
+            isSavedJob(job.jobId)
+              ? 'fas fa-bookmark text-primary'
+              : 'far fa-bookmark text-gray-400'
+          "
+        ></i>
       </div>
     </router-link>
   </div>
@@ -136,16 +142,17 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from "vue";
 import { getAllData, getSaveJob } from "../../../Api/UserService";
+import Swal from "sweetalert2";
 
 export default {
   name: "Home",
   setup() {
     // State declarations using ref and reactive
-    const id = ref('01JCGB585KS3T00C2QR2Z5PCSF');
-    const token = localStorage.getItem('authToken');
-    const searchQuery = ref('');
+    const id = ref("01JCGB585KS3T00C2QR2Z5PCSF");
+    const token = localStorage.getItem("authToken");
+    const searchQuery = ref("");
     const jobs = ref([]);
     const visibleJobs = ref([]);
     const itemsToShow = ref(6);
@@ -154,7 +161,7 @@ export default {
     // Computed properties
     const isSavedJob = computed(() => {
       return (jobId) => {
-        return savedJobs.value.some(savedJob => savedJob.jobId === jobId);
+        return savedJobs.value.some((savedJob) => savedJob.jobId === jobId);
       };
     });
 
@@ -164,8 +171,10 @@ export default {
       }
       return jobs.value.filter(
         (job) =>
-          job.title.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
-          job.description.toLowerCase().includes(searchQuery.value.toLowerCase())
+          job.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          job.description
+            .toLowerCase()
+            .includes(searchQuery.value.toLowerCase())
       );
     });
 
@@ -179,6 +188,7 @@ export default {
 
     // Mounted lifecycle hook
     onMounted(async () => {
+
       try {
         const data = await getAllData();
         jobs.value = data.data;
@@ -187,15 +197,14 @@ export default {
         console.error("Error fetching data:", error);
       }
 
-      if(token){
+      if (token) {
         try {
-        const data = await getSaveJob(id.value);
-        savedJobs.value = data.data; // Store saved jobs data
-      } catch (error) {
-        console.error("Error fetching saved jobs:", error);
+          const data = await getSaveJob(id.value);
+          savedJobs.value = data.data; // Store saved jobs data
+        } catch (error) {
+          console.error("Error fetching saved jobs:", error);
+        }
       }
-      }
-     
     });
 
     // Methods
@@ -217,7 +226,7 @@ export default {
     };
 
     const scrollToSection = () => {
-      const section = document.querySelector('#sectionCard');
+      const section = document.querySelector("#sectionCard");
       if (section) {
         section.scrollIntoView({
           behavior: "smooth",
@@ -241,10 +250,8 @@ export default {
       showMoreButton,
       loadMore,
       saveJob,
-      scrollToSection
+      scrollToSection,
     };
-  }
+  },
 };
 </script>
-
-
