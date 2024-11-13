@@ -103,13 +103,14 @@ import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Serv
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
   components: {
     Breadcrumbs,
   },
   setup() {
-    const id = '01JCGB585KS3T00C2QR2Z5PCSF'; 
+    const id = ref(''); 
     const jobs = ref([]); 
     const savedJob = ref([]); 
     const token = localStorage.getItem('authToken');
@@ -125,7 +126,7 @@ export default {
       
       try {
         const data = {
-          userId: id,
+          userId: id.value,
           jobId: jobId
         };
         console.log('Data yang dikirim:', data);
@@ -149,7 +150,7 @@ export default {
       if (!token) return; // Jika tidak ada token, jangan lanjutkan
 
       try {
-        const data = await getSaveJob(id); 
+        const data = await getSaveJob(id.value); 
         savedJob.value = data.data; 
 
         const jobExists = savedJob.value.some(job => job.jobId === getJobId.value);
@@ -194,15 +195,30 @@ export default {
       }
     };
 
-    onMounted(() => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth', 
-      });
+    const getUserId =async()=>{
+      try {
+          const dataUser = await decodeToken(); 
+          id.value = dataUser.uid; 
+          console.log(id.value)
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+    };
 
-      fetchJobDetail(); 
-      fetchSavedJobs(); 
-    });
+    onMounted(async () => {
+      if (token) {
+        await getUserId();  // Pastikan id sudah terisi
+        fetchSavedJobs();   // Baru setelah id terisi, panggil fetchSavedJobs
+      }
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+
+  fetchJobDetail();
+});
+
 
     return {
       jobs,

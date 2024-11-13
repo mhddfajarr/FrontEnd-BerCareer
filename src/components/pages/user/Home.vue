@@ -145,12 +145,12 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
 import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
   name: "Home",
   setup() {
-    // State declarations using ref and reactive
-    const id = ref("01JCGB585KS3T00C2QR2Z5PCSF");
+    const id = ref("");
     const token = localStorage.getItem("authToken");
     const searchQuery = ref("");
     const jobs = ref([]);
@@ -167,7 +167,7 @@ export default {
 
     const filteredJobs = computed(() => {
       if (!searchQuery.value) {
-        return jobs.value; // Return all items if there is no search query
+        return jobs.value; 
       }
       return jobs.value.filter(
         (job) =>
@@ -188,18 +188,26 @@ export default {
 
     // Mounted lifecycle hook
     onMounted(async () => {
-
+      
       try {
         const data = await getAllData();
         jobs.value = data.data;
-        visibleJobs.value = jobs.value.slice(0, itemsToShow.value); // Show only the first 6 jobs
+        visibleJobs.value = jobs.value.slice(0, itemsToShow.value); 
       } catch (error) {
         console.error("Error fetching data:", error);
       }
 
       if (token) {
         try {
+          const dataUser = await decodeToken(); 
+          id.value = dataUser.uid; 
+          console.log(id.value)
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+        try {
           const data = await getSaveJob(id.value);
+          console.log(id.value)
           savedJobs.value = data.data; // Store saved jobs data
         } catch (error) {
           console.error("Error fetching saved jobs:", error);
