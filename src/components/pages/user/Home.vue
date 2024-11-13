@@ -143,7 +143,8 @@ export default {
   data() {
     return {
       id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDI1NjgwLCJleHAiOjE3MzE0MjkyODAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.dqv6RpjFr85c3S1Gc6PcWnwdQqm1y4EXwFUgoZ_yaqI', // Menetapkan token secara langsung
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDYyNTk0LCJleHAiOjE3MzE0NjYxOTQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.0co_fBAkHwRoZBFbDTJbSVGHNBmeCRACSvz_w-B0e4o"
+, // Menetapkan token secara langsung
       searchQuery: "",
       jobs: [], // State untuk menyimpan data jobs
       visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat

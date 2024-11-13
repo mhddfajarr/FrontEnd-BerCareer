@@ -41,10 +41,6 @@
           Rekruter aktif 1 jam lalu
         </span>
       </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
-      </div>
     </routerLink>
 
     <routerLink
@@ -76,10 +72,6 @@
         <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
           Rekruter aktif 1 jam lalu
         </span>
-      </div>
-
-      <div class="absolute top-0 right-0 p-3">
-        <i class="far fa-bookmark text-gray-400"></i>
       </div>
     </routerLink>
 

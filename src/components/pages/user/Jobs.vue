@@ -41,7 +41,7 @@
           </div>
         </div>
 
-        <div class="flex items-center mb-4">
+        <div class="flex items-center mb-7 mt-7">
           <button
             class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-lg mr-2"
           >
@@ -53,24 +53,22 @@
             >
             Save Job
           </button>
+          <button
+            class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+          @click="saveJob(jobs.jobId)"
+            >
+            Remove from favorite
+          </button>
         </div>
 
         <hr class="my-4" />
 
         <!-- Card Deskripsi Pekerjaan -->
         <div class="text-gray-700">
-          <h2 class="text-xl font-bold mb-4">Requirements</h2>
+          <h2 class="text-xl font-bold mb-4">Description</h2>
           <p class="mb-4">
-            Melakukan &amp; memastikan proses pengiriman barang meliputi:
+            {{ jobs.description }}
           </p>
-          <ul class="list-disc list-inside">
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-            <li class="mb-2">Merencanakan rute pengiriman</li>
-            <li class="mb-2">Mengkoordinasikan pengiriman dengan Driver</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -135,11 +133,7 @@ export default {
             title: "Success add job to favorite!",
             showConfirmButton: false,
             timer: 1500, // Menampilkan toast selama 1.5 detik
-            timerProgressBar: true,
-            didClose: () => {
-              // Setelah toast selesai, arahkan ke halaman Home
-              router.push({ name: "Home" });
-            },
+            timerProgressBar: true
           });
   } catch (error) {
     console.error('Gagal menyimpan pekerjaan:', error);
@@ -154,6 +148,7 @@ export default {
   },
   data() {
     return {
+      buttonSaveJob: true,
       jobs: [], 
     };
   },
