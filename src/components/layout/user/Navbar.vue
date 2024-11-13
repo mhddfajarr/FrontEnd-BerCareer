@@ -14,7 +14,7 @@
       <!-- Navbar Links -->
       <ul class="flex space-x-1 items-center px-7">
         <!-- Login Button -->
-        
+
         <li class="relative group hidden md:block">
           <router-link
             to="/"
@@ -165,44 +165,52 @@
 </template>
 
 <script>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
+import { useAuth0 } from "@auth0/auth0-vue";
 
 export default {
-  data() {
-    return {
-      cekLogin: localStorage.getItem('authToken') ? true : false,
-      isDropdownVisible: false,
-      username: "Username", 
-    };
-  },
-  methods: {
-    logout() {
+  setup() {
+    const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
+    const isDropdownVisible = ref(false);
+    const username = ref("Username");
+    const router = useRouter();
+    const auth0 = useAuth0();
+
+    const logout = () => {
       Swal.fire({
-        title: 'Are you sure you want to logout?',
+        title: "Are you sure you want to logout?",
         text: "You will be logged out of the application.",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, logout!',
-        cancelButtonText: 'No, stay logged in',
-        reverseButtons: true
+        confirmButtonText: "Yes, logout!",
+        cancelButtonText: "No, stay logged in",
+        reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
+          auth0.logout({
+            logoutParams: {
+              returnTo: window.location.origin,
+            },
+          });
           localStorage.removeItem("authToken");
-          localStorage.setItem('logoutNotif', 'true');
-          this.cekLogin = false; 
-          this.$router.push("/");
+          localStorage.setItem("logoutNotif", "true");
+          cekLogin.value = false;
+          router.push("/");
         }
       });
-    },
+    };
 
-    toggleDropdown() {
-      // Toggle the dropdown visibility on click
-      this.isDropdownVisible = !this.isDropdownVisible;
-    },
-    closeDropdown() {
-      this.isDropdownVisible = false;
-    },
-    handleOutsideClick(event) {
+    const toggleDropdown = () => {
+      isDropdownVisible.value = !isDropdownVisible.value;
+    };
+
+    const closeDropdown = () => {
+      isDropdownVisible.value = false;
+    };
+
+    const handleOutsideClick = (event) => {
       const dropdown = this.$refs.dropdownMenu;
       const button = this.$refs.dropdownButton;
 
@@ -214,30 +222,20 @@ export default {
       ) {
         this.isDropdownVisible = false;
       }
-    },
-  },
-  watch: {
-    cekLogin(newValue) {
-      if (newValue) {
-        localStorage.setItem("authToken", localStorage.getItem('authToken')); 
-      } else {
-        localStorage.removeItem("authToken");
-      }
-    }
-  },
-  mounted() {
-    document.addEventListener("click", this.handleOutsideClick);
+    };
 
-    window.addEventListener('storage', () => {
-      this.cekLogin = localStorage.getItem('authToken') ? true : false;
-    });
-  },
-  beforeDestroy() {
-    document.removeEventListener("click", this.handleOutsideClick);
+    return {
+      cekLogin,
+      isDropdownVisible,
+      username,
+      logout,
+      toggleDropdown,
+      closeDropdown,
+      handleOutsideClick,
+    };
   },
 };
 </script>
-
 
 <style scoped>
 .slide-down {
