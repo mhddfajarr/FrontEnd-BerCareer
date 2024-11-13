@@ -110,4 +110,48 @@ export const getDataUser = async (userId) => {
   }
 };
 
+const API_APPLY_JOB = 'https://localhost:7147/api/Applications'
+
+export const applyJob = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); 
+
+  try {
+    const response = await axios.post(API_APPLY_JOB,data,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // Return response dari API
+  } catch (error) {
+    console.error('Error saving job:', error.response || error);
+    throw error;
+  }
+};
+
+export const getApplyUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+
+  try {
+    const response = await axios.get(API_APPLY_JOB, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      params: {
+        userId: userId, 
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.log('Error fetching applications:', e);
+    throw e; // Throw the caught error
+  }
+}
+
+
+
+
 

@@ -44,20 +44,15 @@
         <div class="flex items-center mb-7 mt-7">
           <button
             class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-lg mr-2"
+            @click="postApplyJob(jobs.jobId)"
           >
-            Apply
+            {{ isApplied ? "Applied" : "Apply" }}
           </button>
-          <button v-if="!isSaved"
-            class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
-          @click="saveJob(jobs.jobId)"
-            >
-            Save Job
-          </button>
-          <button v-if="isSaved"
-            class="bg-gray-300 hover:bg-gray-400 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
-          @click="deleteSaveJob(jobs.jobId)"
-            >
-            Remove from favorite
+          <button
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+            @click="isSaved ? deleteSaveJob(jobs.jobId) : saveJob(jobs.jobId)"
+          >
+            {{ isSaved ? 'Remove from favorite' : 'Save Job' }}
           </button>
         </div>
 
@@ -99,7 +94,14 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
-import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Services/Api/UserService";
+import {
+  deleteSaveJobs,
+  getJobsById,
+  saveJobs,
+  getSaveJob,
+  applyJob,
+  getApplyUser 
+} from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -110,26 +112,58 @@ export default {
     Breadcrumbs,
   },
   setup() {
-    const id = ref(''); 
-    const jobs = ref([]); 
-    const savedJob = ref([]); 
-    const token = localStorage.getItem('authToken');
-    const isSaved = ref(false); 
-    const route = useRoute(); 
+    const id = ref("");
+    const jobs = ref([]);
+    const savedJob = ref([]);
+    const applyJobArray = ref([])
+    const token = localStorage.getItem("authToken");
+    const isSaved = ref(false);
+    const route = useRoute();
     const getJobId = ref(route.params.id);
+    const isApplied = ref(false);
 
-    const saveJob = async (jobId) => {
+    const postApplyJob = async (jobId) => {
       if (!token) {
-        Swal.fire('Error', 'Please login first.', 'error');
+        Swal.fire("Error", "Please login first.", "error");
         return;
       }
-      
+      if (isApplied.value) {
+        Swal.fire("You have already applied for this job.", "", "info");
+        return;
+      }
       try {
         const data = {
           userId: id.value,
-          jobId: jobId
+          jobId: jobId,
         };
-        console.log('Data yang dikirim:', data);
+        await applyJob(data);
+        isApplied.value = true;
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Success apply!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
+      } catch (exception) {
+        console.log(exception);
+        Swal.fire("Error", "An error occurred while applying.", "error");
+      }
+    };
+
+    const saveJob = async (jobId) => {
+      if (!token) {
+        Swal.fire("Error", "Please login first.", "error");
+        return;
+      }
+      try {
+        const data = {
+          userId: id.value,
+          jobId: jobId,
+        };
         await saveJobs(data);
         isSaved.value = true;
         Swal.fire({
@@ -138,37 +172,53 @@ export default {
           icon: "success",
           title: "Success add job to favorite!",
           showConfirmButton: false,
-          timer: 1500, 
-          timerProgressBar: true
+          timer: 1500,
+          timerProgressBar: true,
         });
       } catch (error) {
-        console.error('Gagal menyimpan pekerjaan:', error);
+        console.error("Gagal menyimpan pekerjaan:", error);
       }
     };
 
     const fetchSavedJobs = async () => {
-      if (!token) return; // Jika tidak ada token, jangan lanjutkan
+      if (!token) return; 
 
       try {
-        const data = await getSaveJob(id.value); 
-        savedJob.value = data.data; 
+        const data = await getSaveJob(id.value);
+        savedJob.value = data.data;
 
-        const jobExists = savedJob.value.some(job => job.jobId === getJobId.value);
+        const jobExists = savedJob.value.some(
+          (job) => job.jobId === getJobId.value
+        );
         isSaved.value = jobExists;
       } catch (error) {
-        console.error("Error fetching saved jobs:", error); 
+        console.error("Error fetching saved jobs:", error);
+      }
+    };
+
+
+    const fetchApplyUser = async () => {
+      if (!token) return; 
+      try {
+        const data = await getApplyUser(id.value);
+        applyJobArray.value = data.data;
+        const jobExists = applyJobArray.value.some(
+          (job) => job.jobId === getJobId.value
+        );
+        isApplied.value = jobExists;
+      } catch (error) {
+        console.error("Error fetching saved jobs:", error);
       }
     };
 
     const deleteSaveJob = async (jobId) => {
-      if (!token) return; // Jika tidak ada token, jangan lanjutkan
-
+      if (!token) return;
       try {
         const data = {
           userId: id.value,
-          jobId: jobId
+          jobId: jobId,
         };
-        console.log('Data yang dikirim:', data);
+        console.log("Data yang dikirim:", data);
         await deleteSaveJobs(data);
         isSaved.value = false;
         Swal.fire({
@@ -178,47 +228,46 @@ export default {
           title: "Deleted save job!",
           showConfirmButton: false,
           timer: 1500,
-          timerProgressBar: true
+          timerProgressBar: true,
         });
       } catch (error) {
-        console.error('Gagal menghapus pekerjaan:', error);
+        console.error("Gagal menghapus pekerjaan:", error);
       }
     };
 
     const fetchJobDetail = async () => {
       try {
-        const jobId = getJobId.value; 
-        const data = await getJobsById(jobId); 
+        const jobId = getJobId.value;
+        const data = await getJobsById(jobId);
         jobs.value = data.data;
       } catch (error) {
-        console.error("Error fetching data:", error); 
+        console.error("Error fetching data:", error);
       }
     };
 
-    const getUserId =async()=>{
+    const getUserId = async () => {
       try {
-          const dataUser = await decodeToken(); 
-          id.value = dataUser.uid; 
-          console.log(id.value)
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+        console.log(id.value);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
     };
 
     onMounted(async () => {
       if (token) {
-        await getUserId();  // Pastikan id sudah terisi
-        fetchSavedJobs();   // Baru setelah id terisi, panggil fetchSavedJobs
+        await getUserId(); 
+        fetchSavedJobs(); 
+        fetchApplyUser();
+
       }
-
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  });
-
-  fetchJobDetail();
-});
-
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+      fetchJobDetail();
+    });
 
     return {
       jobs,
@@ -228,16 +277,14 @@ export default {
       deleteSaveJob,
       fetchJobDetail,
       fetchSavedJobs,
+      fetchApplyUser,
       getJobId,
-      route
+      postApplyJob,
+      route,
+      isApplied,
     };
-  }
+  },
 };
 </script>
-
-
-
-
-
 
 <style lang="scss" scoped></style>
