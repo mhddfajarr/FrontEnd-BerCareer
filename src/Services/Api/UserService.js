@@ -4,18 +4,18 @@ const API_URL = 'https://localhost:7147/api/Jobs';
 const API_URL_BY_ID = 'https://localhost:7147/api/Jobs/Detail';
 const API_URL_SAVE_JOB = 'https://localhost:7147/api/SavedJobs';
 
-// Fungsi untuk mendapatkan semua data pekerjaan
+
 export const getAllData = async () => {
   try {
     const response = await axios.get(API_URL);
-    return response.data; // Return data dari API
+    return response.data; 
   } catch (error) {
     console.error('Error fetching job data:', error.response || error);
-    throw error; // Lempar error agar bisa ditangani di tempat pemanggilan
+    throw error; 
   }
 };
 
-// Fungsi untuk mendapatkan detail pekerjaan berdasarkan ID
+
 export const getJobsById = async (jobId) => {
   try {
     const response = await axios.get(`${API_URL_BY_ID}?jobId=${jobId}`);
@@ -85,3 +85,29 @@ export const deleteSaveJobs = async (data) => {
     throw error;
   }
 };
+
+const API_GET_DATA_USER = 'https://localhost:7147/api/Profiles'; 
+
+export const getDataUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    console.error("No authentication token found");
+    return; // Hentikan fungsi jika tidak ada token
+  }
+  
+  try {
+    const response = await axios.get(API_GET_DATA_USER, {
+      params: { userId },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user data:', error.response || error);
+    throw error; // Pastikan error dilempar agar bisa ditangani di tempat lain
+  }
+};
+
+

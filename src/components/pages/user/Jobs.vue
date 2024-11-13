@@ -165,7 +165,7 @@ export default {
 
       try {
         const data = {
-          userId: id,
+          userId: id.value,
           jobId: jobId
         };
         console.log('Data yang dikirim:', data);
