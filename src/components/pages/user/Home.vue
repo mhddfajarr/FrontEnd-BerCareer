@@ -143,8 +143,7 @@ export default {
   data() {
     return {
       id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDYyNTk0LCJleHAiOjE3MzE0NjYxOTQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.0co_fBAkHwRoZBFbDTJbSVGHNBmeCRACSvz_w-B0e4o"
-, // Menetapkan token secara langsung
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDY4NzI0LCJleHAiOjE3MzE1NTUxMjQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.D7uHt7VGtwx_UW2AEUGsABOjEmc2Sy6yyFFXljuze08", // Menetapkan token secara langsung
       searchQuery: "",
       jobs: [], // State untuk menyimpan data jobs
       visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat
@@ -191,7 +190,7 @@ export default {
 
     try {
       // Mendapatkan pekerjaan yang sudah disimpan oleh user
-      const data = await getSaveJob(this.id, this.token);
+      const data = await getSaveJob(this.id);
       this.savedJobs = data.data; // Menyimpan data pekerjaan yang disimpan
     } catch (error) {
       console.error("Error fetching saved jobs:", error);
