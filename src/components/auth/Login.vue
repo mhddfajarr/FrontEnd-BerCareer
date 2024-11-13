@@ -201,8 +201,7 @@ export default {
 
           console.log("Login successful:", response);
 
-          // Jika login berhasil, simpan token atau data lain yang diperlukan
-          // sessionStorage.setItem('authToken', response.token); // Menyimpan token (misalnya)
+          localStorage.setItem('authToken', response.data);
 
           // Menampilkan toast
           Swal.fire({
@@ -214,7 +213,6 @@ export default {
             timer: 1500, // Menampilkan toast selama 1.5 detik
             timerProgressBar: true,
             didClose: () => {
-              // Setelah toast selesai, arahkan ke halaman Home
               router.push({ name: "Home" });
             },
           });

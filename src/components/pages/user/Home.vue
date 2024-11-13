@@ -136,96 +136,114 @@
 </template>
 
 <script>
+import { ref, reactive, computed, onMounted } from 'vue';
 import { getAllData, getSaveJob } from "../../../Api/UserService";
 
 export default {
   name: "Home",
-  data() {
-    return {
-      id: '01JCGB585KS3T00C2QR2Z5PCSF', // Menetapkan id secara langsung
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDY4NzI0LCJleHAiOjE3MzE1NTUxMjQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.D7uHt7VGtwx_UW2AEUGsABOjEmc2Sy6yyFFXljuze08", // Menetapkan token secara langsung
-      searchQuery: "",
-      jobs: [], // State untuk menyimpan data jobs
-      visibleJobs: [], // State untuk menampilkan pekerjaan yang terlihat
-      itemsToShow: 6, // Jumlah item yang ditampilkan setiap kali tombol "Show More" diklik
-      savedJobs: [] // State untuk menyimpan pekerjaan yang disimpan
-    };
-  },
-  computed: {
-    // Cek apakah job sudah disimpan
-    isSavedJob() {
-      return (jobId) => {
-        return this.savedJobs.some(savedJob => savedJob.jobId === jobId);
-      };
-    },
-    // Filter jobs berdasarkan search query
-    filteredJobs() {
-      if (!this.searchQuery) {
-        return this.jobs; // Kembalikan semua item jika tidak ada query pencarian
-      }
-      return this.jobs.filter(
-        (job) =>
-          job.title.toLowerCase().includes(this.searchQuery.toLowerCase()) || // Cocokkan title pekerjaan
-          job.description.toLowerCase().includes(this.searchQuery.toLowerCase()) // Cocokkan deskripsi pekerjaan
-      );
-    },
-    // Tampilkan jobs yang sudah difilter sesuai dengan jumlah yang terlihat
-    filteredVisibleJobs() {
-      return this.filteredJobs.slice(0, this.visibleJobs.length); // Menampilkan pekerjaan yang difilter sesuai jumlah yang terlihat
-    },
-    // Menampilkan tombol "Show More" jika masih ada pekerjaan yang bisa ditampilkan
-    showMoreButton() {
-      return this.filteredJobs.length > this.visibleJobs.length;
-    },
-  },
-  async mounted() {
-    try {
-      // Mendapatkan semua data pekerjaan
-      const data = await getAllData();
-      this.jobs = data.data; // Menyimpan data pekerjaan ke dalam state jobs
-      this.visibleJobs = this.jobs.slice(0, this.itemsToShow); // Menampilkan hanya 6 pekerjaan pertama
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  setup() {
+    // State declarations using ref and reactive
+    const id = ref('01JCGB585KS3T00C2QR2Z5PCSF');
+    const token = localStorage.getItem('authToken');
+    const searchQuery = ref('');
+    const jobs = ref([]);
+    const visibleJobs = ref([]);
+    const itemsToShow = ref(6);
+    const savedJobs = ref([]);
 
-    try {
-      // Mendapatkan pekerjaan yang sudah disimpan oleh user
-      const data = await getSaveJob(this.id);
-      this.savedJobs = data.data; // Menyimpan data pekerjaan yang disimpan
-    } catch (error) {
-      console.error("Error fetching saved jobs:", error);
-    }
-  },
-  methods: {
-    // Fungsi untuk memuat lebih banyak pekerjaan
-    loadMore() {
-      const nextItems = this.filteredJobs.slice(
-        this.visibleJobs.length,
-        this.visibleJobs.length + this.itemsToShow
+    // Computed properties
+    const isSavedJob = computed(() => {
+      return (jobId) => {
+        return savedJobs.value.some(savedJob => savedJob.jobId === jobId);
+      };
+    });
+
+    const filteredJobs = computed(() => {
+      if (!searchQuery.value) {
+        return jobs.value; // Return all items if there is no search query
+      }
+      return jobs.value.filter(
+        (job) =>
+          job.title.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
+          job.description.toLowerCase().includes(searchQuery.value.toLowerCase())
       );
-      this.visibleJobs = [...this.visibleJobs, ...nextItems]; // Menambahkan pekerjaan baru ke visibleJobs
-    },
-    // Fungsi untuk menyimpan pekerjaan
-    saveJob(jobId) {
-      // Cek jika pekerjaan sudah ada di daftar yang disimpan, jika belum simpan pekerjaan
-      if (!this.isSavedJob(jobId)) {
-        // Lakukan aksi simpan pekerjaan, misalnya dengan API untuk menyimpan job
+    });
+
+    const filteredVisibleJobs = computed(() => {
+      return filteredJobs.value.slice(0, visibleJobs.value.length);
+    });
+
+    const showMoreButton = computed(() => {
+      return filteredJobs.value.length > visibleJobs.value.length;
+    });
+
+    // Mounted lifecycle hook
+    onMounted(async () => {
+      try {
+        const data = await getAllData();
+        jobs.value = data.data;
+        visibleJobs.value = jobs.value.slice(0, itemsToShow.value); // Show only the first 6 jobs
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+
+      if(token){
+        try {
+        const data = await getSaveJob(id.value);
+        savedJobs.value = data.data; // Store saved jobs data
+      } catch (error) {
+        console.error("Error fetching saved jobs:", error);
+      }
+      }
+     
+    });
+
+    // Methods
+    const loadMore = () => {
+      const nextItems = filteredJobs.value.slice(
+        visibleJobs.value.length,
+        visibleJobs.value.length + itemsToShow.value
+      );
+      visibleJobs.value = [...visibleJobs.value, ...nextItems]; // Add new jobs to visibleJobs
+    };
+
+    const saveJob = (jobId) => {
+      if (!isSavedJob.value(jobId)) {
         console.log(`Pekerjaan ${jobId} disimpan.`);
-        this.savedJobs.push({ jobId }); // Menambahkan job ke daftar yang disimpan (update state savedJobs)
+        savedJobs.value.push({ jobId });
       } else {
         console.log(`Pekerjaan ${jobId} sudah disimpan.`);
       }
-    },
-    scrollToSection() {
-      const section = this.$refs.sectionCard;
+    };
+
+    const scrollToSection = () => {
+      const section = document.querySelector('#sectionCard');
       if (section) {
         section.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
       }
-    },
-  },
+    };
+
+    // Return the state, computed properties, and methods for the template
+    return {
+      id,
+      token,
+      searchQuery,
+      jobs,
+      visibleJobs,
+      itemsToShow,
+      savedJobs,
+      isSavedJob,
+      filteredJobs,
+      filteredVisibleJobs,
+      showMoreButton,
+      loadMore,
+      saveJob,
+      scrollToSection
+    };
+  }
 };
 </script>
 
