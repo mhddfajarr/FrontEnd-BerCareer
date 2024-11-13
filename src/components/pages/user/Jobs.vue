@@ -99,7 +99,7 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
-import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Api/UserService";
+import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";

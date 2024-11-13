@@ -10,7 +10,7 @@
         <div class="flex justify-between gap-4">
         <!-- Menambahkan gap antar card -->
         <div
-            class="card bg-base-100 w-full shadow-xl border-t-4 border-t-primary bg-white"
+            class="card  w-full shadow-xl border-t-4 border-t-primary bg-white"
         >
             <div class="card-body">
             <h2 class="card-title">Total Applicates</h2>
@@ -20,7 +20,7 @@
         </div>
 
         <div
-            class="card bg-base-100 w-full shadow-xl border-t-4 border-t-primary bg-white"
+            class="card  w-full shadow-xl border-t-4 border-t-primary bg-white"
         >
             <div class="card-body">
             <h2 class="card-title">Total Post Job</h2>
