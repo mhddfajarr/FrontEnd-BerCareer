@@ -1,6 +1,8 @@
 // Api/AuthService.js
 import axios from 'axios';
 
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDY4NzI0LCJleHAiOjE3MzE1NTUxMjQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.D7uHt7VGtwx_UW2AEUGsABOjEmc2Sy6yyFFXljuze08"
+
 const API_URL = 'https://localhost:7147/api/Jobs'; 
 
 export const getAllData = async () => {
@@ -25,12 +27,12 @@ export const getJobsById = async (jobId) => {
   }
 };
 
-const API_URL_GET_SAVE_JOB = 'https://localhost:7147/api/SavedJobs';
+const API_URL_SAVE_JOB = 'https://localhost:7147/api/SavedJobs';
 
-export const getSaveJob = async (userId, token) => {
+export const getSaveJob = async (userId) => {
   try {
     // Menambahkan token JWT ke dalam header Authorization
-    const response = await axios.get(`${API_URL_GET_SAVE_JOB}?userId=${userId}`, {
+    const response = await axios.get(`${API_URL_SAVE_JOB}?userId=${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`, // Menyertakan Bearer token
       },
@@ -42,13 +44,10 @@ export const getSaveJob = async (userId, token) => {
   }
 };
 
-const API_URL_GET_SAVE = 'https://localhost:7147/api/SavedJobs';
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwMUpDR0I1ODVLUzNUMDBDMlFSMlo1UENTRiIsInJvbGUiOiJVc2VyIiwiZW1haWwiOiJtaGRkZmFqYXJAZ21haWwuY29tIiwibmJmIjoxNzMxNDYyNTk0LCJleHAiOjE3MzE0NjYxOTQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNDciLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTQ3In0.0co_fBAkHwRoZBFbDTJbSVGHNBmeCRACSvz_w-B0e4o"
- 
 export const saveJobs = async (data) => {
   try {
     // Menambahkan token JWT ke dalam header Authorization
-    const response = await axios.post(`${API_URL_GET_SAVE}`, data, {
+    const response = await axios.post(`${API_URL_SAVE_JOB}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'  
@@ -57,6 +56,27 @@ export const saveJobs = async (data) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching job details:', error);
+    throw error; // Melempar error agar bisa ditangani di tempat pemanggilan
+  }
+};
+
+
+export const deleteSaveJobs = async (data) => {
+  try {
+    // Menambahkan token JWT ke dalam header Authorization
+    const response = await axios.delete(`${API_URL_SAVE_JOB}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: data.userId,
+        jobId: data.jobId
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw error; // Melempar error agar bisa ditangani di tempat pemanggilan
   }
 };

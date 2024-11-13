@@ -55,28 +55,28 @@ const routes = [
         name: 'Home',
         component: Home,
       },{
-        path: '/jobs/:id', 
+        path: 'jobs/:id', 
         name: 'Jobs',
         component: Jobs,
       },
       {
-        path: '/applied', // relative path, tidak perlu diawali dengan '/'
+        path: 'applied',
         name: "Applied",
         component: Applied,
       },
       
       {
-        path: '/profile', 
+        path: 'profile', 
         name: 'Profile',
         component: Profile,
       },
       { 
-        path: '/saveJobs', 
+        path: 'saveJobs', 
         name: "SaveJobs", 
         component: SaveJobs,
       },
       { 
-        path: '/settings', 
+        path: 'settings', 
         name: "Settings", 
         component: Settings,
       },
