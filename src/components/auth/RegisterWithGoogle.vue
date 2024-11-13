@@ -81,7 +81,7 @@ export default {
             confirmButtonText: "OK",
           }).then(() => {
             // Redirect to home page after user clicks OK
-            router.push("/login");
+            router.push("/");
           });
         }
       }
@@ -99,7 +99,7 @@ export default {
           confirmButtonText: "OK",
         }).then(() => {
           // Redirect to home page after user clicks OK
-          router.push("/home");
+          router.push("/login");
         });
       } catch (error) {
         console.error("Error logging in user:", error);
