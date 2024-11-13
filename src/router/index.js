@@ -15,7 +15,6 @@ import SaveJobs from "../components/pages/user/SaveJob.vue";
 import Applied from "../components/pages/user/Applied.vue";
 import Settings from "../components/pages/user/Settings.vue";
 import RegisterWithGoogle from "../components/auth/RegisterWithGoogle.vue";
-import LoginWithGoogle from "../components/auth/LoginWithGoogle.vue";
 
 const routes = [
   {
