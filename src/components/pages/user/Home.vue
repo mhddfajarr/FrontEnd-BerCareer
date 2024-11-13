@@ -7,12 +7,10 @@
     />
     <div class="relative flex flex-col items-center justify-center h-full p-4">
       <h1 class="text-4xl sm:text-5xl font-bold mb-4">Find Your Dream Job</h1>
-      <!-- <h1 class="text-4xl sm:text-5xl font-bold mb-4">{{ authUser.email }}</h1> -->
       <p class="text-lg px-4 sm:text-xl mb-6">
         Discover countless career opportunities and secure your ideal position.
         Let's grow and thrive together at Berca.
       </p>
-      <p>{{ auth0User }}</p>
       <div class="mb-5 px-6 py-3 text-center">
         <!-- Form content -->
         <div
@@ -147,7 +145,6 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
 import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
-import { useAuth0 } from "@auth0/auth0-vue";
 
 export default {
   name: "Home",
@@ -160,7 +157,6 @@ export default {
     const visibleJobs = ref([]);
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
-    let auth0User = ref("");
 
     // console.log(auth0);
     // Computed properties
@@ -194,9 +190,6 @@ export default {
     // Mounted lifecycle hook
     onMounted(async () => {
       try {
-        const auth0 = await useAuth0();
-        auth0User = auth0.user;
-        console.log(auth0User.value.email);
         const data = await getAllData();
         jobs.value = data.data;
         visibleJobs.value = jobs.value.slice(0, itemsToShow.value); // Show only the first 6 jobs
@@ -258,7 +251,6 @@ export default {
       loadMore,
       saveJob,
       scrollToSection,
-      auth0User,
     };
   },
 };
