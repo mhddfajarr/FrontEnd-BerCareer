@@ -21,18 +21,24 @@
                 <div class="card-body">
                     <!-- Card Header with Filter Dropdown -->
                     <div class="flex justify-between">
-                    <details class="dropdown">
+                    <details class="dropdown bg-white border-none">
                         <summary
                         class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none"
                         >
                         <i class="fas fa-solid fa-filter"></i>
                         </summary>
                         <ul
-                        class="menu dropdown-content rounded-box z-[1] w-52 p-2 shadow bg-white"
+                        class="menu dropdown-content bg-white rounded-box z-[1] w-52 p-2 shadow border-none"
                         >
-                        <li><a>Fullstack Developer</a></li>
-                        <li><a>IT Support</a></li>
-                        <li><a>APP Support</a></li>
+                        <!-- Iterasi dataJobs untuk menampilkan job title -->
+                        <li
+                            v-for="(job, index) in dataJobs"
+                            :key="job.jobId"
+                            @click="filterJobsByTitle(job.title)"
+                        >
+                            <a>{{ job.title }}</a>
+                            <!-- Tampilkan job.title -->
+                        </li>
                         </ul>
                     </details>
                     <h2 class="card-title">Fullstack Developer</h2>
@@ -107,34 +113,23 @@
                                 </td>
                                 <td>Fullstack Developer</td>
                                 <td>
-                                    <span
-                                    class=" text-black border-none"
-                                    >
+                                    <span class="text-black border-none">
                                     Desktop Support Technician
                                     </span>
                                 </td>
                                 <td>Universitas Negeri London</td>
                                 <td>
-                                    <span
-                                    class=" text-black border-none"
-                                    >C#</span
-                                    >
-                                    <span
-                                    class=" text-black border-none"
-                                    >PHP</span
-                                    >
-                                    <span
-                                    class=" text-black border-none"
+                                    <span class="text-black border-none">C#</span>
+                                    <span class="text-black border-none">PHP</span>
+                                    <span class="text-black border-none"
                                     >Javascript</span
                                     >
-                                    <span
-                                    class=" text-black border-none"
+                                    <span class="text-black border-none"
                                     >Makan Banyak</span
                                     >
                                 </td>
                                 <td>
-                                    <span
-                                    class=" text-black border-none"
+                                    <span class="text-black border-none"
                                     >TOEFL</span
                                     >
                                 </td>
@@ -194,9 +189,63 @@
     </template>
 
     <script>
+    import { getAllData } from "../../../Services/Api/AdminService";
+
     export default {
-    setup() {
-        return {};
+    data() {
+        return {
+        showModal: false,
+        selectedTitle: "", // Untuk menyimpan judul yang dipilih
+        searchQuery: "", // Untuk menyimpan query pencarian
+        dataJobs: [], // Data pekerjaan yang diambil dari API
+        filteredJobs: [], // Data pekerjaan yang telah difilter
+        };
+    },
+    methods: {
+        // Mengambil data pekerjaan dari API
+        async fetchJobDetail() {
+        try {
+            const response = await getAllData();
+            this.dataJobs = response.data;
+            this.filteredJobs = response.data; // Initial display with all jobs
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        },
+
+        // Fungsi untuk memfilter pekerjaan berdasarkan judul yang dipilih
+        filterJobsByTitle(title) {
+        this.selectedTitle = title; // Simpan judul yang dipilih
+        this.searchQuery = ""; // Reset pencarian saat filter berdasarkan judul
+        this.filteredJobs = this.dataJobs.filter((job) => job.title === title); // Filter dataJobs berdasarkan title
+        },
+
+        // Fungsi untuk memfilter pekerjaan berdasarkan query pencarian
+        filterBySearch() {
+        // Filter pekerjaan berdasarkan pencarian judul dan deskripsi
+        const query = this.searchQuery.toLowerCase();
+        this.filteredJobs = this.dataJobs.filter(
+            (job) =>
+            job.title.toLowerCase().includes(query) ||
+            job.description.toLowerCase().includes(query) ||
+            job.location.toLowerCase().includes(query)
+        );
+        },
+
+        // Fungsi untuk mengedit pekerjaan
+        editJob(job) {
+        // Lakukan proses edit
+        console.log("Edit Job:", job);
+        },
+
+        // Fungsi untuk menghapus pekerjaan
+        deleteJob(jobId) {
+        // Lakukan proses delete
+        console.log("Delete Job:", jobId);
+        },
+    },
+    created() {
+        this.fetchJobDetail(); // Ambil data pekerjaan ketika komponen dibuat
     },
     };
     </script>

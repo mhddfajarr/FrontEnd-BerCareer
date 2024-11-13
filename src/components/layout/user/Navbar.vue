@@ -14,14 +14,7 @@
       <!-- Navbar Links -->
       <ul class="flex space-x-1 items-center px-7">
         <!-- Login Button -->
-        <li>
-          <router-link
-            to="login"
-            class="bg-primary px-4 py-2 text-gray-100 hover:bg-primaryHover rounded-md"
-          >
-            Login
-          </router-link>
-        </li>
+        
         <li class="relative group hidden md:block">
           <router-link
             to="/"
@@ -39,7 +32,15 @@
             ></div>
           </router-link>
         </li>
-        <li class="relative group hidden md:block">
+        <li v-if="!cekLogin">
+          <router-link
+            to="login"
+            class="bg-primary px-4 py-2 text-gray-100 hover:bg-primaryHover rounded-md"
+          >
+            Login
+          </router-link>
+        </li>
+        <li v-if="cekLogin" class="relative group hidden md:block">
           <router-link
             to="/saveJobs"
             class="px-4 py-2 text-gray-700 relative"
@@ -55,25 +56,25 @@
             ></div>
           </router-link>
         </li>
-        <li class="relative group hidden md:block">
-        <router-link
-        to="/applied" 
-          class="px-4 py-2 text-gray-700 relative"
-          :class="{ 'text-primary': $route.path === '/applied' }"
-        >
-          Applied
-          <div
-            class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
-            :class="{
-              'scale-x-75': $route.path === '/applied',
-              'scale-x-0': $route.path !== '/applied',
-            }"
-          ></div>
-        </router-link>
-      </li>
+        <li v-if="cekLogin" class="relative group hidden md:block">
+          <router-link
+            to="/applied"
+            class="px-4 py-2 text-gray-700 relative"
+            :class="{ 'text-primary': $route.path === '/applied' }"
+          >
+            Applied
+            <div
+              class="absolute left-0 right-0 bottom-0 h-1 bg-primary transition-transform duration-300"
+              :class="{
+                'scale-x-75': $route.path === '/applied',
+                'scale-x-0': $route.path !== '/applied',
+              }"
+            ></div>
+          </router-link>
+        </li>
 
         <!-- Profile Dropdown -->
-        <li class="relative">
+        <li class="relative" v-if="cekLogin">
           <button
             @click="toggleDropdown"
             class="flex items-center text-black focus:outline-none"
@@ -117,7 +118,7 @@
               <li>
                 <router-link
                   to="Profile"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-t-md"
                   @click="closeDropdown"
                   >Profile</router-link
                 >
@@ -148,12 +149,12 @@
               </li>
               <hr class="border border-gray-200" />
               <li>
-                <router-link
-                  to="login"
-                  class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
-                  @click="closeDropdown"
-                  >Logout</router-link
+                <button
+                  class="block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-b-md"
+                  @click="logout"
                 >
+                  Logout
+                </button>
               </li>
             </ul>
           </div>
@@ -164,27 +165,47 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   data() {
     return {
+      cekLogin: localStorage.getItem('authToken') ? true : false,
       isDropdownVisible: false,
-      username: "Username", // Dynamic username if needed
+      username: "Username", 
     };
   },
   methods: {
+    logout() {
+      Swal.fire({
+        title: 'Are you sure you want to logout?',
+        text: "You will be logged out of the application.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, logout!',
+        cancelButtonText: 'No, stay logged in',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          localStorage.removeItem("authToken");
+          localStorage.setItem('logoutNotif', 'true');
+          this.cekLogin = false; 
+          this.$router.push("/");
+        }
+      });
+    },
+
     toggleDropdown() {
       // Toggle the dropdown visibility on click
       this.isDropdownVisible = !this.isDropdownVisible;
     },
     closeDropdown() {
-      // Close dropdown when a sub-menu item is clicked
       this.isDropdownVisible = false;
     },
     handleOutsideClick(event) {
       const dropdown = this.$refs.dropdownMenu;
       const button = this.$refs.dropdownButton;
 
-      // Close dropdown if the click is outside the button or dropdown
       if (
         dropdown &&
         !dropdown.contains(event.target) &&
@@ -195,16 +216,28 @@ export default {
       }
     },
   },
+  watch: {
+    cekLogin(newValue) {
+      if (newValue) {
+        localStorage.setItem("authToken", localStorage.getItem('authToken')); 
+      } else {
+        localStorage.removeItem("authToken");
+      }
+    }
+  },
   mounted() {
-    // Add event listener for clicks outside the dropdown
     document.addEventListener("click", this.handleOutsideClick);
+
+    window.addEventListener('storage', () => {
+      this.cekLogin = localStorage.getItem('authToken') ? true : false;
+    });
   },
   beforeDestroy() {
-    // Remove event listener when the component is destroyed
     document.removeEventListener("click", this.handleOutsideClick);
   },
 };
 </script>
+
 
 <style scoped>
 .slide-down {

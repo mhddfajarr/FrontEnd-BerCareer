@@ -57,28 +57,60 @@ const routes = [
       },{
         path: 'jobs/:id', 
         name: 'Jobs',
-        component: Jobs,
+        component: Jobs
       },
       {
         path: 'applied',
         name: "Applied",
         component: Applied,
+        beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            next();
+          } else {
+            next({ name: 'Home' });
+          }
+        },
       },
       
       {
         path: 'profile', 
         name: 'Profile',
         component: Profile,
+        beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            next();
+          } else {
+            next({ name: 'Home' });
+          }
+        },
       },
       { 
         path: 'saveJobs', 
         name: "SaveJobs", 
         component: SaveJobs,
+        beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            next();
+          } else {
+            next({ name: 'Home' });
+          }
+        },
       },
       { 
         path: 'settings', 
         name: "Settings", 
         component: Settings,
+        beforeEnter: (to, from, next) => {
+          const token = localStorage.getItem('authToken');
+          if (token) {
+            next();
+          } else {
+            next({ name: 'Home' });
+          }
+        },
       },
       
       
@@ -87,17 +119,28 @@ const routes = [
   { 
     path: '/login', 
     name: "login", 
-    component: Login 
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        next();
+      } else {
+        next({ name: 'Home' });
+      }
+    },
   },
   { 
     path: '/register', 
     name: "register", 
-    component: Register 
-  },
-  { 
-    path: '/', 
-    name: "home", 
-    component: Home,
+    component: Register,
+    beforeEnter: (to, from, next) => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        next();
+      } else {
+        next({ name: 'Home' });
+      }
+    },
   },
  
 ];

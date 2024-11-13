@@ -99,116 +99,126 @@
 
 <script>
 import Breadcrumbs from "../../User/Breadcrumbs.vue";
-import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Api/UserService";
+import { deleteSaveJobs, getJobsById, saveJobs, getSaveJob } from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   components: {
     Breadcrumbs,
   },
-  data() {
-    return {
-      id: '01JCGB585KS3T00C2QR2Z5PCSF', 
-      jobs: [], 
-      savedJob: [], // To store the fetched saved jobs
-      isSaved: false,
-      getJobId: this.$route.params.id,  // Job ID from the URL
-    };
-  },
-  methods: {
-    // Method untuk menyimpan pekerjaan
-    async saveJob(jobId) {
+  setup() {
+    const id = '01JCGB585KS3T00C2QR2Z5PCSF'; 
+    const jobs = ref([]); 
+    const savedJob = ref([]); 
+    const token = localStorage.getItem('authToken');
+    const isSaved = ref(false); 
+    const route = useRoute(); 
+    const getJobId = ref(route.params.id);
+
+    const saveJob = async (jobId) => {
+      if (!token) {
+        Swal.fire('Error', 'Please login first.', 'error');
+        return;
+      }
+      
       try {
         const data = {
-          userId: this.id,
+          userId: id,
           jobId: jobId
         };
         console.log('Data yang dikirim:', data);
         await saveJobs(data);
-        this.isSaved = true;
+        isSaved.value = true;
         Swal.fire({
           toast: true,
-          position: "top-end", // Posisi di pojok kanan atas
+          position: "top-end",
           icon: "success",
           title: "Success add job to favorite!",
           showConfirmButton: false,
-          timer: 1500, // Menampilkan toast selama 1.5 detik
+          timer: 1500, 
           timerProgressBar: true
         });
       } catch (error) {
         console.error('Gagal menyimpan pekerjaan:', error);
       }
-    },
+    };
 
-    // Method to fetch saved jobs for the user
-    async fetchSavedJobs() {
+    const fetchSavedJobs = async () => {
+      if (!token) return; // Jika tidak ada token, jangan lanjutkan
+
       try {
-        const data = await getSaveJob(this.id);  // Get saved jobs for the user
-        this.savedJob = data.data;  // Store the fetched data
+        const data = await getSaveJob(id); 
+        savedJob.value = data.data; 
 
-        // Check if the current jobId exists in the saved jobs
-        const jobExists = this.savedJob.some(job => job.jobId === this.getJobId);
-
-        // If jobId exists in saved jobs, set isSaved to true
-        if (jobExists) {
-          this.isSaved = true;
-        }
-
-        console.log(this.savedJob);  // Log the saved jobs data
+        const jobExists = savedJob.value.some(job => job.jobId === getJobId.value);
+        isSaved.value = jobExists;
       } catch (error) {
-        console.error("Error fetching saved jobs:", error);  // Handle errors
+        console.error("Error fetching saved jobs:", error); 
       }
-    },
+    };
 
-    // Method untuk menghapus pekerjaan yang disimpan
-    async deleteSaveJob(jobId) {
+    const deleteSaveJob = async (jobId) => {
+      if (!token) return; // Jika tidak ada token, jangan lanjutkan
+
       try {
         const data = {
-          userId: this.id,
+          userId: id,
           jobId: jobId
         };
         console.log('Data yang dikirim:', data);
         await deleteSaveJobs(data);
-        this.isSaved = false;
+        isSaved.value = false;
         Swal.fire({
           toast: true,
-          position: "top-end", // Posisi di pojok kanan atas
+          position: "top-end",
           icon: "success",
-          title: "Success delete job!",
+          title: "Deleted save job!",
           showConfirmButton: false,
-          timer: 1500, // Menampilkan toast selama 1.5 detik
+          timer: 1500,
           timerProgressBar: true
         });
       } catch (error) {
-        console.error('Gagal menyimpan pekerjaan:', error);
+        console.error('Gagal menghapus pekerjaan:', error);
       }
-    },
+    };
 
-    // Method untuk mengambil detail pekerjaan
-    async fetchJobDetail() {
+    const fetchJobDetail = async () => {
       try {
-        const jobId = this.getJobId;  // Mengambil jobId dari URL
-        const data = await getJobsById(jobId);  // Mengambil data pekerjaan berdasarkan jobId
-        this.jobs = data.data; // Menyimpan data ke dalam state jobs
-        console.log(this.jobs);
+        const jobId = getJobId.value; 
+        const data = await getJobsById(jobId); 
+        jobs.value = data.data;
       } catch (error) {
-        console.error("Error fetching data:", error); // Menangani error jika gagal mengambil data
+        console.error("Error fetching data:", error); 
       }
-    },
-  },
-  mounted() {
-    window.scrollTo({
-      top: 0,  // Mengatur scroll ke posisi atas
-      behavior: 'smooth',  // Menambahkan efek smooth scroll
+    };
+
+    onMounted(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth', 
+      });
+
+      fetchJobDetail(); 
+      fetchSavedJobs(); 
     });
-  },
-  created() {
-    console.log('Job ID:', this.$route.params.id);  // Menampilkan ID dari URL di console
-    this.fetchJobDetail();  // Memanggil fetchJobDetail saat komponen dibuat
-    this.fetchSavedJobs();  // Memanggil fetchSavedJobs untuk memeriksa pekerjaan yang disimpan
-  },
+
+    return {
+      jobs,
+      savedJob,
+      isSaved,
+      saveJob,
+      deleteSaveJob,
+      fetchJobDetail,
+      fetchSavedJobs,
+      getJobId,
+      route
+    };
+  }
 };
 </script>
+
 
 
 
