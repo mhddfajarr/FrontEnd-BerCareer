@@ -143,8 +143,8 @@
 
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
-import { getAllData, getSaveJob } from "../../../Api/UserService";
 import Swal from "sweetalert2";
+import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
 
 export default {
   name: "Home",

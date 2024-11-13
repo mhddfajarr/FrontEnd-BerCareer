@@ -238,7 +238,7 @@
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router'; // Mengimpor useRouter
-import { createUser } from '../../Api/AuthService'; // Impor fungsi createUser
+import { createUser } from '../../Services/Api/AuthService'; // Impor fungsi createUser
 import Swal from 'sweetalert2'; // Impor SweetAlert2 untuk notifikasi
 
 export default {

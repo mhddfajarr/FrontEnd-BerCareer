@@ -8,6 +8,7 @@ import MainLayoutUser from '../components/layout/user/MainLayout.vue';
 import MainLayoutAdmin from '../components/layout/admin/MainLayout.vue';
 import ManageJob from '../components/pages/admin/managejob.vue';
 import ManageJobseekers from '../components/pages/admin/ManageJobSeekers.vue';
+import ProfileAdmin from '../components/pages/admin/Profile.vue';
 import Jobs from '../components/pages/user/Jobs.vue';
 import Profile from '../components/pages/user/Profile.vue';
 import SaveJobs from '../components/pages/user/SaveJob.vue';
@@ -38,11 +39,11 @@ const routes = [
         name: 'ManageJobseekers',
         component: ManageJobseekers,
       },
-      // {
-      //   path: '/loginadmin', 
-      //   name: 'LoginAdmin',
-      //   component: LoginAdmin
-      // },
+      {
+        path: '/profileadmin', 
+        name: 'ProfileAdmin',
+        component: ProfileAdmin
+      },
     ],
   },
   {
