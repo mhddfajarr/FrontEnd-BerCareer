@@ -80,6 +80,13 @@
       :to="{ name: 'Jobs', params: { id: job.jobId } }"
       class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
     >
+      <div
+        v-if="job.isApplied"
+        class="absolute top-0 left-0 bg-blue-100 text-gray-500 text-xs font-semibold italic px-4 py-2 rounded-tl-lg rounded-br-lg flex items-center"
+      >
+        Applied
+      </div>
+
       <div class="flex items-center justify-center mb-2">
         <div>
           <h2 class="text-xl font-bold text-gray-700">{{ job.title }}</h2>
@@ -95,9 +102,7 @@
           <span class="text-purple-500">{{ job.type }}</span>
         </p>
         <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
-        <p>
-          <i class="fas fa-briefcase mr-1"></i> {{ job.requirement }} 
-        </p>
+        <p><i class="fas fa-briefcase mr-1"></i> {{ job.requirement }}</p>
         <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.salary }}</p>
       </div>
 
@@ -107,7 +112,8 @@
         </span>
       </div>
 
-      <div class="absolute top-0 right-0 p-3" @click="saveJob(job.jobId)">
+      <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
+      <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">
         <i
           :class="
             isSavedJob(job.jobId)
@@ -117,6 +123,7 @@
         ></i>
       </div>
     </router-link>
+    
   </div>
 
   <!-- Show More Button -->
@@ -143,7 +150,11 @@
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
-import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
+import {
+  getAllData,
+  getSaveJob,
+  getApplyUser,
+} from "../../../Services/Api/UserService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
@@ -156,6 +167,7 @@ export default {
     const visibleJobs = ref([]);
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
+    const appliedJobs = ref([]);
 
     // Computed properties
     const isSavedJob = computed(() => {
@@ -166,7 +178,7 @@ export default {
 
     const filteredJobs = computed(() => {
       if (!searchQuery.value) {
-        return jobs.value; 
+        return jobs.value;
       }
       return jobs.value.filter(
         (job) =>
@@ -187,29 +199,55 @@ export default {
 
     // Mounted lifecycle hook
     onMounted(async () => {
-      
       try {
         const data = await getAllData();
         jobs.value = data.data;
-        visibleJobs.value = jobs.value.slice(0, itemsToShow.value); 
+
+        // Set isApplied for each job based on appliedJobs
+        jobs.value = jobs.value.map((job) => {
+          return {
+            ...job,
+            isApplied: appliedJobs.value.some(
+              (appliedJob) => appliedJob.jobId === job.jobId
+            ),
+          };
+        });
+
+        visibleJobs.value = jobs.value.slice(0, itemsToShow.value);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
 
       if (token) {
         try {
-          const dataUser = await decodeToken(); 
-          id.value = dataUser.uid; 
-          console.log(id.value)
+          const dataUser = await decodeToken();
+          id.value = dataUser.uid;
+          console.log(id.value);
         } catch (error) {
           console.error("Error decoding token:", error);
         }
         try {
           const data = await getSaveJob(id.value);
-          console.log(id.value)
-          savedJobs.value = data.data; // Store saved jobs data
+          savedJobs.value = data.data;
         } catch (error) {
           console.error("Error fetching saved jobs:", error);
+        }
+
+        try {
+          const data = await getApplyUser(id.value);
+          appliedJobs.value = data.data;
+          console.log(appliedJobs.value);
+
+          jobs.value = jobs.value.map((job) => {
+            return {
+              ...job,
+              isApplied: appliedJobs.value.some(
+                (appliedJob) => appliedJob.jobId === job.jobId
+              ),
+            };
+          });
+        } catch (error) {
+          console.error("Error fetching applied jobs:", error);
         }
       }
     });
@@ -251,6 +289,7 @@ export default {
       visibleJobs,
       itemsToShow,
       savedJobs,
+      appliedJobs,
       isSavedJob,
       filteredJobs,
       filteredVisibleJobs,
