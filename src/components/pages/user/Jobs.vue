@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumbs />
+   <Breadcrumbs :title="jobs.title || 'Default Title'" />
   <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 py-5 px-5">
     <!-- Kolom 1: Card Utama dan Deskripsi Pekerjaan -->
     <div class="w-full lg:w-2/3">
@@ -113,7 +113,7 @@ export default {
   },
   setup() {
     const id = ref("");
-    const jobs = ref([]);
+    const jobs = ref({});
     const savedJob = ref([]);
     const applyJobArray = ref([])
     const token = localStorage.getItem("authToken");
@@ -121,7 +121,7 @@ export default {
     const route = useRoute();
     const getJobId = ref(route.params.id);
     const isApplied = ref(false);
-
+    
     const postApplyJob = async (jobId) => {
       if (!token) {
         Swal.fire("Error", "Please login first.", "error");

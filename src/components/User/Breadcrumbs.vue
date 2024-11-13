@@ -10,7 +10,7 @@
         <span class="text-gray-500">/</span>
       </li>
       <li>
-        <span class="text-gray-400">Nama Jobs</span>
+        <span class="text-gray-400">{{title}}</span>
       </li>
     </ol>
   </nav>
@@ -19,6 +19,12 @@
 <script>
 export default {
   name: "Breadcrumbs",
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
