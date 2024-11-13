@@ -15,7 +15,7 @@ app.use(
     domain: "dev-l8dr6eczn2njqll6.us.auth0.com",
     clientId: "6Jc5lAxl7WBgP8uncFvx6hC8QbRKiPAV",
     authorizationParams: {
-      redirect_uri: window.location.origin,
+      redirect_uri: "http://localhost:5173/register/google",
     },
   })
 );
