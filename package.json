@@ -13,14 +13,15 @@
     "@ckeditor/ckeditor5-vue": "^7.2.0",
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@syncfusion/ej2-vue-richtexteditor": "^27.1.58",
+    "axios": "^1.7.7",
     "ckeditor5": "^43.3.1",
     "quill": "^2.0.2",
     "sass": "^1.80.6",
-    "axios": "^1.7.7",
     "sweetalert2": "^11.14.5",
     "vue": "^3.5.12",
     "vue-quill-editor": "^3.0.6",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "vue-select": "^4.0.0-beta.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

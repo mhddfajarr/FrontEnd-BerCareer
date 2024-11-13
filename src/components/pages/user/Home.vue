@@ -20,15 +20,19 @@
             type="text"
             v-model="searchQuery"
             placeholder="Type your dream Role"
-            class="w-full sm:w-[350px] text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
+            class="w-56 text-gray-700 px-2 text-md rounded-md border-2 bg-white focus:border-gray-400"
           />
-          <select
-            class="w-full sm:w-[250px] bg-white text-gray-500 px-4 py-2 rounded-xl border-2"
-          >
-            <option>Location</option>
-          </select>
+
+          <v-select
+            v-model="selectedProvince"
+            :options="provinces"
+            label="name"
+            placeholder="Pilih Lokasi"
+            class="w-56  text-gray-500 text-md rounded-md border-2 bg-white focus:border-none"
+          />
+
           <button
-            class="w-full sm:w-[200px] bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
+            class="w-full sm:w-[180px] bg-primary font-semibold text-white px-5 py-1 text-sm hover:bg-primaryHover rounded-md"
             @click="scrollToSection"
           >
             Search
@@ -46,17 +50,19 @@
         type="text"
         placeholder="Type your dream Role"
         v-model="searchQuery"
-        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+        class="py-1 text-gray-700 px-2 text-md rounded-md border-4 bg-white"
       />
-      <select
-        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-      >
-        <option>Location</option>
-      </select>
+      <v-select
+            v-model="selectedProvince"
+            :options="provinces"
+            label="name"
+            placeholder="Pilih Lokasi"
+            class="w-full text-gray-500 text-md rounded-md border-2 bg-white "
+          />
     </div>
   </div>
 
-  <div v-if="filteredJobs.length === 0 && searchQuery.length > 0">
+  <div v-if="filteredJobs.length === 0 && (searchQuery.length > 0 || selectedProvince)">
     <div class="flex justify-center p-7 items-center h-80">
       <div
         class="bg-white rounded-lg shadow-md text-center w-full h-full flex justify-center items-center"
@@ -123,7 +129,6 @@
         ></i>
       </div>
     </router-link>
-    
   </div>
 
   <!-- Show More Button -->
@@ -156,18 +161,26 @@ import {
   getApplyUser,
 } from "../../../Services/Api/UserService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import vSelect from "vue-select";
+// Import CSS untuk styling
+import "vue-select/dist/vue-select.css";
 
 export default {
+  components: {
+    vSelect, // Daftarkan v-select sebagai komponen
+  },
   name: "Home",
   setup() {
     const id = ref("");
     const token = localStorage.getItem("authToken");
     const searchQuery = ref("");
     const jobs = ref([]);
+    const selectedProvince = ref(null);
     const visibleJobs = ref([]);
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
     const appliedJobs = ref([]);
+    const provinces = ref([]);
 
     // Computed properties
     const isSavedJob = computed(() => {
@@ -177,17 +190,17 @@ export default {
     });
 
     const filteredJobs = computed(() => {
-      if (!searchQuery.value) {
-        return jobs.value;
-      }
-      return jobs.value.filter(
-        (job) =>
-          job.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          job.description
-            .toLowerCase()
-            .includes(searchQuery.value.toLowerCase())
-      );
+      return jobs.value.filter((job) => {
+        const matchesSearchQuery =
+          job.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+        
+        const matchesProvince =
+          !selectedProvince.value || job.location.toLowerCase().includes(selectedProvince.value.name.toLowerCase());
+
+        return matchesSearchQuery && matchesProvince;
+      });
     });
+
 
     const filteredVisibleJobs = computed(() => {
       return filteredJobs.value.slice(0, visibleJobs.value.length);
@@ -217,7 +230,16 @@ export default {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-
+      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+        .then((response) => response.json()) // Mengkonversi response menjadi JSON
+        .then((data) => {
+          provinces.value = data;
+          console.log(provinces);
+          // Menyimpan data provinsi ke dalam state `provinces`
+        })
+        .catch((error) => {
+          console.error("Error fetching provinces:", error); // Menangani error jika ada
+        });
       if (token) {
         try {
           const dataUser = await decodeToken();
@@ -297,7 +319,10 @@ export default {
       loadMore,
       saveJob,
       scrollToSection,
+      selectedProvince,
+      provinces,
     };
   },
 };
 </script>
+

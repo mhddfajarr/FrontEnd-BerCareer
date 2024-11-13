@@ -151,7 +151,20 @@ export const getApplyUser = async (userId) => {
   }
 }
 
-
+// const API_GET_LOCATION = 'https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json'
+// export const getLocation = async () => {
+//   try {
+//     const response = await axios.get(API_GET_LOCATION, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     return response.data; 
+//   } catch (e) {
+//     console.log('Error fetching applications:', e);
+//     throw e; // Throw the caught error
+//   }
+// }
 
 
 
