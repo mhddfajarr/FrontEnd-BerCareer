@@ -91,15 +91,14 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
+          <i class="fas fa-user-clock text-purple-500 mr-1"></i>
           <span class="text-purple-500">{{ job.type }}</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
+        <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
         <p>
-          <i class="fas fa-briefcase"></i> {{ job.experience }} years of
-          experience
+          <i class="fas fa-briefcase mr-1"></i> {{ job.requirement }} 
         </p>
-        <p><i class="fas fa-money-bill-wave mr-2"></i> {{ job.salary }}</p>
+        <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.salary }}</p>
       </div>
 
       <div class="mt-4">
