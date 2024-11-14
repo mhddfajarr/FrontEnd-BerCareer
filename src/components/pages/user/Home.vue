@@ -180,7 +180,7 @@ export default {
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
     const appliedJobs = ref([]);
-    const provinces = ref([]);
+    const provinces = ref([{"id":"1","name":"Jakarta"},{"id":"2","name":"Bogor"},{"id":"3","name":"Depok"},{"id":"4","name":"Tanggerang"},{"id":"5","name":"Bekasi"},]);
 
     // Computed properties
     const isSavedJob = computed(() => {
@@ -230,16 +230,7 @@ export default {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then((response) => response.json()) // Mengkonversi response menjadi JSON
-        .then((data) => {
-          provinces.value = data;
-          console.log(provinces);
-          // Menyimpan data provinsi ke dalam state `provinces`
-        })
-        .catch((error) => {
-          console.error("Error fetching provinces:", error); // Menangani error jika ada
-        });
+ 
       if (token) {
         try {
           const dataUser = await decodeToken();
