@@ -14,7 +14,7 @@ import Profile from "../components/pages/user/Profile.vue";
 import SaveJobs from "../components/pages/user/SaveJob.vue";
 import Applied from "../components/pages/user/Applied.vue";
 import Settings from "../components/pages/user/Settings.vue";
-import RegisterWithGoogle from "../components/auth/RegisterWithGoogle.vue";
+import AuthRedirect from "../components/auth/AuthRedirect.vue";
 
 const routes = [
   {
@@ -127,8 +127,8 @@ const routes = [
   },
   {
     path: "/register/google",
-    name: "googleRegister",
-    component: RegisterWithGoogle,
+    name: "authRedirect",
+    component: AuthRedirect,
     beforeEnter: (to, from, next) => {
       const token = localStorage.getItem("authToken");
       if (!token) {
