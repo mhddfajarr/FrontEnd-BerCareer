@@ -20,15 +20,19 @@
             type="text"
             v-model="searchQuery"
             placeholder="Type your dream Role"
-            class="w-full sm:w-[350px] text-gray-500 bg-white px-4 py-2 rounded-xl border-2"
+            class="w-56 text-gray-700 px-2 text-md rounded-md border-2 bg-white focus:border-gray-400"
           />
-          <select
-            class="w-full sm:w-[250px] bg-white text-gray-500 px-4 py-2 rounded-xl border-2"
-          >
-            <option>Location</option>
-          </select>
+
+          <v-select
+            v-model="selectedProvince"
+            :options="provinces"
+            label="name"
+            placeholder="Pilih Lokasi"
+            class="w-56  text-gray-500 text-md rounded-md border-2 bg-white focus:border-none"
+          />
+
           <button
-            class="w-full sm:w-[200px] bg-primary text-white px-6 py-2 hover:bg-primaryHover rounded-xl"
+            class="w-full sm:w-[180px] bg-primary font-semibold text-white px-5 py-1 text-sm hover:bg-primaryHover rounded-md"
             @click="scrollToSection"
           >
             Search
@@ -46,17 +50,19 @@
         type="text"
         placeholder="Type your dream Role"
         v-model="searchQuery"
-        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+        class="py-1 text-gray-700 px-2 text-md rounded-md border-4 bg-white"
       />
-      <select
-        class="w-full text-gray-400 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-      >
-        <option>Location</option>
-      </select>
+      <v-select
+            v-model="selectedProvince"
+            :options="provinces"
+            label="name"
+            placeholder="Pilih Lokasi"
+            class="w-full text-gray-500 text-md rounded-md border-2 bg-white "
+          />
     </div>
   </div>
 
-  <div v-if="filteredJobs.length === 0 && searchQuery.length > 0">
+  <div v-if="filteredJobs.length === 0 && (searchQuery.length > 0 || selectedProvince)">
     <div class="flex justify-center p-7 items-center h-80">
       <div
         class="bg-white rounded-lg shadow-md text-center w-full h-full flex justify-center items-center"
@@ -80,6 +86,13 @@
       :to="{ name: 'Jobs', params: { id: job.jobId } }"
       class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
     >
+      <div
+        v-if="job.isApplied"
+        class="absolute top-0 left-0 bg-blue-100 text-gray-500 text-xs font-semibold italic px-4 py-2 rounded-tl-lg rounded-br-lg flex items-center"
+      >
+        Applied
+      </div>
+
       <div class="flex items-center justify-center mb-2">
         <div>
           <h2 class="text-xl font-bold text-gray-700">{{ job.title }}</h2>
@@ -91,15 +104,12 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock text-purple-500"></i>
+          <i class="fas fa-user-clock text-purple-500 mr-1"></i>
           <span class="text-purple-500">{{ job.type }}</span>
         </p>
-        <p><i class="fas fa-map-marker-alt"></i> {{ job.location }}</p>
-        <p>
-          <i class="fas fa-briefcase"></i> {{ job.experience }} years of
-          experience
-        </p>
-        <p><i class="fas fa-money-bill-wave mr-2"></i> {{ job.salary }}</p>
+        <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
+        <p><i class="fas fa-briefcase mr-1"></i> {{ job.requirement }}</p>
+        <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.salary }}</p>
       </div>
 
       <div class="mt-4">
@@ -108,7 +118,8 @@
         </span>
       </div>
 
-      <div class="absolute top-0 right-0 p-3" @click="saveJob(job.jobId)">
+      <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
+      <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">
         <i
           :class="
             isSavedJob(job.jobId)
@@ -144,20 +155,34 @@
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
 import Swal from "sweetalert2";
-import { getAllData, getSaveJob } from "../../../Services/Api/UserService";
+import {
+  getAllData,
+  getSaveJob,
+  getApplyUser,
+} from "../../../Services/Api/UserService";
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import vSelect from "vue-select";
+// Import CSS untuk styling
+import "vue-select/dist/vue-select.css";
 
 export default {
+  components: {
+    vSelect, // Daftarkan v-select sebagai komponen
+  },
   name: "Home",
   setup() {
-    // State declarations using ref and reactive
-    const id = ref("01JCGB585KS3T00C2QR2Z5PCSF");
+    const id = ref("");
     const token = localStorage.getItem("authToken");
     const searchQuery = ref("");
     const jobs = ref([]);
+    const selectedProvince = ref(null);
     const visibleJobs = ref([]);
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
+    const appliedJobs = ref([]);
+    const provinces = ref([]);
 
+    // console.log(auth0);
     // Computed properties
     const isSavedJob = computed(() => {
       return (jobId) => {
@@ -166,17 +191,17 @@ export default {
     });
 
     const filteredJobs = computed(() => {
-      if (!searchQuery.value) {
-        return jobs.value; // Return all items if there is no search query
-      }
-      return jobs.value.filter(
-        (job) =>
-          job.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-          job.description
-            .toLowerCase()
-            .includes(searchQuery.value.toLowerCase())
-      );
+      return jobs.value.filter((job) => {
+        const matchesSearchQuery =
+          job.title.toLowerCase().includes(searchQuery.value.toLowerCase())
+        
+        const matchesProvince =
+          !selectedProvince.value || job.location.toLowerCase().includes(selectedProvince.value.name.toLowerCase());
+
+        return matchesSearchQuery && matchesProvince;
+      });
     });
+
 
     const filteredVisibleJobs = computed(() => {
       return filteredJobs.value.slice(0, visibleJobs.value.length);
@@ -188,21 +213,64 @@ export default {
 
     // Mounted lifecycle hook
     onMounted(async () => {
-
       try {
         const data = await getAllData();
         jobs.value = data.data;
-        visibleJobs.value = jobs.value.slice(0, itemsToShow.value); // Show only the first 6 jobs
+
+        // Set isApplied for each job based on appliedJobs
+        jobs.value = jobs.value.map((job) => {
+          return {
+            ...job,
+            isApplied: appliedJobs.value.some(
+              (appliedJob) => appliedJob.jobId === job.jobId
+            ),
+          };
+        });
+
+        visibleJobs.value = jobs.value.slice(0, itemsToShow.value);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-
+      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+        .then((response) => response.json()) // Mengkonversi response menjadi JSON
+        .then((data) => {
+          provinces.value = data;
+          console.log(provinces);
+          // Menyimpan data provinsi ke dalam state `provinces`
+        })
+        .catch((error) => {
+          console.error("Error fetching provinces:", error); // Menangani error jika ada
+        });
       if (token) {
         try {
+          const dataUser = await decodeToken();
+          id.value = dataUser.uid;
+          console.log(id.value);
+        } catch (error) {
+          console.error("Error decoding token:", error);
+        }
+        try {
           const data = await getSaveJob(id.value);
-          savedJobs.value = data.data; // Store saved jobs data
+          savedJobs.value = data.data;
         } catch (error) {
           console.error("Error fetching saved jobs:", error);
+        }
+
+        try {
+          const data = await getApplyUser(id.value);
+          appliedJobs.value = data.data;
+          console.log(appliedJobs.value);
+
+          jobs.value = jobs.value.map((job) => {
+            return {
+              ...job,
+              isApplied: appliedJobs.value.some(
+                (appliedJob) => appliedJob.jobId === job.jobId
+              ),
+            };
+          });
+        } catch (error) {
+          console.error("Error fetching applied jobs:", error);
         }
       }
     });
@@ -244,6 +312,7 @@ export default {
       visibleJobs,
       itemsToShow,
       savedJobs,
+      appliedJobs,
       isSavedJob,
       filteredJobs,
       filteredVisibleJobs,
@@ -251,7 +320,10 @@ export default {
       loadMore,
       saveJob,
       scrollToSection,
+      selectedProvince,
+      provinces,
     };
   },
 };
 </script>
+
