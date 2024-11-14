@@ -41,38 +41,47 @@
           </div>
         </div>
 
-        <div class="flex items-center mb-7 mt-7">
+        <div class="flex flex-wrap items-center mb-7 mt-7">
+          <!-- Tombol Apply -->
           <button
-            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2"
+            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
             @click="postApplyJob(jobs.jobId)"
           >
             {{ isApplied ? "Applied" : "Apply" }}
           </button>
+
+          <!-- Tombol Save/Remove Favorite -->
           <button
-            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2"
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
             @click="isSaved ? deleteSaveJob(jobs.jobId) : saveJob(jobs.jobId)"
           >
-          <i :class="isSaved ? 'fas fa-bookmark text-primary mr-2' : 'far fa-bookmark text-gray-400 mr-2'"></i>
-
+            <i
+              :class="
+                isSaved
+                  ? 'fas fa-bookmark text-primary mr-2'
+                  : 'far fa-bookmark text-gray-400 mr-2'
+              "
+            ></i>
             {{ isSaved ? "Remove from favorite" : "Save Job" }}
           </button>
-          
 
+          <!-- Tombol Share -->
           <button
-                @click="showModalShareLink = true"
-                class="bg-gray-200 hover:bg-gray-300 font-semibold  text-gray-700 px-4 py-2 rounded-md"
-              >
-              <i class="fas fa-share-alt text-primary"></i>
-                Share
-              </button>
-              <ModalShareLink
-                v-if="showModalShareLink"
-                :showModal="showModalShareLink"
-                :shareLink="fullUrl"
-                @close="showModalShareLink = false"
-              />
-        </div>
+            @click="showModalShareLink = true"
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
+          >
+            <i class="fas fa-share-alt text-primary"></i>
+            Share
+          </button>
 
+          <!-- Modal Share Link -->
+          <ModalShareLink
+            v-if="showModalShareLink"
+            :showModal="showModalShareLink"
+            :shareLink="fullUrl"
+            @close="showModalShareLink = false"
+          />
+        </div>
 
         <hr class="my-4" />
 
@@ -130,7 +139,7 @@ export default {
     ModalShareLink,
   },
   setup() {
-    const showModalShareLink= ref(false);
+    const showModalShareLink = ref(false);
     const id = ref("");
     const jobs = ref({});
     const savedJob = ref([]);
@@ -300,7 +309,7 @@ export default {
     };
 
     onMounted(async () => {
-      console.log(fullUrl)
+      console.log(fullUrl);
       if (token) {
         await getUserId();
         fetchSavedJobs();
@@ -330,7 +339,7 @@ export default {
       postApplyJob,
       route,
       isApplied,
-      fullUrl
+      fullUrl,
     };
   },
 };
