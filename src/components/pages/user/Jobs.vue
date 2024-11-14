@@ -135,6 +135,7 @@ export default {
         const data = {
           userId: id.value,
           jobId: jobId,
+          applyDate: new Date().toISOString(),
         };
         await applyJob(data);
         isApplied.value = true;
