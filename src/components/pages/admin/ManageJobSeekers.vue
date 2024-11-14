@@ -11,7 +11,6 @@
         <!-- Title -->
         <h1 class="text-3xl font-bold text-primary mb-2">Manage Jobseekers</h1>
 
-        <!-- Main Content Section -->
         <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -20,7 +19,7 @@
                 <div class="card shadow-xl border-t-4 border-t-primary bg-white">
                 <div class="card-body">
                     <!-- Card Header with Filter Dropdown -->
-                    <div class="flex justify-between">
+                    <div class="flex justify-between flex-wrap">
                     <details class="dropdown bg-white border-none">
                         <summary
                         class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none"
@@ -37,17 +36,18 @@
                             @click="filterJobsByTitle(job.title)"
                         >
                             <a>{{ job.title }}</a>
-                            <!-- Tampilkan job.title -->
                         </li>
                         </ul>
                     </details>
-                    <h2 class="card-title">Fullstack Developer</h2>
+                    <h2 class="card-title text-lg md:text-xl">
+                        Fullstack Developer
+                    </h2>
                     </div>
                 </div>
 
                 <!-- Card Body with Tabs and Table -->
                 <div class="card-body">
-                    <div role="tablist" class="tabs tabs-lifted bg-white">
+                    <div role="tablist" class="tabs tabs-lifted bg-white flex-wrap">
                     <!-- Tab 1: List -->
                     <input
                         type="radio"
@@ -63,7 +63,7 @@
                     >
                         <div class="card-body-sm mt-2">
                         <div class="overflow-x-auto">
-                            <table class="table bg-white">
+                            <table class="table bg-white table-auto w-full">
                             <!-- Table Head -->
                             <thead>
                                 <tr>
@@ -113,9 +113,9 @@
                                 </td>
                                 <td>Fullstack Developer</td>
                                 <td>
-                                    <span class="text-black border-none">
-                                    Desktop Support Technician
-                                    </span>
+                                    <span class="text-black border-none"
+                                    >Desktop Support Technician</span
+                                    >
                                 </td>
                                 <td>Universitas Negeri London</td>
                                 <td>
@@ -297,5 +297,109 @@
     .table th {
         padding: 0.5rem; /* Adjust padding for table cells on small screens */
     }
+    }
+
+    /* Media Query untuk Responsivitas */
+    @media (max-width: 768px) {
+    .content {
+        padding: 10px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .table {
+        font-size: 0.875rem; /* Mengurangi ukuran font tabel pada perangkat kecil */
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem; /* Mengurangi padding di tabel */
+    }
+
+    .dropdown-content {
+        width: 100%; /* Dropdown akan menyesuaikan dengan lebar layar kecil */
+    }
+
+    .join-item {
+        padding: 10px;
+        margin: 5px 0;
+        width: 100%;
+    }
+
+    .avatar img {
+        width: 40px;
+        height: 40px;
+    }
+    }
+
+      /* Media Queries for Responsiveness */
+      @media (max-width: 1024px) {
+        .tabs {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-content {
+            padding: 1.5rem;
+        }
+
+        .table {
+            font-size: 0.875rem; /* Reduce font size for smaller screens */
+        }
+
+        .table th, .table td {
+            padding: 0.5rem; /* Reduce padding for smaller screens */
+        }
+
+        .overflow-x-auto {
+            margin-bottom: 1rem; /* Add margin for better spacing */
+        }
+
+        .join-item {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%; /* Make join buttons take full width on small screens */
+        }
+
+        .avatar img {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .tabs {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .tab-content {
+            padding: 1rem;
+        }
+
+        .table {
+            font-size: 0.75rem; /* Further reduce font size on smaller screens */
+        }
+
+        .table th, .table td {
+            padding: 0.25rem; /* Further reduce padding */
+        }
+
+        .join {
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .join-item {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+        }
     }
     </style>
