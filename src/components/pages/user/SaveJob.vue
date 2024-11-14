@@ -18,7 +18,7 @@
         v-for="(job, index) in dataSaveJobs"
         :key="job.jobId"
         :to="{ name: 'Jobs', params: { id: job.jobId } }"
-        class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary transform hover:scale-105 transition-all duration-200 ease-in-out"
+        class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
       >
         <div class="flex items-center justify-center mb-2">
           <div>
@@ -42,10 +42,10 @@
         </div>
 
         <div class="mt-4">
-          <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-            Rekruter aktif 1 jam lalu
-          </span>
-        </div>
+  <button class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full hover:bg-pink-200 transition-all duration-200 ease-in-out">
+    Rekruter aktif 1 jam lalu
+  </button>
+</div>
       </routerLink>
     </div>
   </div>

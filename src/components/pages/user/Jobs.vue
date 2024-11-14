@@ -1,5 +1,5 @@
 <template>
-   <Breadcrumbs :title="jobs.title || 'Default Title'" />
+  <Breadcrumbs :title="jobs.title || 'Default Title'" />
   <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 py-5 px-5">
     <!-- Kolom 1: Card Utama dan Deskripsi Pekerjaan -->
     <div class="w-full lg:w-2/3">
@@ -52,7 +52,7 @@
             class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
             @click="isSaved ? deleteSaveJob(jobs.jobId) : saveJob(jobs.jobId)"
           >
-            {{ isSaved ? 'Remove from favorite' : 'Save Job' }}
+            {{ isSaved ? "Remove from favorite" : "Save Job" }}
           </button>
         </div>
 
@@ -70,22 +70,18 @@
 
     <!-- Kolom 2: Card Benefit Perusahaan -->
     <div
-      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md rounded-lg max-h-[250px] overflow-y-auto sticky top-0 border-t-4 border-primary"
+      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md h-52 rounded-lg sticky top-0 border-t-4 border-primary"
     >
-      <h2 class="text-lg font-bold mb-4">Benefit Perusahaan</h2>
+      <h2 class="text-2xl font-bold text-gray-700 mt-2">Job Information</h2>
       <hr class="my-4" />
       <ul>
-        <li class="flex items-center mb-2">
-          <i class="fas fa-dollar-sign text-gray-600 mr-2"></i>
-          <span>Competitive Salary</span>
+        <li class="flex items-center p-2">
+          <i class="fas fa-user-check text-gray-600 mr-2"></i>
+          <span>{{ totalApplications }} Applicants</span>
         </li>
-        <li class="flex items-center mb-2">
-          <i class="fas fa-medkit text-gray-600 mr-2"></i>
-          <span>Medical Insurance</span>
-        </li>
-        <li class="flex items-center">
-          <i class="fas fa-gift text-gray-600 mr-2"></i>
-          <span>THR / Bonus system</span>
+        <li class="flex items-center p-2">
+          <i class="fas fa-calendar-day text-gray-600 mr-2"></i>
+          <span>Posted on {{ jobs.postDate }}</span>
         </li>
       </ul>
     </div>
@@ -100,12 +96,14 @@ import {
   saveJobs,
   getSaveJob,
   applyJob,
-  getApplyUser 
+  getApplyUser,
+  getAllAplication,
 } from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import moment from "moment";
 
 export default {
   components: {
@@ -115,12 +113,29 @@ export default {
     const id = ref("");
     const jobs = ref({});
     const savedJob = ref([]);
-    const applyJobArray = ref([])
+    const applyJobArray = ref([]);
     const token = localStorage.getItem("authToken");
     const isSaved = ref(false);
     const route = useRoute();
     const getJobId = ref(route.params.id);
     const isApplied = ref(false);
+    const totalApplications = ref(0);
+    const dataApplication = ref([]);
+
+    const fetchAllAplication = async () => {
+      try {
+        const data = await getAllAplication();
+        dataApplication.value = data.data;
+
+        const filteredApplications = data.data.filter(
+          (application) => application.jobId === getJobId.value
+        );
+
+        totalApplications.value = filteredApplications.length;
+      } catch (error) {
+        console.error("Error fetching saved jobs:", error);
+      }
+    };
     
     const postApplyJob = async (jobId) => {
       if (!token) {
@@ -139,6 +154,7 @@ export default {
         };
         await applyJob(data);
         isApplied.value = true;
+        await fetchAllAplication();
 
         Swal.fire({
           toast: true,
@@ -182,7 +198,7 @@ export default {
     };
 
     const fetchSavedJobs = async () => {
-      if (!token) return; 
+      if (!token) return;
 
       try {
         const data = await getSaveJob(id.value);
@@ -197,9 +213,8 @@ export default {
       }
     };
 
-
     const fetchApplyUser = async () => {
-      if (!token) return; 
+      if (!token) return;
       try {
         const data = await getApplyUser(id.value);
         applyJobArray.value = data.data;
@@ -241,6 +256,12 @@ export default {
         const jobId = getJobId.value;
         const data = await getJobsById(jobId);
         jobs.value = data.data;
+
+        if (jobs.value && jobs.value.postDate) {
+          jobs.value.postDate = moment(jobs.value.postDate).format(
+            "MMMM DD, YYYY"
+          );
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -258,11 +279,11 @@ export default {
 
     onMounted(async () => {
       if (token) {
-        await getUserId(); 
-        fetchSavedJobs(); 
+        await getUserId();
+        fetchSavedJobs();
         fetchApplyUser();
-
       }
+      fetchAllAplication();
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -271,6 +292,8 @@ export default {
     });
 
     return {
+      dataApplication,
+      totalApplications,
       jobs,
       savedJob,
       isSaved,

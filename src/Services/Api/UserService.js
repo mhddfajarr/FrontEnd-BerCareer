@@ -168,5 +168,24 @@ export const changePassword = async (data) => {
   }
 }
 
+const API_APPLICATION ="https://localhost:7147/api/Applications/All"
+
+export const getAllAplication = async () => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+
+  try {
+    const response = await axios.get(API_APPLICATION, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.log('Error fetching applications:', e);
+    throw e; // Throw the caught error
+  }
+}
 
 
