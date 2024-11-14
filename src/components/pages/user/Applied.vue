@@ -1,24 +1,24 @@
 <template>
-  <div
-    v-if="applyJobArray.length < 1"
-    class="flex flex-col justify-center items-center h-full text-center mt-28  md:mt-6"
-  >
+  <div v-if="applyJobArray.length < 1" class="grid place-items-center h-screen text-center flex-grow">
+    <div class="flex flex-col items-center">
     <img
       src="../../../assets/images/noItem.png"
       alt="Not Found"
-      class="w-48 mt-10 h-auto"
+      class="w-48 h-auto"
     />
-    <p class="text-md md:text-xl text-gray-700 font-semibold mt-6">
-      No applications submitted yet.<router-link
+    <p class="text-md md:text-xl text-gray-700 font-semibold">
+      No applications submitted yet.
+      <router-link
         to="/"
         class="bg-gray-200 hover:bg-gray-300 w-full font-semibold text-gray-700 px-2 ml-2 py-1 rounded-md"
       >
-        Let's Apply!</router-link
-      >
+        Let's Apply!
+      </router-link>
     </p>
   </div>
+</div>
 
-  <div class="py-6 h-screen">
+  <div class="py-6 flex-grow">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
       <!-- Job Card 1 -->
       <routerLink
@@ -35,9 +35,7 @@
           </div>
         </div>
         <!-- Garis horizontal di bawah h2 -->
-        <div
-          class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"
-        ></div>
+        <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
         <div class="text-sm text-gray-600 space-y-2">
           <p>
             <i class="fas fa-user-clock text-purple-500 mr-2"></i>
@@ -63,6 +61,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { onMounted, ref } from "vue";
