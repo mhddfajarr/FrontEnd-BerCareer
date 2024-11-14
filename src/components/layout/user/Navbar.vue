@@ -78,11 +78,21 @@
             class="flex items-center text-black focus:outline-none"
             ref="dropdownButton"
           >
-            <img
-              src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
-              alt="Profile"
-              class="w-10 h-10 rounded-full mr-2"
-            />
+            <div v-if="avatar.startsWith('https') || avatar.startsWith('http')">
+              <img
+                :src="avatar"
+                alt="Profile"
+                class="w-10 h-10 rounded-full mr-2"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+            <div v-else>
+              <img
+                src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
+                alt="Profile"
+                class="w-10 h-10 rounded-full mr-2"
+              />
+            </div>
             <span class="relative inline-block group">
               <span
                 :class="[
@@ -183,6 +193,7 @@ export default {
     const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("");
+    const avatar = ref("");
     const id = ref("");
     const router = useRouter();
     const auth0 = useAuth0();
@@ -251,6 +262,7 @@ export default {
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName
           username.value = response.data.fullName.split(" ")[0];
+          avatar.value = response.data.profileImage;
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -293,6 +305,7 @@ export default {
       dropdownMenu,
       dropdownButton,
       handleOutsideClick,
+      avatar,
     };
   },
 };
