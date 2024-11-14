@@ -18,7 +18,7 @@
     </p>
   </div>
 
-  <div class="py-6">
+  <div class="py-6 h-screen">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
       <!-- Job Card 1 -->
       <routerLink

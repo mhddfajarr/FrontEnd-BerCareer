@@ -83,6 +83,7 @@
     <router-link
       v-for="(job, index) in filteredVisibleJobs"
       :key="job.jobId"
+      v-model="selectedProvince"
       :to="{ name: 'Jobs', params: { id: job.jobId } }"
       class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
     >
@@ -180,7 +181,7 @@ export default {
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
     const appliedJobs = ref([]);
-    const provinces = ref([{"id":"1","name":"Jakarta"},{"id":"2","name":"Bogor"},{"id":"3","name":"Depok"},{"id":"4","name":"Tanggerang"},{"id":"5","name":"Bekasi"},]);
+    const provinces = ([{"id":"1","name":"Jakarta"},{"id":"2","name":"Bogor"},{"id":"3","name":"Depok"},{"id":"4","name":"Tanggerang"},{"id":"5","name":"Bekasi"},]);
 
     // Computed properties
     const isSavedJob = computed(() => {
@@ -193,7 +194,6 @@ export default {
       return jobs.value.filter((job) => {
         const matchesSearchQuery =
           job.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-        
         const matchesProvince =
           !selectedProvince.value || job.location.toLowerCase().includes(selectedProvince.value.name.toLowerCase());
 
