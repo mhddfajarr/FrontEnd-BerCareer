@@ -43,18 +43,36 @@
 
         <div class="flex items-center mb-7 mt-7">
           <button
-            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-lg mr-2"
+            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2"
             @click="postApplyJob(jobs.jobId)"
           >
             {{ isApplied ? "Applied" : "Apply" }}
           </button>
           <button
-            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2"
             @click="isSaved ? deleteSaveJob(jobs.jobId) : saveJob(jobs.jobId)"
           >
+          <i :class="isSaved ? 'fas fa-bookmark text-primary mr-2' : 'far fa-bookmark text-gray-400 mr-2'"></i>
+
             {{ isSaved ? "Remove from favorite" : "Save Job" }}
           </button>
+          
+
+          <button
+                @click="showModalShareLink = true"
+                class="bg-gray-200 hover:bg-gray-300 font-semibold  text-gray-700 px-4 py-2 rounded-md"
+              >
+              <i class="fas fa-share-alt text-primary"></i>
+                Share
+              </button>
+              <ModalShareLink
+                v-if="showModalShareLink"
+                :showModal="showModalShareLink"
+                :shareLink="fullUrl"
+                @close="showModalShareLink = false"
+              />
         </div>
+
 
         <hr class="my-4" />
 
@@ -104,12 +122,15 @@ import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import moment from "moment";
+import ModalShareLink from "../../User/modalShareLink.vue";
 
 export default {
   components: {
     Breadcrumbs,
+    ModalShareLink,
   },
   setup() {
+    const showModalShareLink= ref(false);
     const id = ref("");
     const jobs = ref({});
     const savedJob = ref([]);
@@ -121,6 +142,7 @@ export default {
     const isApplied = ref(false);
     const totalApplications = ref(0);
     const dataApplication = ref([]);
+    const fullUrl = window.location.href;
 
     const fetchAllAplication = async () => {
       try {
@@ -136,7 +158,7 @@ export default {
         console.error("Error fetching saved jobs:", error);
       }
     };
-    
+
     const postApplyJob = async (jobId) => {
       if (!token) {
         Swal.fire("Error", "Please login first.", "error");
@@ -278,6 +300,7 @@ export default {
     };
 
     onMounted(async () => {
+      console.log(fullUrl)
       if (token) {
         await getUserId();
         fetchSavedJobs();
@@ -292,6 +315,7 @@ export default {
     });
 
     return {
+      showModalShareLink,
       dataApplication,
       totalApplications,
       jobs,
@@ -306,6 +330,7 @@ export default {
       postApplyJob,
       route,
       isApplied,
+      fullUrl
     };
   },
 };
