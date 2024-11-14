@@ -13,7 +13,6 @@
 
       <!-- Navbar Links -->
       <ul class="flex space-x-1 items-center px-7">
-        
         <li class="relative group hidden md:block">
           <router-link
             to="/"
@@ -175,16 +174,19 @@
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
-import { getDataUser} from "../../../Services/Api/UserService";
-import { useRouter } from 'vue-router';
+import { getDataUser } from "../../../Services/Api/UserService";
+import { useRouter } from "vue-router";
+import { useAuth0 } from "@auth0/auth0-vue";
 
 export default {
   setup() {
-    const cekLogin = ref(localStorage.getItem('authToken') ? true : false);
+    const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("");
-    const id= ref("")
+    const id = ref("");
     const router = useRouter();
+    const router = useRouter();
+    const auth0 = useAuth0();
 
     // ref untuk dropdown dan tombol dropdown
     const dropdownMenu = ref(null);
@@ -193,15 +195,20 @@ export default {
     // Method untuk logout
     const logout = () => {
       Swal.fire({
-        title: 'Are you sure you want to logout?',
+        title: "Are you sure you want to logout?",
         text: "You will be logged out of the application.",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, logout!',
-        cancelButtonText: 'No, stay logged in',
-        reverseButtons: true
+        confirmButtonText: "Yes, logout!",
+        cancelButtonText: "No, stay logged in",
+        reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
+          auth0.logout({
+            logoutParams: {
+              returnTo: window.location.origin,
+            },
+          });
           localStorage.removeItem("authToken");
           cekLogin.value = false;
           // Redirect ke halaman login
@@ -223,8 +230,10 @@ export default {
     // Method untuk menangani klik di luar dropdown
     const handleOutsideClick = (event) => {
       if (
-        dropdownMenu.value && !dropdownMenu.value.contains(event.target) &&
-        dropdownButton.value && !dropdownButton.value.contains(event.target)
+        dropdownMenu.value &&
+        !dropdownMenu.value.contains(event.target) &&
+        dropdownButton.value &&
+        !dropdownButton.value.contains(event.target)
       ) {
         isDropdownVisible.value = false;
       }
@@ -237,9 +246,9 @@ export default {
           console.error("User ID is missing");
           return;
         }
-        const response = await getDataUser(userId);  // Memanggil API untuk mendapatkan data user
+        const response = await getDataUser(userId); // Memanggil API untuk mendapatkan data user
         console.log(response);
-        
+
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName
           username.value = response.data.fullName.split(" ")[0];
@@ -249,27 +258,27 @@ export default {
       }
     };
 
-    const getUserId =async()=>{
+    const getUserId = async () => {
       try {
-          const dataUser = await decodeToken(); 
-          id.value = dataUser.uid; 
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
     };
     onMounted(async () => {
-      if (cekLogin.value) { // Pastikan ini memeriksa nilai reaktif .value
-    await getUserId();
-    fetchDataUser();
-  }
- 
-  document.addEventListener("click", handleOutsideClick);
+      if (cekLogin.value) {
+        // Pastikan ini memeriksa nilai reaktif .value
+        await getUserId();
+        fetchDataUser();
+      }
 
-  window.addEventListener('storage', () => {
-    cekLogin.value = localStorage.getItem('authToken') ? true : false;
-  });
-});
+      document.addEventListener("click", handleOutsideClick);
 
+      window.addEventListener("storage", () => {
+        cekLogin.value = localStorage.getItem("authToken") ? true : false;
+      });
+    });
 
     onBeforeUnmount(() => {
       document.removeEventListener("click", handleOutsideClick);
@@ -284,12 +293,11 @@ export default {
       closeDropdown,
       dropdownMenu,
       dropdownButton,
+      handleOutsideClick,
     };
   },
 };
 </script>
-
-
 
 <style scoped>
 .slide-down {

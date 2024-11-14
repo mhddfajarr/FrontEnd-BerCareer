@@ -182,6 +182,7 @@ export default {
     const appliedJobs = ref([]);
     const provinces = ref([]);
 
+    // console.log(auth0);
     // Computed properties
     const isSavedJob = computed(() => {
       return (jobId) => {
