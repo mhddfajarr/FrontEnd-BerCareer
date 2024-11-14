@@ -185,7 +185,6 @@ export default {
     const username = ref("");
     const id = ref("");
     const router = useRouter();
-    const router = useRouter();
     const auth0 = useAuth0();
 
     // ref untuk dropdown dan tombol dropdown
