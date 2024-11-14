@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="applyJobArray.length < 1"
-    class="flex flex-col justify-center items-center h-full text-center mt-28 mb-36 md:mb-28 md:mt-6"
+    class="flex flex-col justify-center items-center h-full text-center mt-28  md:mt-6"
   >
     <img
       src="../../../assets/images/noItem.png"
@@ -94,7 +94,8 @@ export default {
 
     onMounted(async () => {
       await getUserId();
-      fetchApplyUser();
+      await fetchApplyUser(); 
+      
     });
     return {
       fetchApplyUser,
