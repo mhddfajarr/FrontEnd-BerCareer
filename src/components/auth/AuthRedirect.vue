@@ -95,18 +95,16 @@ export default {
         await createUserGoogle(user);
         //Then try login it
         loginUser(loginData);
-        router.push("/login");
+        router.push("/");
       } catch (error) {
-        console.log(error.response.data.statusCode);
         if (error.response.data.statusCode == 409) {
-          console.log("Login here");
           loginUser(loginData);
         } else {
           // Show with p instead
           errorText.value = error.response.data.message;
           // wait for 3 seconds
           setTimeout(() => {
-            router.push("/login");
+            router.push("/");
           }, 3000);
           // router.push("/");
         }
@@ -122,7 +120,12 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 1500));
         router.push("/");
       } catch (error) {
-        console.error("Error logging in user:", error);
+        // console.error("Error logging in user:", error);
+        errorText.value = error.response.data.message;
+        // wait for 3 seconds
+        setTimeout(() => {
+          router.push("/login");
+        }, 3000);
       }
     };
 
