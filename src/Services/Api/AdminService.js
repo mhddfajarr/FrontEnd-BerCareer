@@ -67,61 +67,58 @@
     };
 
     export const updateJob = async (jobData, currentJob, jobs, EditModal) => {
-    const token = localStorage.getItem("authToken");
-
-    const updatedJob = {
-        userId: jobData.uid,
-        title: jobData.title,
-        description: jobData.description,
-        type: jobData.type,
-        requirement: jobData.requirement,
-        salary: jobData.salary,
-        location: jobData.location,
+        const token = localStorage.getItem("authToken");
+    
+        const updatedJob = {
+            userId: jobData.uid,
+            title: jobData.title,
+            description: jobData.description,
+            type: jobData.type,
+            requirement: jobData.requirement,
+            salary: jobData.salary,
+            location: jobData.location,
+        };
+    
+        try {
+            console.log("Updating job with ID:", currentJob.value.uid);
+            const response = await axios.put(
+                `${API_URL}/${currentJob.value.uid}`,
+                updatedJob,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+    
+            if (response.data) {  // Adjusted for direct response
+                const index = jobs.value.findIndex((j) => j.uid === currentJob.value.uid);
+                if (index !== -1) {
+                    jobs.value[index] = response.data;  // Assuming response.data is the updated job
+                }
+                EditModal.value = false;
+                Swal.fire({
+                    icon: "success",
+                    title: "Success!",
+                    text: "Job updated successfully.",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+            } else {
+                throw new Error("Unexpected response structure");
+            }
+        } catch (error) {
+            console.error("Error updating job:", error.response ? error.response.data : error.message);
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.response?.data?.message || "There was an error updating the job!",
+                confirmButtonText: "Retry",
+            });
+        }
     };
-
-    try {
-        console.log("Updating job with ID:", currentJob.value.uid);
-        const response = await axios.put(
-        `${API_URL}/${currentJob.value.uid}`,
-        updatedJob,
-        {
-            headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            },
-        }
-        );
-
-        if (response.data && response.data.data) {
-        const index = jobs.value.findIndex((j) => j.uid === currentJob.value.uid);
-        if (index !== -1) {
-            jobs.value[index] = response.data.data;
-        }
-        EditModal.value = false;
-        Swal.fire({
-            icon: "success",
-            title: "Success!",
-            text: "Job updated successfully.",
-            showConfirmButton: false,
-            timer: 1500,
-        });
-        } else {
-        throw new Error("Unexpected response structure");
-        }
-    } catch (error) {
-        console.error(
-        "Error updating job:",
-        error.response ? error.response.data : error.message
-        );
-        Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text:
-            error.response?.data?.message || "There was an error updating the job!",
-        confirmButtonText: "Retry",
-        });
-    }
-    };
+    
 
     // Menghapus job berdasarkan ID
     export const deleteJob = async (userId, jobId) => {

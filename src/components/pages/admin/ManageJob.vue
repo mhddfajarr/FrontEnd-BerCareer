@@ -150,8 +150,9 @@
                             </div>
                             <!-- Modal Body -->
                             <div class="modal-body">
-                                <form id="quickForm">
+                                <form @submit.prevent="updateJob">
                                 <div class="card-body">
+                                    <!-- Job Title -->
                                     <h4 class="text-lg font-bold mb-2">Title</h4>
                                     <input
                                     v-model="newJobTitle"
@@ -159,17 +160,18 @@
                                     placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
+                                    <!-- Job Description -->
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <div>
                                     <QuillEditor
-                                        v-model:content="newJobDescription"
-                                        type="text"
-                                        placeholder="Enter job description"
-                                        class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    v-model:content="newJobDescription"
+                                    placeholder="Enter job description"
+                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     ></QuillEditor>
-                                    </div>
+
+                                    <!-- Job Requirement -->
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
@@ -179,6 +181,8 @@
                                     placeholder="Enter job requirement"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
+                                    <!-- Job Type -->
                                     <h4 class="text-lg font-bold mb-2">Job Type</h4>
                                     <input
                                     v-model="newJobType"
@@ -186,6 +190,8 @@
                                     placeholder="Enter job type (e.g., Full-time)"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
+                                    <!-- Salary -->
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
                                     <input
                                     v-model="newJobSalary"
@@ -193,6 +199,8 @@
                                     placeholder="Enter salary"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
+                                    <!-- Location -->
                                     <h4 class="text-lg font-bold mb-2">Location</h4>
                                     <input
                                     v-model="newJobLocation"
@@ -200,23 +208,32 @@
                                     placeholder="Enter location"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+                                    <input
+                                    v-model="newJobUserId"
+                                    type="text"
+                                    placeholder="Location"
+                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50 hidden"
+                                    />
+                                </div>
+
+                                <!-- Modal Footer with buttons -->
+                                <div class="mt-6 flex justify-end space-x-4">
+                                    <!-- Close Button -->
+                                    <button
+                                    @click="editModal = false"
+                                    class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md"
+                                    >
+                                    Close
+                                    </button>
+                                    <!-- Save Button -->
+                                    <button
+                                    type="submit"
+                                    class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
+                                    >
+                                    Save Changes
+                                    </button>
                                 </div>
                                 </form>
-                            </div>
-                            <!-- Modal Footer -->
-                            <div class="mt-6 flex justify-end space-x-4">
-                                <button
-                                @click="editModal = false"
-                                class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md"
-                                >
-                                Close
-                                </button>
-                                <button
-                                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-                                @click="updateJobHandler"
-                                >
-                                Save Changes
-                                </button>
                             </div>
                             </div>
                         </div>
@@ -502,8 +519,7 @@
             return "";
         }
         // Menggunakan QuillDeltaToHtmlConverter untuk mengonversi Delta ke HTML
-        const converter = new QuillDeltaToHtmlConverter(delta.ops, {
-        });
+        const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
 
         const html = converter.convert();
         return html;
@@ -532,40 +548,79 @@
         }
         };
 
-        const updateJobHandler = async (
-        userId,
-        jobId,
-        newJobTitle,
-        newJobDescription,
-        newJobRequirement,
-        newJobSalary,
-        newJobType,
-        newJobLocation,
-        id
-        ) => {
+        // const updateJobHandler = async (
+        // jobId,
+        // newJobTitle,
+        // newJobDescription,
+        // newJobRequirement,
+        // newJobSalary,
+        // newJobType,
+        // newJobLocation,
+        // id
+        // ) => {
         const token = localStorage.getItem("authToken");
-        const descriptionHTML = getInsertValues(newJobDescription.value);
-        const updatedJob = {
-            title: newJobTitle.value,
-            description: descriptionHTML,
-            requirement: newJobRequirement.value,
-            salary: newJobSalary.value,
-            type: newJobType.value,
-            location: newJobLocation.value,
-            uid: id.value,
+
+        const dateNewJob = {
+        title: newJobTitle.value,
+        description: newJobDescription.value, // Ensure `newJobDescription` is a ref
+        requirement: newJobRequirement.value,
+        salary: newJobSalary.value,
+        type: newJobType.value,
+        location: newJobLocation.value,
+        uid: id.value, // Make sure `id` holds the correct job identifier
         };
 
-        try {
-            console.log("Updating job with ID:", jobId);
+        const updateJob = async () => {
+        if (!token) {
+            console.error("No authentication token found.");
+            Swal.fire({
+            icon: "error",
+            title: "Authentication Error",
+            text: "Please log in again.",
+            confirmButtonText: "OK",
+            });
+            return;
+        }
 
-            const response = await axios.put(`${API_URL}/${jobId}`, updatedJob, {
-            headers: {
+        // Input validation
+        if (
+            !dateNewJob.title ||
+            !dateNewJob.description ||
+            !dateNewJob.requirement ||
+            !dateNewJob.salary ||
+            !dateNewJob.type ||
+            !dateNewJob.location ||
+            !dateNewJob.uid // Check if the userId/jobId is also provided
+        ) {
+            console.error("Missing required job fields.");
+            Swal.fire({
+            icon: "error",
+            title: "Input Error",
+            text: "Please fill in all required fields.",
+            confirmButtonText: "Retry",
+            });
+            return;
+        }
+
+        try {
+            console.log("Updating job with data:", dateNewJob);
+
+            // Assuming the URL is correct with userId/jobId
+            const response = await axios.put(
+            `${API_URL}/${dateNewJob.uid}`, // Make sure userId is correct identifier
+            dateNewJob,
+            {
+                headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
-            },
-            });
+                },
+            }
+            );
 
-            if (response.data && response.data.data) {
+            if (response?.data) {
+            // Check if response.data exists
+            console.log("Job updated successfully:", response.data);
+
             Swal.fire({
                 icon: "success",
                 title: "Success!",
@@ -581,6 +636,7 @@
             "Error updating job:",
             error.response ? error.response.data : error.message
             );
+
             Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -591,6 +647,8 @@
             });
         }
         };
+
+        // };
 
         // Function to delete job
         const deleteJobHandler = async (userId, jobId) => {
@@ -652,7 +710,8 @@
         updatePagination,
         deleteJobHandler,
         addJobHandler,
-        updateJobHandler,
+        updateJob,
+        // updateJobHandler,
         };
     },
     };
