@@ -6,7 +6,7 @@ import Home from "../components/pages/user/Home.vue";
 import Dashboard from "../components/pages/admin/Dashboard.vue";
 import MainLayoutUser from "../components/layout/user/MainLayout.vue";
 import MainLayoutAdmin from "../components/layout/admin/MainLayout.vue";
-import ManageJob from "../components/pages/admin/managejob.vue";
+import ManageJob from "../components/pages/admin/ManageJob.vue";
 import ManageJobseekers from "../components/pages/admin/ManageJobSeekers.vue";
 import ProfileAdmin from "../components/pages/admin/Profile.vue";
 import Jobs from "../components/pages/user/Jobs.vue";
@@ -15,11 +15,26 @@ import SaveJobs from "../components/pages/user/SaveJob.vue";
 import Applied from "../components/pages/user/Applied.vue";
 import Settings from "../components/pages/user/Settings.vue";
 import AuthRedirect from "../components/auth/AuthRedirect.vue";
+import { decodeToken } from "../Services/JWT/JwtDecode";
 
 const routes = [
   {
     path: "/admin",
     component: MainLayoutAdmin,
+    beforeEnter: async (to, from, next) => {
+      try {
+        const decodedToken = await decodeToken();
+        const role = decodedToken.role;
+        if (role == "User") {
+          next({ name: "Home" });
+        } else {
+          next();
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        next({ name: "Home" });
+      }
+    },
     children: [
       {
         path: "",
