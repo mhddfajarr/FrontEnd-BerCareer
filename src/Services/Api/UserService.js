@@ -188,4 +188,41 @@ export const getAllAplication = async () => {
   }
 }
 
+const API_PROFILE = "https://localhost:7147/api/Profiles";
+
+export const getProfileUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+
+  try {
+    const response = await axios.get(`${API_PROFILE}?userId=${encodeURIComponent(userId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.error('Error fetching user profile:', e);
+    throw e; // Throw the caught error
+  }
+};
+
+const API_UPDATE_PROFILE = "https://localhost:7147/api/Profiles/Update";
+export const updateProfile = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+  try {
+    const response = await axios.put(API_UPDATE_PROFILE, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    throw e; // Throw the caught error
+  }
+}
+
 

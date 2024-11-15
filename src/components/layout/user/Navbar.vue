@@ -177,6 +177,7 @@ import Swal from "sweetalert2";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import { getDataUser} from "../../../Services/Api/UserService";
 import { useRouter } from 'vue-router';
+import { eventBus } from '../../../Services/EvenBus';
 
 export default {
   setup() {
@@ -185,11 +186,12 @@ export default {
     const username = ref("");
     const id= ref("")
     const router = useRouter();
+    
 
     // ref untuk dropdown dan tombol dropdown
     const dropdownMenu = ref(null);
     const dropdownButton = ref(null);
-
+    
     // Method untuk logout
     const logout = () => {
       Swal.fire({
@@ -248,6 +250,8 @@ export default {
         console.error("Error fetching user data:", error);
       }
     };
+
+    eventBus.on("profileUpdated", fetchDataUser);
 
     const getUserId =async()=>{
       try {

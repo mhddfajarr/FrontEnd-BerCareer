@@ -18,9 +18,8 @@
             src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
             width="100"
           />
-          <h2 class="text-xl font-semibold mt-4 text-gray-700">John Doe</h2>
-          <p class="text-gray-600">Full Stack Developer</p>
-          <p class="text-gray-600">Bay Area, San Francisco, CA</p>
+          <h2 class="text-xl font-semibold mt-4 text-gray-700">{{dataProfile.fullName}}</h2>
+          <p class="text-gray-600">{{ email }}</p>
         </div>
         <div class="mt-6 mb-4">
           <ul class="space-y-4">
@@ -51,51 +50,41 @@
 
       <!-- Profile Details -->
       <div
-        class="bg-white px-6 rounded-lg shadow-md md:col-span-8 border-t-4 border-primary"
+        class="bg-white px-6 md:px-10 h-auto rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
       >
-      <div class="flex justify-center ">
+        <div class="flex justify-center">
           <h1 class="text-xl font-bold text-gray-700 px-3 py-2">Profile</h1>
         </div>
 
         <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
+        <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
-            <p class="text-gray-500">Kenneth Valdez</p>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Email</h3>
-            <p class="text-gray-500">fip@jukmuh.al</p>
+            <p class="text-gray-500">{{dataProfile.fullName}}</p>
           </div>
           <div>
             <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
-            <p class="text-gray-500">(239) 816-9029</p>
+            <p class="text-gray-500">{{ dataProfile.phoneNumber ?? '-' }}</p>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-700">Address</h3>
+            <p class="text-gray-500">{{ dataProfile.address ?? '-' }}</p>
           </div>
           <div>
             <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
-            <p class="text-gray-500">Female</p>
+            <p class="text-gray-500">{{ dataProfile.gender === 0 ? 'Laki-Laki' : (dataProfile.gender === 1 ? 'Perempuan' : '-') }}</p>
           </div>
         </div>
-        <div class="grid grid-cols-1 gap-6 mt-4">
+
+        <div class="grid grid-cols-1 gap-6">
           <div>
             <h3 class="text-lg font-semibold text-gray-700">About Me</h3>
-            <p class="text-gray-500">
-              "Saya adalah seorang profesional yang memiliki pengalaman lebih
-              dari 5 tahun di bidang pengembangan perangkat lunak, dengan
-              spesialisasi dalam pengembangan aplikasi web dan API menggunakan
-              teknologi terkini seperti ASP.NET Core, Vue.js, dan Tailwind CSS.
-              Saya berkomitmen untuk terus belajar dan mengembangkan
-              keterampilan teknis, serta berkolaborasi dalam tim untuk
-              menciptakan solusi yang inovatif dan efisien. Selain itu, saya
-              juga memiliki minat dalam desain antarmuka pengguna yang intuitif
-              dan fokus pada pengalaman pengguna yang optimal. Di luar
-              pekerjaan, saya senang mengeksplorasi tren teknologi terbaru dan
-              berbagi pengetahuan dengan komunitas pengembang."
-            </p>
+            <p class="text-gray-500">{{ dataProfile.summary ?? '-' }}</p>
           </div>
         </div>
-        <div class="mt-6 text-end">
+
+        <div class="mt-auto text-end">
           <button
             @click="showModalProfile = true"
             class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
@@ -109,6 +98,7 @@
           />
         </div>
       </div>
+
     </div>
 
     <!-- Experience, Education, Skill, Certificate Section -->
@@ -197,25 +187,75 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+import Swal from "sweetalert2";
 import ModalAddExperience from "../../User/ModalAddExperience.vue";
 import ModalEditProfile from "../../User/ModalAddProfile.vue";
 import ModalAddEducation from "../../User/ModalAddEducation.vue";
 import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
+import { eventBus } from '../../../Services/EvenBus';
+
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import { getProfileUser} from "../../../Services/Api/UserService";
 
 export default {
-  data() {
+  setup() {
+    const showModalExperience = ref(false);
+    const showModalProfile = ref(false);
+    const showModalEducation = ref(false);
+    const showModalSkill = ref(false);
+    const showModalCertificate = ref(false);
+    const showModalCardProfile = ref(false);
+    const id = ref("");
+    const dataProfile = ref([])
+    const email = ref("")
+
+    
+    const fetchProfileUser = async () => {
+      try {
+        const userId = id.value;
+        const data = await getProfileUser(userId);
+        dataProfile.value = data.data;
+        console.log(dataProfile)
+        if (dataProfile.value && dataProfile.value.postDate) {
+          dataProfile.value.postDate = moment(dataProfile.value.postDate).format(
+            "MMMM DD, YYYY"
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    eventBus.on("profileUpdated", fetchProfileUser);
+    const getUserId = async () => {
+      try {
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+        email.value = dataUser.email;
+        console.log(id.value);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    };
+    onMounted(async () => {
+      await getUserId();
+      fetchProfileUser();
+    });
     return {
-      showModalExperience: false,
-      showModalProfile: false,
-      showModalEducation: false,
-      showModalSkill: false,
-      showModalCertificate: false,
-      showModalCardProfile: false,
+      dataProfile,
+      fetchProfileUser,
+      getUserId,
+      email,
+      showModalExperience,
+      showModalProfile,
+      showModalEducation,
+      showModalSkill,
+      showModalCertificate,
+      showModalCardProfile,
     };
   },
-  methods: {},
   components: {
     ModalEditProfile,
     ModalAddExperience,
