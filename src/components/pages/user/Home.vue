@@ -115,8 +115,8 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock text-purple-500 mr-1"></i>
-          <span class="text-purple-500">{{ job.type }}</span>
+          <i class="fas fa-user-clock  mr-1"></i>
+          <span class="">{{ job.type }}</span>
         </p>
         <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
         <p><i class="fas fa-briefcase mr-1"></i> {{ job.requirement }}</p>
@@ -124,16 +124,12 @@
       </div>
       <hr class="mt-4 mb-2" />
       <div class="flex justify-between items-center">
-        <span
-          v-if="job.isApplied"
-          class="bg-red-500 text-white text-xs px-2 py-1 rounded-full"
-        >
-          Applied
-        </span>
-        <span class="italic text-gray-600 text-xs px-2 py-1 rounded-full">
-          Posted On {{ job.postDate }}
-        </span>
-      </div>
+
+  <span  class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full">
+    Posted On {{ job.postDate }}
+  </span>
+</div>
+
 
       <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
       <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">

@@ -88,8 +88,7 @@
         <!-- Card Deskripsi Pekerjaan -->
         <div class="text-gray-700">
           <h2 class="text-xl font-bold mb-4">Description</h2>
-          <p class="mb-4">
-            {{ jobs.description }}
+          <p v-html="jobs.description" class="mb-4">
           </p>
         </div>
       </div>
