@@ -71,6 +71,8 @@ import ModalAddExperience from './ModalAddExperience.vue';
 import { getExperienceUser } from '../../Services/Api/UserService';
 import { decodeToken } from '../../Services/JWT/JwtDecode';
 import moment from 'moment';
+import { eventBus } from '../../Services/EvenBus';
+
 
 export default {
   name: 'ExperienceCard',
@@ -125,7 +127,7 @@ export default {
     // Return formatted string like "May 2024 - Now (6 months)"
     return `${startFormatted} - ${endFormatted} (${months} months)`;
     };
-
+    eventBus.on("newExperience", fetchExperienceUser);
 
     // Method untuk edit pengalaman kerja
     const editExperience = (experience) => {
