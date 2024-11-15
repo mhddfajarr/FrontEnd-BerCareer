@@ -60,20 +60,18 @@
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <input
-                                    v-model="newJobDescription"
-                                    type="text"
-                                    placeholder="Description"
-                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
-                                    <!-- <div>
-                                                    <ejs-richtexteditor
-                                                    height="200px"
-                                                    width="525px"
-                                                    >
-                                                    <p></p>
-                                                    </ejs-richtexteditor>
-                                                </div> -->
+                                    <div>
+                                    <QuillEditor
+                                        v-model:content="newJobDescription"
+                                        type="text"
+                                        placeholder="Description"
+                                        class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    ></QuillEditor>
+                                    <div
+                                        v-html="newJobDescription"
+                                        class="hidden"
+                                    ></div>
+                                    </div>
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
@@ -81,6 +79,13 @@
                                     v-model="newJobRequirement"
                                     type="text"
                                     placeholder="Requirement"
+                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    />
+                                    <h4 class="text-lg font-bold mb-2">Job Type</h4>
+                                    <input
+                                    v-model="newJobType"
+                                    type="text"
+                                    placeholder="Type"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
@@ -149,49 +154,50 @@
                                 <div class="card-body">
                                     <h4 class="text-lg font-bold mb-2">Title</h4>
                                     <input
-                                    v-model="title"
+                                    v-model="newJobTitle"
                                     type="text"
-                                    placeholder="Title"
+                                    placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <input
-                                    v-model="description"
-                                    type="text"
-                                    placeholder="Description"
-                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
-                                    <!-- <div>
-                                                    <ejs-richtexteditor
-                                                    height="200px"
-                                                    width="525px"
-                                                    >
-                                                    <p></p>
-                                                    </ejs-richtexteditor>
-                                                </div> -->
+                                    <div>
+                                    <QuillEditor
+                                        v-model:content="newJobDescription"
+                                        type="text"
+                                        placeholder="Enter job description"
+                                        class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    ></QuillEditor>
+                                    </div>
                                     <h4 class="text-lg font-bold mb-2">
-                                    Experience
+                                    Requirement
                                     </h4>
                                     <input
-                                    v-model="experience"
+                                    v-model="newJobRequirement"
                                     type="text"
-                                    placeholder="Experience"
+                                    placeholder="Enter job requirement"
+                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    />
+                                    <h4 class="text-lg font-bold mb-2">Job Type</h4>
+                                    <input
+                                    v-model="newJobType"
+                                    type="text"
+                                    placeholder="Enter job type (e.g., Full-time)"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
                                     <input
-                                    v-model="salary"
+                                    v-model="newJobSalary"
                                     type="text"
-                                    placeholder="Salary"
+                                    placeholder="Enter salary"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
                                     <h4 class="text-lg font-bold mb-2">Location</h4>
                                     <input
-                                    v-model="location"
+                                    v-model="newJobLocation"
                                     type="text"
-                                    placeholder="Location"
+                                    placeholder="Enter location"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
                                 </div>
@@ -207,13 +213,14 @@
                                 </button>
                                 <button
                                 class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-                                @click="editJobHandler"
+                                @click="updateJobHandler"
                                 >
                                 Save Changes
                                 </button>
                             </div>
                             </div>
                         </div>
+
                         <div class="flex items-center space-x-2 bg-white">
                             <details class="dropdown bg-white border-none">
                             <summary
@@ -285,7 +292,7 @@
                             >
                                 <td><input type="checkbox" class="checkbox" /></td>
                                 <td>{{ job.title }}</td>
-                                <td>{{ job.description }}</td>
+                                <td v-html="job.description"></td>
                                 <td>{{ job.salary }}</td>
                                 <td>{{ job.type }}</td>
                                 <td>{{ job.requirement }}</td>
@@ -354,7 +361,9 @@
     getAllData,
     deleteJob,
     addJob,
+    updateJob,
     } from "../../../Services/Api/AdminService"; // Import API functions
+    import { decodeToken } from "../../../Services/JWT/JwtDecode";
     import Swal from "sweetalert2";
     import {
     RichTextEditorComponent,
@@ -364,9 +373,35 @@
     Link,
     Table,
     } from "@syncfusion/ej2-vue-richtexteditor";
+    import { QuillEditor } from "@vueup/vue-quill";
+    import "@vueup/vue-quill/dist/vue-quill.snow.css";
+    import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
     export default {
     components: {
         "ejs-richtexteditor": RichTextEditorComponent,
+        QuillEditor,
+    },
+    methods: {
+        openEditModal(jobId) {
+        this.jobId = jobId;
+        this.editModal = true;
+        this.getJobsById(jobId);
+        },
+
+        getJobsById(jobId) {
+        fetch(`/api/jobs/${jobId}`)
+            .then((response) => response.json())
+            .then((data) => {
+            // Isi data untuk diedit
+            this.newJobTitle = data.title;
+            this.newJobDescription = data.description;
+            this.newJobRequirement = data.requirement;
+            this.newJobType = data.type;
+            this.newJobSalary = data.salary;
+            this.newJobLocation = data.location;
+            })
+            .catch((error) => console.error("Error fetching job data:", error));
+        },
     },
     provide: {
         richtexteditor: [Toolbar, Image, HtmlEditor, Link, Table],
@@ -384,9 +419,13 @@
         const totalPages = ref(1); // For pagination calculation
         const newJobTitle = ref("");
         const newJobDescription = ref("");
+        const newJobType = ref("");
         const newJobSalary = ref("");
         const newJobLocation = ref("");
         const newJobRequirement = ref("");
+        const newJobUserId = ref("");
+        const id = ref("");
+        const userId = ref("");
 
         // Fetch job details from API
         const fetchJobDetail = async () => {
@@ -449,20 +488,107 @@
         totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Recalculate total pages
         };
 
-        const addJobHandler = async () => {
-        const newJob = {
-            title: newJobTitle,
-            description: newJobDescription.value,
-            requirement: newJobRequirement.value,
-            salary: newJobSalary,
-            location: newJobLocation,
-            userId: newJobUserId,
+        const getUserId = async () => {
+        try {
+            const dataUser = await decodeToken();
+            id.value = dataUser.uid;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+        }
         };
+
+        const getInsertValues = (delta) => {
+        if (!delta || !delta.ops) {
+            return "";
+        }
+        // Menggunakan QuillDeltaToHtmlConverter untuk mengonversi Delta ke HTML
+        const converter = new QuillDeltaToHtmlConverter(delta.ops, {
+        });
+
+        const html = converter.convert();
+        return html;
+        };
+
+        const addJobHandler = async () => {
+        // const insertValues = getInsertValues(newJobDescription.value);
+        // const descriptionHTML = newJobDescription.value;
+        const descriptionHTML = getInsertValues(newJobDescription.value);
+        const newJob = {
+            Title: newJobTitle.value,
+            Description: descriptionHTML,
+            Requirement: newJobRequirement.value,
+            Salary: newJobSalary.value,
+            Type: newJobType.value,
+            Location: newJobLocation.value,
+            uid: id.value,
+        };
+        console.log("Job data to be added:", newJob);
+
         try {
             await addJob(newJob);
-            console.log;
+            console.log("Job successfully added!");
         } catch (exception) {
-           console.lo
+            console.error("Error adding job:", exception);
+        }
+        };
+
+        const updateJobHandler = async (
+        userId,
+        jobId,
+        newJobTitle,
+        newJobDescription,
+        newJobRequirement,
+        newJobSalary,
+        newJobType,
+        newJobLocation,
+        id
+        ) => {
+        const token = localStorage.getItem("authToken");
+        const descriptionHTML = getInsertValues(newJobDescription.value);
+        const updatedJob = {
+            title: newJobTitle.value,
+            description: descriptionHTML,
+            requirement: newJobRequirement.value,
+            salary: newJobSalary.value,
+            type: newJobType.value,
+            location: newJobLocation.value,
+            uid: id.value,
+        };
+
+        try {
+            console.log("Updating job with ID:", jobId);
+
+            const response = await axios.put(`${API_URL}/${jobId}`, updatedJob, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            });
+
+            if (response.data && response.data.data) {
+            Swal.fire({
+                icon: "success",
+                title: "Success!",
+                text: "Job updated successfully.",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            } else {
+            throw new Error("Unexpected response structure");
+            }
+        } catch (error) {
+            console.error(
+            "Error updating job:",
+            error.response ? error.response.data : error.message
+            );
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text:
+                error.response?.data?.message ||
+                "There was an error updating the job!",
+            confirmButtonText: "Retry",
+            });
         }
         };
 
@@ -495,16 +621,21 @@
 
         // Fetch job details when component is mounted
         onMounted(() => {
+        getUserId();
         fetchJobDetail();
         });
 
         return {
         showModal,
+        id,
+        userId,
+        newJobUserId,
         newJobTitle,
         newJobDescription,
         newJobRequirement,
         newJobLocation,
         newJobSalary,
+        newJobType,
         editModal,
         selectedTitle,
         searchQuery,
@@ -520,13 +651,17 @@
         changePage,
         updatePagination,
         deleteJobHandler,
-        addJobHandler
+        addJobHandler,
+        updateJobHandler,
         };
     },
     };
     </script>
 
-    <style scoped>
+    <style>
+    .ql-editor {
+    height: 15vh;
+    }
     /* Styling for pagination and other elements */
     .pagination-container {
     display: flex;

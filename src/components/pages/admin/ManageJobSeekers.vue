@@ -18,27 +18,22 @@
                 <!-- Card Component -->
                 <div class="card shadow-xl border-t-4 border-t-primary bg-white">
                 <div class="card-body">
-                    <!-- Card Header with Filter Dropdown -->
+                    <!-- Card Header with Filter Tabs -->
                     <div class="flex justify-between flex-wrap">
-                    <details class="dropdown bg-white border-none">
-                        <summary
-                        class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none"
+                    <!-- Tabs Container with Scrollable Property -->
+                    <div
+                        class="tabs tabs-boxed overflow-x-auto whitespace-nowrap"
+                    >
+                        <!-- Create a tab for each job title -->
+                        <div
+                        v-for="(job, index) in dataJobs"
+                        :key="job.jobId"
+                        class="tab tab-lg inline-block mx-2 cursor-pointer"
+                        @click="filterJobsByTitle(job.title)"
                         >
-                        <i class="fas fa-solid fa-filter"></i>
-                        </summary>
-                        <ul
-                        class="menu dropdown-content bg-white rounded-box z-[1] w-52 p-2 shadow border-none"
-                        >
-                        <!-- Iterasi dataJobs untuk menampilkan job title -->
-                        <li
-                            v-for="(job, index) in dataJobs"
-                            :key="job.jobId"
-                            @click="filterJobsByTitle(job.title)"
-                        >
-                            <a>{{ job.title }}</a>
-                        </li>
-                        </ul>
-                    </details>
+                        {{ job.title }}
+                        </div>
+                    </div>
                     <h2 class="card-title text-lg md:text-xl">
                         Fullstack Developer
                     </h2>
@@ -231,18 +226,6 @@
             job.location.toLowerCase().includes(query)
         );
         },
-
-        // Fungsi untuk mengedit pekerjaan
-        editJob(job) {
-        // Lakukan proses edit
-        console.log("Edit Job:", job);
-        },
-
-        // Fungsi untuk menghapus pekerjaan
-        deleteJob(jobId) {
-        // Lakukan proses delete
-        console.log("Delete Job:", jobId);
-        },
     },
     created() {
         this.fetchJobDetail(); // Ambil data pekerjaan ketika komponen dibuat
@@ -250,156 +233,23 @@
     };
     </script>
 
-    <style lang="scss" scoped>
-    /* Responsiveness for large screens and scaling adjustments */
-    @media (max-width: 1200px) {
-    .content-wrapper {
-        padding: 1rem;
-    }
-    .table {
-        font-size: 0.9rem; /* Adjust font size for larger screens */
-    }
-    .tabs-lifted {
-        display: flex;
-        flex-direction: column;
-    }
-    .card-title {
-        font-size: 1.75rem; /* Slightly smaller card titles */
-    }
-    }
-
-    /* For small screens */
-    @media (max-width: 768px) {
-    .tabs-lifted {
-        flex-direction: column;
-    }
-    .card-title {
-        font-size: 1.5rem; /* Make the title smaller on mobile */
-    }
-    .table {
-        font-size: 0.85rem;
-    }
-    .breadcrumbs {
-        display: block;
-        font-size: 1rem; /* Adjust breadcrumb font for small screens */
-    }
-    }
-
-    /* For extra small screens */
-    @media (max-width: 480px) {
-    .card-body {
-        padding: 1rem;
-    }
-    .card-title {
-        font-size: 1.25rem; /* Reduce title size further for small screens */
-    }
-    .table td,
-    .table th {
-        padding: 0.5rem; /* Adjust padding for table cells on small screens */
-    }
-    }
-
-    /* Media Query untuk Responsivitas */
-    @media (max-width: 768px) {
-    .content {
-        padding: 10px;
-    }
-
-    .card-body {
-        padding: 1rem;
-    }
-
+    <style>
     .tabs {
-        flex-direction: column;
+    -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: rgba(0, 0, 0, 0.5) rgba(0, 0, 0, 0); /* Custom scrollbar for Firefox */
     }
 
-    .table {
-        font-size: 0.875rem; /* Mengurangi ukuran font tabel pada perangkat kecil */
+    .tabs::-webkit-scrollbar {
+    height: 8px;
     }
 
-    .table th,
-    .table td {
-        padding: 0.5rem; /* Mengurangi padding di tabel */
+    .tabs::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
     }
 
-    .dropdown-content {
-        width: 100%; /* Dropdown akan menyesuaikan dengan lebar layar kecil */
-    }
-
-    .join-item {
-        padding: 10px;
-        margin: 5px 0;
-        width: 100%;
-    }
-
-    .avatar img {
-        width: 40px;
-        height: 40px;
-    }
-    }
-
-      /* Media Queries for Responsiveness */
-      @media (max-width: 1024px) {
-        .tabs {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tab-content {
-            padding: 1.5rem;
-        }
-
-        .table {
-            font-size: 0.875rem; /* Reduce font size for smaller screens */
-        }
-
-        .table th, .table td {
-            padding: 0.5rem; /* Reduce padding for smaller screens */
-        }
-
-        .overflow-x-auto {
-            margin-bottom: 1rem; /* Add margin for better spacing */
-        }
-
-        .join-item {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%; /* Make join buttons take full width on small screens */
-        }
-
-        .avatar img {
-            width: 40px;
-            height: 40px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .tabs {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .tab-content {
-            padding: 1rem;
-        }
-
-        .table {
-            font-size: 0.75rem; /* Further reduce font size on smaller screens */
-        }
-
-        .table th, .table td {
-            padding: 0.25rem; /* Further reduce padding */
-        }
-
-        .join {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .join-item {
-            padding: 10px;
-            margin: 5px 0;
-            width: 100%;
-        }
+    .tabs::-webkit-scrollbar-track {
+    background-color: transparent;
     }
     </style>
