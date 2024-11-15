@@ -236,11 +236,9 @@ export default {
         const userId = id.value;
         if (!userId) {
           console.log(id.value);
-          console.error("User ID is missing");
           return;
         }
-        const response = await getDataUser(userId);  // Memanggil API untuk mendapatkan data user
-        console.log(response);
+        const response = await getDataUser(userId); 
         
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName

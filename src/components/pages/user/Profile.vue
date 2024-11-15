@@ -5,11 +5,11 @@
       <div
         class="bg-white px-6 rounded-lg shadow-md h-auto md:col-span-4 border-t-4 border-primary"
       >
-        <div class="flex justify-center px-3 py-2">
-          <h1 class="text-xl font-bold text-gray-700">Card Profile</h1>
+        <div class="mt-3">
+          <h1 class="text-xl font-bold text-black mb-2">Card Profile</h1>
+          <hr class="border-gray-300 mb-4" />
         </div>
-        <!-- Garis dibawah tulisan -->
-        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
+
         <div class="text-center">
           <img
             alt="Profile picture of John Doe"
@@ -18,7 +18,9 @@
             src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
             width="100"
           />
-          <h2 class="text-xl font-semibold mt-4 text-gray-700">{{dataProfile.fullName}}</h2>
+          <h2 class="text-xl font-semibold mt-4 text-gray-700">
+            {{ dataProfile.fullName }}
+          </h2>
           <p class="text-gray-600">{{ email }}</p>
         </div>
         <div class="mt-6 mb-4">
@@ -52,39 +54,46 @@
       <div
         class="bg-white px-6 md:px-10 h-auto rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
       >
-        <div class="flex justify-center">
-          <h1 class="text-xl font-bold text-gray-700 px-3 py-2">Profile</h1>
+        <div class="mt-3">
+          <h1 class="text-2xl font-bold text-black mb-2">Profile</h1>
+          <hr class="border-gray-300 mb-4" />
         </div>
 
-        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
-
-        <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="mt-4">
             <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
-            <p class="text-gray-500">{{dataProfile.fullName}}</p>
+            <p class="text-gray-500">{{ dataProfile.fullName }}</p>
           </div>
-          <div>
+          <div class="mt-4">
             <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
-            <p class="text-gray-500">{{ dataProfile.phoneNumber ?? '-' }}</p>
+            <p class="text-gray-500">{{ dataProfile.phoneNumber ?? "-" }}</p>
           </div>
-          <div>
+          <div class="mt-4">
             <h3 class="text-lg font-semibold text-gray-700">Address</h3>
-            <p class="text-gray-500">{{ dataProfile.address ?? '-' }}</p>
+            <p class="text-gray-500">{{ dataProfile.address ?? "-" }}</p>
           </div>
-          <div>
+          <div class="mt-4">
             <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
-            <p class="text-gray-500">{{ dataProfile.gender === 0 ? 'Laki-Laki' : (dataProfile.gender === 1 ? 'Perempuan' : '-') }}</p>
+            <p class="text-gray-500">
+              {{
+                dataProfile.gender === 0
+                  ? "Laki-Laki"
+                  : dataProfile.gender === 1
+                  ? "Perempuan"
+                  : "-"
+              }}
+            </p>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:mt-7">
           <div>
-            <h3 class="text-lg font-semibold text-gray-700">About Me</h3>
-            <p class="text-gray-500">{{ dataProfile.summary ?? '-' }}</p>
+            <h3 class="text-lg font-semibold text-gray-700">Summary</h3>
+            <p class="text-gray-500">{{ dataProfile.summary ?? "-" }}</p>
           </div>
         </div>
 
-        <div class="mt-auto text-end">
+        <div class="mt-5 text-end">
           <button
             @click="showModalProfile = true"
             class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
@@ -98,7 +107,6 @@
           />
         </div>
       </div>
-
     </div>
 
     <!-- Experience, Education, Skill, Certificate Section -->
@@ -106,23 +114,7 @@
       <div class="w-full md:w-8/12">
         <div class="space-y-6">
           <!-- Experience -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Experience</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalExperience = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Experience
-              </button>
-              <ModalAddExperience
-                v-if="showModalExperience"
-                :showModal="showModalExperience"
-                @close="showModalExperience = false"
-              />
-            </div>
-          </div>
+          <ExperienceCard  />
 
           <!-- Education -->
           <div class="bg-white p-6 rounded-lg shadow-md">
@@ -195,10 +187,11 @@ import ModalAddEducation from "../../User/ModalAddEducation.vue";
 import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
-import { eventBus } from '../../../Services/EvenBus';
+import ExperienceCard from '../../User/ProfileExperienceCard.vue';
+import { eventBus } from "../../../Services/EvenBus";
 
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
-import { getProfileUser} from "../../../Services/Api/UserService";
+import { getProfileUser } from "../../../Services/Api/UserService";
 
 export default {
   setup() {
@@ -209,20 +202,18 @@ export default {
     const showModalCertificate = ref(false);
     const showModalCardProfile = ref(false);
     const id = ref("");
-    const dataProfile = ref([])
-    const email = ref("")
+    const dataProfile = ref([]);
+    const email = ref("");
 
-    
     const fetchProfileUser = async () => {
       try {
         const userId = id.value;
         const data = await getProfileUser(userId);
         dataProfile.value = data.data;
-        console.log(dataProfile)
         if (dataProfile.value && dataProfile.value.postDate) {
-          dataProfile.value.postDate = moment(dataProfile.value.postDate).format(
-            "MMMM DD, YYYY"
-          );
+          dataProfile.value.postDate = moment(
+            dataProfile.value.postDate
+          ).format("MMMM DD, YYYY");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -234,7 +225,6 @@ export default {
         const dataUser = await decodeToken();
         id.value = dataUser.uid;
         email.value = dataUser.email;
-        console.log(id.value);
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -244,6 +234,7 @@ export default {
       fetchProfileUser();
     });
     return {
+      id,
       dataProfile,
       fetchProfileUser,
       getUserId,
@@ -262,7 +253,7 @@ export default {
     ModalAddEducation,
     ModalAddSkill,
     ModalAddCertificate,
-    ModalEditCardProfile,
+    ModalEditCardProfile,ExperienceCard
   },
 };
 </script>

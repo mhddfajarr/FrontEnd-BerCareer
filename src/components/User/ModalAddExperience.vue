@@ -86,6 +86,8 @@
   </template>
   
   <script>
+  import { ref } from 'vue';
+  
   export default {
     props: {
       showModal: {
@@ -93,29 +95,39 @@
         required: true,
       },
     },
-    data() {
-      return {
-        formData: {
-          position: '',
-          companyName: '',
-          jobType: '',
-          startDate: '',
-          endDate: '',
-          description: '',
-        },
+    setup(props, { emit }) {
+      // Ref for form data
+      const formData = ref({
+        position: '',
+        companyName: '',
+        jobType: '',
+        startDate: '',
+        endDate: '',
+        description: '',
+      });
+  
+      // Method to close the modal
+      const closeModal = () => {
+        emit('close');
       };
-    },
-    methods: {
-      closeModal() {
-        this.$emit('close');
-      },
-      submitForm() {
+  
+      // Method to submit the form
+      const submitForm = () => {
         // Emit form data for parent handling
-        console.log("berhasilexperience")
-      },
+        console.log('Experience form submitted', formData.value);
+        // Optionally, you can emit data to the parent component
+        // emit('submit', formData.value);
+      };
+  
+      return {
+        formData,
+        closeModal,
+        submitForm,
+      };
     },
   };
   </script>
+  
   
   <style scoped>
   /* Optional custom styling */

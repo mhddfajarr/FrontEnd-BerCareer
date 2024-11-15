@@ -225,4 +225,23 @@ export const updateProfile = async (data) => {
   }
 }
 
+const API_DETAIL_PROFILE = 'https://localhost:7147/api/Details'
 
+export const getExperienceUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+  console.log(`Fetching experiences for user: ${userId}`);
+  try {
+    const response = await axios.get(`${API_DETAIL_PROFILE}/Experiences?userId=${encodeURIComponent(userId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.log(userId)
+    console.error('Error fetching user profile:', e);
+    throw e; // Throw the caught error
+  }
+};

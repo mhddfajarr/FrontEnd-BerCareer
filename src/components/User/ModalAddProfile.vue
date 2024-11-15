@@ -101,7 +101,7 @@
             <label
               for="aboutMe"
               class="block text-gray-700 font-semibold text-left"
-              >About Me</label
+              >Summary</label
             >
             <textarea
               id="aboutMe"
@@ -218,9 +218,18 @@ export default defineComponent({
       if (!dataProfile.value.phoneNumber) {
         errors.value.phoneNumber = "Phone number is required";
         isValid = false;
+      } else if (!/^\d+$/.test(dataProfile.value.phoneNumber)) {
+        // Memastikan hanya angka (integer)
+        errors.value.phoneNumber = "Phone number must be a valid number";
+        isValid = false;
+      } else if (dataProfile.value.phoneNumber.length > 13) {
+        // Memastikan panjang phone number tidak lebih dari 13 karakter
+        errors.value.phoneNumber = "Phone number cannot exceed 13 characters";
+        isValid = false;
       } else {
         errors.value.phoneNumber = "";
       }
+
 
       if (!dataProfile.value.address) {
         errors.value.address = "Address is required";
@@ -230,7 +239,10 @@ export default defineComponent({
       }
 
       if (!dataProfile.value.summary) {
-        errors.value.summary = "About Me is required";
+        errors.value.summary = "Summary is required";
+        isValid = false;
+      } else if (dataProfile.value.summary.length > 255) {
+        errors.value.summary = "Summary cannot exceed 255 characters";
         isValid = false;
       } else {
         errors.value.summary = "";
