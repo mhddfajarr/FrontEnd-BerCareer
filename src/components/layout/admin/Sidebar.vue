@@ -41,9 +41,9 @@
 
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/ManageJob' }"
+            :class="{ active: $route.path === '/ManageRole' }"
           >
-            <RouterLink to="ManageJob" class="w-full flex items-center">
+            <RouterLink to="ManageRole" class="w-full flex items-center">
               <i
                 class="fas fa-solid fa-briefcase text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"

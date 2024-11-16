@@ -16,6 +16,7 @@ import Applied from "../components/pages/user/Applied.vue";
 import Settings from "../components/pages/user/Settings.vue";
 import AuthRedirect from "../components/auth/AuthRedirect.vue";
 import { decodeToken } from "../Services/JWT/JwtDecode";
+import ManageRole from "../components/pages/admin/superAdmin/ManageRole.vue";
 
 const routes = [
   {
@@ -55,6 +56,25 @@ const routes = [
         path: "/profileadmin",
         name: "ProfileAdmin",
         component: ProfileAdmin,
+      },
+      {
+        path: "/managerole",
+        name: "ManageRole",
+        component: ManageRole,
+        beforeEnter: async (to, from, next) => {
+          try {
+            const decodedToken = await decodeToken();
+            const role = decodedToken.role;
+            if (role == "Admin") {
+              next({ name: "Admin" });
+            } else {
+              next();
+            }
+          } catch (error) {
+            console.error("Error decoding token:", error);
+            next({ name: "Home" });
+          }
+        },
       },
     ],
   },
