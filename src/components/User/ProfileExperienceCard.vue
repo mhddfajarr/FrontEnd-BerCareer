@@ -195,13 +195,12 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Yes, delete it!",
           cancelButtonText: "No, cancel!",
-          reverseButtons: true, // Untuk membalikkan posisi tombol (Yes di kiri dan No di kanan)
+          reverseButtons: true, 
         });
 
         if (result.isConfirmed) {
-          // Melakukan penghapusan pengalaman
-          await deleteExperience(data); // Menunggu penghapusan selesai
-          await fetchExperienceUser(); // Mengambil kembali data pengalaman setelah dihapus
+          await deleteExperience(data); 
+          await fetchExperienceUser(); 
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -217,7 +216,6 @@ export default {
       }
     };
 
-    // Lifecycle Hook - ketika komponen dimuat
     onMounted(async () => {
       await getUserId();
       fetchExperienceUser();

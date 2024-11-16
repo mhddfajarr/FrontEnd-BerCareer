@@ -105,6 +105,7 @@ import ModalAddEducation from "./ModalAddEducation.vue";
 import { getEducationUser } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import moment from "moment";
+import { eventBus } from "../../Services/EvenBus";
 
 export default {
   name: "EducationCard",
@@ -163,6 +164,7 @@ export default {
       }
     };
     const fetchEducationsUser = async () => {
+        await getUserId()
       try {
         const data = await getEducationUser(userId.value);
         dataEducations.value = data.data;
@@ -170,6 +172,7 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+    eventBus.on("newEducation", fetchEducationsUser);
     onMounted(async () => {
       await getUserId();
       fetchEducationsUser();

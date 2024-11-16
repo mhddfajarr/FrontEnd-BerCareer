@@ -30,11 +30,11 @@
               required
             />
             <p
-                v-if="errors.universityNameError"
-                class="text-red-500 text-xs text-left mt-1"
-              >
-                {{ errors.universityNameError }}
-              </p>
+              v-if="errors.universityNameError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.universityNameError }}
+            </p>
           </div>
           <div class="mb-4">
             <label
@@ -50,11 +50,11 @@
               required
             />
             <p
-                v-if="errors.programStudyError"
-                class="text-red-500 text-xs text-left mt-1"
-              >
-                {{ errors.programStudyError }}
-              </p>
+              v-if="errors.programStudyError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.programStudyError }}
+            </p>
           </div>
           <div class="mb-4">
             <label
@@ -76,11 +76,11 @@
               </option>
             </select>
             <p
-                v-if="errors.degreeError"
-                class="text-red-500 text-xs text-left mt-1"
-              >
-                {{ errors.degreeError }}
-              </p>
+              v-if="errors.degreeError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.degreeError }}
+            </p>
           </div>
           <div class="mb-4">
             <label for="gpa" class="block text-gray-700 font-semibold text-left"
@@ -94,11 +94,11 @@
               required
             />
             <p
-                v-if="errors.gpaError"
-                class="text-red-500 text-xs text-left mt-1"
-              >
-                {{ errors.gpaError }}
-              </p>
+              v-if="errors.gpaError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.gpaError }}
+            </p>
           </div>
           <div class="flex flex-col md:flex-row md:justify-between mb-4 gap-4">
             <div class="w-full md:flex-1">
@@ -179,7 +179,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, onMounted } from "vue";
+import { addEducation } from "../../Services/Api/UserService";
+import { decodeToken } from "../../Services/JWT/JwtDecode";
+import { eventBus } from "../../Services/EvenBus";
+import Swal from "sweetalert2";
 
 export default defineComponent({
   props: {
@@ -189,6 +193,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const userId = ref("");
     const universityName = ref("");
     const programStudy = ref("");
     const degree = ref(null);
@@ -248,10 +253,11 @@ export default defineComponent({
         errors.value.programStudyError = "Program Study is required";
         isValid = false;
       }
-      if (!degree.value) {
+      if (degree.value === null || degree.value === undefined || degree.value === '') {
         errors.value.degreeError = "Degree is required";
         isValid = false;
       }
+
       if (!gpa.value) {
         errors.value.gpaError = "GPA is required";
         isValid = false;
@@ -274,19 +280,50 @@ export default defineComponent({
     const closeModal = () => {
       emit("close");
     };
+    const getUserId = async () => {
+      try {
+        const dataUser = await decodeToken();
+        userId.value = dataUser.uid;
+        console.log(userId.value);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    };
 
-    const submitForm = () => {
+    const submitForm = async () => {
       if (!validateForm()) return;
-      console.log("Form submitted with values:", {
+      const newDataEducation = {
+        userId: userId.value,
         universityName: universityName.value,
         programStudy: programStudy.value,
         degree: degree.value,
         gpa: gpa.value,
         startDate: startDate.value,
         endDate: endDate.value,
-        description: description.value,
-      });
+        description: description.value ? description.value : null,
+      };
+      try {
+        await addEducation(newDataEducation);
+        eventBus.emit("newEducation");
+        closeModal();
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Success add new experience!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
+    onMounted(async () => {
+      await getUserId();
+
+      console.log(userId);
+    });
 
     return {
       universityName,
@@ -301,11 +338,13 @@ export default defineComponent({
       validateForm,
       degreeOptions,
       errors,
+      decodeToken,
+      addEducation,
+      userId,
     };
   },
 });
 </script>
-
 
 <style scoped>
 /* Hide number input spinner (Chrome, Safari, Edge, and Opera) */

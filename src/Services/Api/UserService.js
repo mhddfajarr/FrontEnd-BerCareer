@@ -321,3 +321,21 @@ export const getEducationUser = async (userId) => {
     throw e; // Throw the caught error
   }
 };
+
+export const addEducation = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); 
+
+  try {
+    const response = await axios.post(`${API_DETAIL_PROFILE}/Educations`,data,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // Return response dari API
+  } catch (error) {
+    console.error('Error saving job:', error.response || error);
+    throw error;
+  }
+};
