@@ -1,9 +1,16 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md w-full">
-    <h1 class="text-xl font-bold text-black mb-2">Experience</h1>
+    <div class="flex items-center mb-2 cursor-pointer" @click="toggleShow">
+      <span class="mr-2">
+        <i
+          :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
+        ></i>
+      </span>
+      <h1 class="text-xl font-bold text-black">Experience</h1>
+    </div>
     <div class="mt-5 bg-gray-700 h-px mb-4"></div>
 
-    <div class="flex flex-col space-y-6">
+    <div v-if="showItems" class="flex flex-col space-y-6">
       <!-- Loop through the experience items -->
       <div
         v-for="experience in dataExperience"
@@ -69,7 +76,6 @@
               </button>
             </div>
             <div class="mt-5 bg-gray-200 h-px"></div>
-
           </div>
         </div>
       </div>
@@ -117,6 +123,10 @@ export default {
     const dataExperience = ref([]);
     const showModalExperience = ref(false);
     const modalId = ref(null);
+    const showItems = ref(true);
+    const toggleShow = () => {
+      showItems.value = !showItems.value;
+    };
     // Mendapatkan User ID dari token
     const getUserId = async () => {
       try {
@@ -134,6 +144,7 @@ export default {
     };
 
     const openModalAdd = () => {
+      showItems.value =true;  
       modalId.value = null;
       showModalExperience.value = true;
     };
@@ -195,12 +206,12 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Yes, delete it!",
           cancelButtonText: "No, cancel!",
-          reverseButtons: true, 
+          reverseButtons: true,
         });
 
         if (result.isConfirmed) {
-          await deleteExperience(data); 
-          await fetchExperienceUser(); 
+          await deleteExperience(data);
+          await fetchExperienceUser();
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -222,6 +233,8 @@ export default {
     });
 
     return {
+      showItems,
+      toggleShow,
       openModalEdit,
       openModalAdd,
       modalId,

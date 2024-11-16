@@ -1,10 +1,16 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md w-full">
-    <h3 class="text-lg font-semibold text-gray-600">Education</h3>
+    <div class="flex items-center mb-2 cursor-pointer" @click="toggleShow">
+      <span class="mr-2">
+        <i
+          :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
+        ></i>
+      </span>
+      <h1 class="text-xl font-bold text-black">Education</h1>
+    </div>
     <div class="mt-4 bg-gray-700 h-px mb-4"></div>
 
-    <div class="flex flex-col space-y-6">
-      <!-- Loop through the education items -->
+    <div v-if="showItems" class="flex flex-col space-y-6">
       <div
         v-for="education in dataEducations"
         :key="education.educationId"
@@ -119,6 +125,10 @@ export default {
     const userId = ref("");
     const dataEducations = ref("");
     const modalId = ref(null);
+    const showItems = ref(true);
+    const toggleShow = () => {
+      showItems.value = !showItems.value;
+    };
 
     // Method to open modal for editing education
     const openModalEdit = (educationId) => {
@@ -126,6 +136,7 @@ export default {
         showModalEducation.value = true;
     };
     const openModalAdd = () => {
+      showItems.value = true
       modalId.value = null;
       showModalEducation.value = true;
     };
@@ -220,6 +231,8 @@ export default {
     });
     return {
       modalId,
+      showItems,
+      toggleShow,
       showModalEducation,
       fetchEducationsUser,
       dataEducations,

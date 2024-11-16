@@ -1,20 +1,34 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
-    <div class="flex justify-between items-center mb-2">
-      <h1 class="text-xl font-bold text-black">Skill</h1>
-      <button
-      v-if="dataSkill.length>0"
-        @click="isEdit = !isEdit"
-        class="flex items-center bg-gray-200 rounded-md hover:bg-gray-300 hover:text-gray-600 text-gray-400 px-2 py-1 transition-all duration-250 ease-in-out"
-      >
-        <i :class="isEdit ? 'fas fa-times' : 'fas fa-pencil'" class="mr-2"></i>
-        <span>{{ isEdit ? "Close Edit" : "Edit Skill" }}</span>
-      </button>
+    <div class="flex items-center mb-2 cursor-pointer" >
+      <span class="mr-2 " @click="toggleShow">
+        <i
+          :class="
+            showItems
+              ? 'fas fa-chevron-down text-gray-700'
+              : 'fas fa-chevron-right text-gray-700'
+          "
+        ></i>
+      </span>
+      <div class="flex justify-between w-full items-center">
+        <h1 class="text-xl font-bold text-black" @click="toggleShow">Skill</h1>
+        <button
+          v-if="dataSkill.length > 0"
+          @click="isEdit = !isEdit "
+          class="flex items-center bg-gray-200 rounded-md hover:bg-gray-300 hover:text-gray-600 text-gray-400 px-2 py-1 transition-all duration-250 ease-in-out ml-auto"
+        >
+          <i
+            :class="isEdit ? 'fas fa-times' : 'fas fa-pencil'"
+            class="mr-2"
+          ></i>
+          <span>{{ isEdit ? "Close Delete" : "Delete Skill" }}</span>
+        </button>
+      </div>
     </div>
 
     <div class="mt-5 bg-gray-700 h-px mb-4"></div>
 
-    <div class="flex flex-wrap mt-4 gap-2">
+    <div v-if="showItems" class="flex flex-wrap mt-4 gap-2">
       <div
         v-for="skill in dataSkill"
         :key="skill.skillId"
@@ -65,8 +79,13 @@ export default {
     const dataSkill = ref([]);
     const userId = ref("");
     const isEdit = ref(false);
+    const showItems = ref(true);
+    const toggleShow = () => {
+      showItems.value = !showItems.value;
+    };
 
     const openModal = () => {
+        showItems.value =true;
       showModalSkill.value = true;
     };
 
@@ -130,6 +149,8 @@ export default {
       console.log(dataSkill);
     });
     return {
+      showItems,
+      toggleShow,
       deleteSkillUser,
       getUserId,
       fetchSkillUser,
