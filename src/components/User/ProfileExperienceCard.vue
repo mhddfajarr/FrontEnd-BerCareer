@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md w-full">
     <h1 class="text-xl font-bold text-black mb-2">Experience</h1>
-    <hr class="border-gray-300 mb-4" />
+    <div class="mt-5 bg-gray-700 h-px mb-4"></div>
 
     <div class="flex flex-col space-y-6">
       <!-- Loop through the experience items -->
@@ -31,28 +31,45 @@
                 </p>
               </div>
             </div>
+            <!-- Job Description -->
+            <div class="mt-2">
+              <p class="text-gray-700">{{ experience.description }}</p>
+            </div>
 
-            <!-- Edit and Delete Buttons in top-right corner -->
-            <div class="absolute top-0 right-0 flex space-x-3">
+            <div class="hidden md:flex absolute top-0 right-0 space-x-3">
               <!-- Edit Button -->
               <button
                 class="text-primary hover:text-primaryHover rounded-md"
                 @click="openModalEdit(experience.experienceId)"
               >
-                <i class="fas fa-edit text-xs"></i> Edit
+                <i class="fas fa-edit text-md"></i> Edit
               </button>
               <!-- Delete Button -->
               <button
                 class="text-red-500 hover:text-red-600 rounded-md"
                 @click="deleteExperienceUser(experience.experienceId)"
               >
-                <i class="fas fa-trash text-xs"></i> Delete
+                <i class="fas fa-trash text-md"></i> Delete
               </button>
             </div>
-            <!-- Job Description -->
-            <div class="mt-2">
-              <p class="text-gray-700">{{ experience.description }}</p>
+
+            <div class="md:hidden flex justify-center space-x-4 mt-4">
+              <button
+                class="text-primary hover:text-primaryHover rounded-md"
+                @click="openModalEdit(experience.experienceId)"
+              >
+                <i class="fas fa-edit text-md"></i> Edit
+              </button>
+              <!-- Delete Button -->
+              <button
+                class="text-red-500 hover:text-red-600 rounded-md"
+                @click="deleteExperienceUser(experience.experienceId)"
+              >
+                <i class="fas fa-trash text-md"></i> Delete
+              </button>
             </div>
+            <div class="mt-5 bg-gray-200 h-px"></div>
+
           </div>
         </div>
       </div>
@@ -120,8 +137,6 @@ export default {
       modalId.value = null;
       showModalExperience.value = true;
     };
-
-
 
     // Fetch pengalaman kerja dari API
     const fetchExperienceUser = async () => {
