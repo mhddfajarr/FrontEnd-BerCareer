@@ -76,7 +76,7 @@
                 :key="option.value"
                 :value="option.value"
               >
-                {{ option.value }}
+                {{ option.text }}
               </option>
             </select>
             <p
@@ -189,7 +189,7 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import {
   addExperience,
   getExperienceUser,
@@ -216,7 +216,7 @@ export default {
     const userId = ref("");
     const position = ref("");
     const companyName = ref("");
-    const jobTypes = ref("");
+    const jobTypes = ref(null);
     const startDate = ref("");
     const endDate = ref("");
     const description = ref("");
@@ -264,6 +264,22 @@ export default {
       emit("close");
     };
 
+    watch(position, () => {
+      errors.value.positionError = "";
+    });
+    watch(companyName, () => {
+      errors.value.companyNameError = "";
+    });
+    watch(jobTypes, () => {
+      errors.value.jobTypeError = "";
+    });
+    watch(startDate, () => {
+      errors.value.startDateError = "";
+    });
+    watch(description, () => {
+      errors.value.descriptionError = "";
+    });
+
     const validateForm = () => {
       let isValid = true;
 
@@ -281,7 +297,7 @@ export default {
         errors.value.companyNameError = "";
       }
 
-      if (!jobType.value) {
+      if (!jobTypes.value) {
         errors.value.jobTypeError = "Job type is required";
         isValid = false;
       } else {

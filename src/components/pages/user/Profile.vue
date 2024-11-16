@@ -117,23 +117,7 @@
           <ExperienceCard  />
 
           <!-- Education -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Education</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalEducation = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Education
-              </button>
-              <ModalAddEducation
-                v-if="showModalEducation"
-                :showModal="showModalEducation"
-                @close="showModalEducation = false"
-              />
-            </div>
-          </div>
+          <EducationCard />
 
           <!-- Skill -->
           <div class="bg-white p-6 rounded-lg shadow-md">
@@ -188,6 +172,8 @@ import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
 import ExperienceCard from '../../User/ProfileExperienceCard.vue';
+import EducationCard from '../../User/ProfileEducationCard.vue';
+
 import { eventBus } from "../../../Services/EvenBus";
 
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
@@ -248,6 +234,7 @@ export default {
     };
   },
   components: {
+    EducationCard,
     ModalEditProfile,
     ModalAddExperience,
     ModalAddEducation,

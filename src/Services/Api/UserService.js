@@ -302,3 +302,22 @@ export const updateExperience = async (data) => {
     throw e; // Throw the caught error
   }
 }
+
+export const getEducationUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+  console.log(`Fetching experiences for user: ${userId}`);
+  try {
+    const response = await axios.get(`${API_DETAIL_PROFILE}/Educations?userId=${encodeURIComponent(userId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.log(userId)
+    console.error('Error fetching user profile:', e);
+    throw e; // Throw the caught error
+  }
+};
