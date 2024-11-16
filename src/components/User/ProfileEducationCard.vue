@@ -54,7 +54,7 @@
               <!-- Delete Button -->
               <button
                 class="text-red-500 hover:text-red-600 rounded-md"
-                @click="deleteEducation(education.educationId)"
+                @click="deleteEducationUser(education.educationId)"
               >
                 <i class="fas fa-trash text-md"></i> Delete
               </button>
@@ -70,7 +70,7 @@
               <!-- Delete Button -->
               <button
                 class="text-red-500 hover:text-red-600 rounded-md"
-                @click="deleteEducation(education.educationId)"
+                @click="deleteEducationUser(education.educationId)"
               >
                 <i class="fas fa-trash text-md"></i> Delete
               </button>
@@ -102,10 +102,11 @@
 <script>
 import { ref, onMounted } from "vue";
 import ModalAddEducation from "./ModalAddEducation.vue";
-import { getEducationUser } from "../../Services/Api/UserService";
+import { getEducationUser, deleteEducation } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import moment from "moment";
 import { eventBus } from "../../Services/EvenBus";
+import Swal from "sweetalert2";
 
 export default {
   name: "EducationCard",
@@ -123,11 +124,7 @@ export default {
     };
 
     // Method to delete education entry
-    const deleteEducation = (educationId) => {
-      dataEducation.value = dataEducation.value.filter(
-        (education) => education.educationId !== educationId
-      );
-    };
+   
 
     // Method to format period (startDate to endDate)
     const formatPeriod = (startDate, endDate) => {
@@ -154,6 +151,7 @@ export default {
         // Return formatted string like "May 2024 - Now (6 months)"
         return `${startFormatted} - ${endFormatted} (${months} months)`;
         };
+
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
@@ -172,6 +170,41 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+
+    const deleteEducationUser = async(educationId) => {
+      try {
+        const data = {
+          userId: userId.value,
+          id: educationId,
+        };
+        console.log(data)
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this action!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true, 
+        });
+
+        if (result.isConfirmed) {
+          await deleteEducation(data); 
+          await fetchEducationsUser(); 
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success deleted experience!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        }
+      } catch (error) {
+        console.error("Gagal menghapus pekerjaan:", error);
+      }
+    };
     eventBus.on("newEducation", fetchEducationsUser);
     onMounted(async () => {
       await getUserId();
@@ -183,7 +216,7 @@ export default {
       fetchEducationsUser,
       dataEducations,
       openModalEdit,
-      deleteEducation,
+      deleteEducationUser,
       formatPeriod,
       userId,
     };

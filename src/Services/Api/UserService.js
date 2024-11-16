@@ -339,3 +339,25 @@ export const addEducation = async (data) => {
     throw error;
   }
 };
+
+export const deleteEducation = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); 
+
+  try {
+    const response = await axios.delete(`${API_DETAIL_PROFILE}/Educations`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: data.userId,
+        id: data.id,
+      },
+    });
+    return response.data; // Return response setelah penghapusan pekerjaan
+  } catch (error) {
+    console.log('Error deleting saved job:', error.response || error);
+    throw error;
+  }
+};
