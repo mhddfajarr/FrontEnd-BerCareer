@@ -37,12 +37,12 @@
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
             <img
-              :src="getAvatarUrl(avatar)"
+              :src="getAvatarUrl(Avatar)"
               alt="Profile"
               class="w-10 h-10 rounded-full mr-2"
               :referrerpolicy="
-                avatar &&
-                (avatar.startsWith('https') || avatar.startsWith('http'))
+                Avatar &&
+                (Avatar.startsWith('https') || Avatar.startsWith('http'))
                   ? 'no-referrer'
                   : ''
               "
@@ -155,17 +155,19 @@ import { getDataUser } from "../../../Services/Api/UserService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
-  props: ["Name"],
-  setup() {
+  props: ["Name", "Avatar"],
+  setup(props) {
     const passwordModal = ref(false);
     const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("Username");
-    const avatar = ref(null);
+    // const avatar = ref(null);
     const id = ref(null);
     const router = useRouter();
     const dropdownMenu = ref(null);
     const dropdownButton = ref(null);
+
+    // console.log(props.Avatar);
 
     const logout = () => {
       Swal.fire({
@@ -251,7 +253,7 @@ export default {
       toggleDropdown,
       closeDropdown,
       handleOutsideClick,
-      avatar,
+      // avatar,
       router,
       id,
     };

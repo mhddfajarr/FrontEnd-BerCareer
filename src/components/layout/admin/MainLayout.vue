@@ -5,7 +5,7 @@
       :class="isSidebarVisible ? 'flex-1 max-w-[calc(100%-15rem)]' : 'w-full'"
       class="transition-all duration-300 flex flex-col"
     >
-      <Navbar @toggleSidebar="toggleSidebar" :Name="name" />
+      <Navbar @toggleSidebar="toggleSidebar" :Name="name" :Avatar="avatar" />
       <main class="flex-1 p-4 color-main-content overflow-x-auto">
         <RouterView />
       </main>
@@ -39,6 +39,7 @@ export default {
     const token = localStorage.getItem("authToken");
     const name = ref(null);
     const role = ref(null);
+    const avatar = ref(null);
 
     const toggleSidebar = () => {
       isSidebarVisible.value = !isSidebarVisible.value; // Toggle the sidebar visibility
@@ -79,6 +80,8 @@ export default {
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName
           name.value = response.data.fullName.split(" ")[0];
+          avatar.value = response.data.profileImage;
+          // console.log(avatar);
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -103,6 +106,7 @@ export default {
       token,
       name,
       role,
+      avatar,
     };
   },
 };
