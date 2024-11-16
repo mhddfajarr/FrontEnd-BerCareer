@@ -29,6 +29,12 @@
               class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               required
             />
+            <p
+              v-if="errors.positionError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.positionError }}
+            </p>
           </div>
           <div class="mb-4">
             <label
@@ -43,6 +49,12 @@
               class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               required
             />
+            <p
+              v-if="errors.companyNameError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.companyNameError }}
+            </p>
           </div>
           <div class="mb-4">
             <label
@@ -50,14 +62,26 @@
               class="block text-gray-700 font-semibold text-left"
               >Job Type</label
             >
-            <input
-              type="text"
+            <select
               id="jobType"
               v-model="jobType"
               class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               required
-            />
+            >
+              <option value="">Select Job Type</option>
+              <option value="Full-Time">Full-Time</option>
+              <option value="Part-Time">Part-Time</option>
+              <option value="Freelance">Freelance</option>
+              <option value="Internship">Internship</option>
+            </select>
+            <p
+              v-if="errors.jobTypeError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.jobTypeError }}
+            </p>
           </div>
+
           <div class="flex flex-col md:flex-row md:justify-between mb-4 gap-4">
             <div class="w-full md:flex-1">
               <label
@@ -72,6 +96,12 @@
                 class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                 required
               />
+              <p
+              v-if="errors.startDateError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.startDateError }}
+            </p>
             </div>
             <div class="w-full md:flex-1">
               <label
@@ -83,14 +113,18 @@
                 type="date"
                 id="endDate"
                 v-model="endDate"
-                class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                class="w-full text-gray-700 bg-white border rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                 :disabled="stilWorking"
                 :class="
-                  stilWorking
-                    ? 'opacity-50 bg-gray-200 cursor-not-allowed'
-                    : ''
+                  stilWorking ? 'opacity-50 bg-gray-200 cursor-not-allowed' : ''
                 "
               />
+              <p
+              v-if="errors.endDateError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.endDateError }}
+            </p>
             </div>
           </div>
           <div class="w-full mb-4">
@@ -119,8 +153,13 @@
               v-model="description"
               class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               rows="4"
-              required
             ></textarea>
+            <p
+              v-if="errors.descriptionError"
+              class="text-red-500 text-xs text-left mt-1"
+            >
+              {{ errors.descriptionError }}
+            </p>
           </div>
         </form>
       </div>
@@ -143,6 +182,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { onMounted, ref } from "vue";
@@ -167,39 +207,92 @@ export default {
     const startDate = ref("");
     const endDate = ref("");
     const description = ref("");
-    const stilWorking = ref(false)
-    
+    const stilWorking = ref(false);
+    const errors = ref({
+      positionError: "",
+      companyNameError: "",
+      jobTypeError: "",
+      startDateError: "",
+      endDateError: "",
+      descriptionError: "",
+    });
 
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
         userId.value = dataUser.uid;
-        console.log(userId.value); 
+        console.log(userId.value);
       } catch (error) {
         console.error("Error decoding token:", error);
       }
     };
 
     const closeModal = () => {
-      emit('close');
+      emit("close");
+    };
+
+    const validateForm = () => {
+      let isValid = true;
+
+      if (!position.value) {
+        errors.value.positionError = "Position is required";
+        isValid = false;
+      } else {
+        errors.value.positionError = "";
+      }
+
+      if (!companyName.value) {
+        errors.value.companyNameError = "Company name is required";
+        isValid = false;
+      } else {
+        errors.value.companyNameError = "";
+      }
+
+      if (!jobType.value) {
+        errors.value.jobTypeError = "Job type is required";
+        isValid = false;
+      } else {
+        errors.value.jobTypeError = "";
+      }
+
+      if (!startDate.value) {
+        errors.value.startDateError = "Start date is required";
+        isValid = false;
+      } else {
+        errors.value.startDateError = "";
+      }
+
+      if (!description.value) {
+        errors.value.descriptionError = "Description is required";
+        isValid = false;
+      } else {
+        errors.value.descriptionError = "";
+      }
+
+      if (!stilWorking.value && !endDate.value) {
+        errors.value.endDateError = "End date is required";
+        isValid = false;
+      } else {
+        errors.value.endDateError = "";
+      }
+
+      return isValid;
     };
 
     const submitForm = async () => {
+      if (!validateForm()) return;
       const newData = {
-      position: position.value,
-      company: companyName.value,
-      description: description.value,
-      jobTypes: jobType.value,
-      startDate: startDate.value,
-      userId: userId.value
-    };
+        position: position.value,
+        company: companyName.value,
+        description: description.value,
+        jobTypes: jobType.value,
+        startDate: startDate.value,
+        userId: userId.value,
+        endDate: stilWorking.value ? null : endDate.value,
+      };
 
-    if (endDate.value) {
-      newData.endDate = endDate.value;
-    }
-    
       try {
-       await addExperience(newData);
+        await addExperience(newData);
         eventBus.emit("newExperience");
         closeModal();
         Swal.fire({
@@ -215,9 +308,11 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
-    onMounted(async () => {
-      await getUserId();
+
+    onMounted(() => {
+      getUserId();
     });
+
     return {
       position,
       companyName,
@@ -225,15 +320,15 @@ export default {
       startDate,
       endDate,
       description,
-      closeModal,
+      stilWorking,
+      errors,
       submitForm,
-      getUserId,
-      userId, 
-      stilWorking
+      closeModal,
     };
   },
 };
 </script>
+
 
 <style scoped>
 /* Optional custom styling */

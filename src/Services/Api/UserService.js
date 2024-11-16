@@ -263,3 +263,25 @@ export const addExperience = async (data) => {
     throw error;
   }
 };
+
+export const deleteExperience = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); // Pastikan token ada
+
+  try {
+    const response = await axios.delete(`${API_DETAIL_PROFILE}/Experiences`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: data.userId,
+        id: data.id,
+      },
+    });
+    return response.data; // Return response setelah penghapusan pekerjaan
+  } catch (error) {
+    console.log('Error deleting saved job:', error.response || error);
+    throw error;
+  }
+};

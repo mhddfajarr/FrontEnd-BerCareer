@@ -124,7 +124,7 @@
               </li>
               <li>
                 <router-link
-                  to="Profile"
+                  to="/Profile"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-t-md"
                   @click="closeDropdown"
                   >Profile</router-link

@@ -31,7 +31,7 @@
               <i class="fas fa-edit text-xs"></i> Edit
             </button>
             <!-- Delete Button -->
-            <button class="text-red-500 hover:text-red-600 rounded-md" @click="deleteExperience(experience)">
+            <button class="text-red-500 hover:text-red-600 rounded-md" @click="deleteExperienceUser(experience.experienceId)">
               <i class="fas fa-trash text-xs"></i> Delete
             </button>
           </div>
@@ -68,10 +68,11 @@
  <script>
 import { ref, onMounted } from 'vue';
 import ModalAddExperience from './ModalAddExperience.vue';
-import { getExperienceUser } from '../../Services/Api/UserService';
+import { getExperienceUser, deleteExperience } from '../../Services/Api/UserService';
 import { decodeToken } from '../../Services/JWT/JwtDecode';
 import moment from 'moment';
 import { eventBus } from '../../Services/EvenBus';
+import Swal from "sweetalert2";
 
 
 export default {
@@ -135,8 +136,26 @@ export default {
     };
 
     // Method untuk hapus pengalaman kerja
-    const deleteExperience = (experience) => {
-      console.log('Deleting experience with id:', experience.experienceId);
+    const deleteExperienceUser = async(idExperience) => {
+      try {
+        const data = {
+          userId: userId.value,
+          id: idExperience,
+        };
+        await deleteExperience(data);
+        fetchExperienceUser()
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "Deleted experience!",
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
+      } catch (error) {
+        console.error("Gagal menghapus pekerjaan:", error);
+      }
     };
 
     // Lifecycle Hook - ketika komponen dimuat
@@ -151,9 +170,9 @@ export default {
       showModalExperience,
       formatPeriod,
       editExperience,
-      deleteExperience,
       fetchExperienceUser,
-      getUserId
+      getUserId,
+      deleteExperienceUser
     };
   },
 };
