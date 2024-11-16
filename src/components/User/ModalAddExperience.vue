@@ -7,7 +7,10 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-[50%]">
       <!-- Modal Header -->
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-xl font-semibold text-gray-700">Add Experience</h3>
+        <h3 class="text-xl font-semibold text-gray-700">
+          {{ isEditForm ? "Edit Experience" : "Add Experience" }}
+        </h3>
+
         <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
           ✕
         </button>
@@ -64,15 +67,17 @@
             >
             <select
               id="jobType"
-              v-model="jobType"
+              v-model="jobTypes"
               class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               required
             >
-              <option value="">Select Job Type</option>
-              <option value="Full-Time">Full-Time</option>
-              <option value="Part-Time">Part-Time</option>
-              <option value="Freelance">Freelance</option>
-              <option value="Internship">Internship</option>
+              <option
+                v-for="option in jobTypeOptions"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.value }}
+              </option>
             </select>
             <p
               v-if="errors.jobTypeError"
@@ -97,11 +102,11 @@
                 required
               />
               <p
-              v-if="errors.startDateError"
-              class="text-red-500 text-xs text-left mt-1"
-            >
-              {{ errors.startDateError }}
-            </p>
+                v-if="errors.startDateError"
+                class="text-red-500 text-xs text-left mt-1"
+              >
+                {{ errors.startDateError }}
+              </p>
             </div>
             <div class="w-full md:flex-1">
               <label
@@ -120,11 +125,11 @@
                 "
               />
               <p
-              v-if="errors.endDateError"
-              class="text-red-500 text-xs text-left mt-1"
-            >
-              {{ errors.endDateError }}
-            </p>
+                v-if="errors.endDateError"
+                class="text-red-500 text-xs text-left mt-1"
+              >
+                {{ errors.endDateError }}
+              </p>
             </div>
           </div>
           <div class="w-full mb-4">
@@ -183,10 +188,12 @@
   </div>
 </template>
 
-
 <script>
 import { onMounted, ref } from "vue";
-import { addExperience } from "../../Services/Api/UserService";
+import {
+  addExperience,
+  getExperienceUser,
+} from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import Swal from "sweetalert2";
 import { eventBus } from "../../Services/EvenBus";
@@ -197,17 +204,23 @@ export default {
       type: Boolean,
       required: true,
     },
+    experienceId: {
+      type: Number,
+      required: false, // Menjadikan id opsional
+      default: null,
+    },
   },
   setup(props, { emit }) {
     // Ref for form data
     const userId = ref("");
     const position = ref("");
     const companyName = ref("");
-    const jobType = ref("");
+    const jobTypes = ref("");
     const startDate = ref("");
     const endDate = ref("");
     const description = ref("");
     const stilWorking = ref(false);
+    const isEditForm = ref(false);
     const errors = ref({
       positionError: "",
       companyNameError: "",
@@ -217,6 +230,14 @@ export default {
       descriptionError: "",
     });
 
+    const jobTypeOptions = [
+      { value: null, text: "Select Job Type" },
+      { value: "Full-Time", text: "Full-Time" },
+      { value: "Part-Time", text: "Part-Time" },
+      { value: "Freelance", text: "Freelance" },
+      { value: "Internship", text: "Internship" },
+    ];
+    const experience = ref({});
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
@@ -224,6 +245,17 @@ export default {
         console.log(userId.value);
       } catch (error) {
         console.error("Error decoding token:", error);
+      }
+    };
+    const fetchExperienceUser = async () => {
+      try {
+        const data = await getExperienceUser(userId.value);
+        experience.value = data.data.filter(
+          (item) => item.experienceId === props.experienceId
+        );
+        console.log("Filtered experience:", experience.value); // Menampilkan hasil filter
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -285,38 +317,58 @@ export default {
         position: position.value,
         company: companyName.value,
         description: description.value,
-        jobTypes: jobType.value,
+        jobTypes: jobTypes.value,
         startDate: startDate.value,
         userId: userId.value,
         endDate: stilWorking.value ? null : endDate.value,
       };
-
-      try {
-        await addExperience(newData);
-        eventBus.emit("newExperience");
-        closeModal();
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Success add new experience!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (props.experienceId) {
+        console.log("ini edit");
+      } else {
+        try {
+          await addExperience(newData);
+          eventBus.emit("newExperience");
+          closeModal();
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success add new experience!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       }
     };
 
-    onMounted(() => {
-      getUserId();
+    onMounted(async () => {
+      await getUserId();
+      await fetchExperienceUser();
+      if (props.experienceId) {
+        position.value = experience.value[0].position;
+        companyName.value = experience.value[0].company;
+        jobTypes.value = experience.value[0].jobTypes;
+        startDate.value = experience.value[0].startDate.split("T")[0];
+        endDate.value = experience.value[0].endDate
+          ? experience.value[0].endDate.split("T")[0]
+          : "";
+        description.value = experience.value[0].description || "";
+        stilWorking.value = experience.value[0].endDate ? false : true;
+        console.log("Job Type:", jobTypes.value);
+        isEditForm.value = true;
+      }
+      console.log(experience);
     });
 
     return {
+      experience,
       position,
+      fetchExperienceUser,
       companyName,
-      jobType,
+      jobTypes,
       startDate,
       endDate,
       description,
@@ -324,11 +376,12 @@ export default {
       errors,
       submitForm,
       closeModal,
+      isEditForm,
+      jobTypeOptions,
     };
   },
 };
 </script>
-
 
 <style scoped>
 /* Optional custom styling */

@@ -1,82 +1,98 @@
 <template>
-    <div class="bg-white p-6 rounded-lg shadow-md w-full">
-  <h1 class="text-xl font-bold text-black mb-2">Experience</h1>
-  <hr class="border-gray-300 mb-4" />
+  <div class="bg-white p-6 rounded-lg shadow-md w-full">
+    <h1 class="text-xl font-bold text-black mb-2">Experience</h1>
+    <hr class="border-gray-300 mb-4" />
 
-  <div class="flex flex-col space-y-6">
-    <!-- Loop through the experience items -->
-    <div v-for="experience in dataExperience" :key="experience.experienceId" class="relative">
-      <!-- Bullet Point and Line -->
-      <div class="flex items-start">
-        <div class="flex-shrink-0">
-          <div class="w-3 h-3 bg-primary rounded-full mt-2"></div>
-          <div class="w-1 bg-blue-500 h-full ml-1"></div>
-        </div>
+    <div class="flex flex-col space-y-6">
+      <!-- Loop through the experience items -->
+      <div
+        v-for="experience in dataExperience"
+        :key="experience.experienceId"
+        class="relative"
+      >
+        <!-- Bullet Point and Line -->
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <div class="w-3 h-3 bg-primary rounded-full mt-2"></div>
+            <div class="w-1 bg-blue-500 h-full ml-1"></div>
+          </div>
 
-        <!-- Experience Details -->
-        <div class="ml-4 flex-1">
-          <!-- Title and Job Info -->
-          <div class="flex justify-between items-center">
-            <div>
-              <h2 class="text-lg font-semibold text-gray-700">{{ experience.position }}</h2>
-              <p class="text-gray-700 text-md">{{ experience.company }}</p>
-              <p class="text-gray-500 italic">{{ formatPeriod(experience.startDate, experience.endDate) }}</p>
+          <!-- Experience Details -->
+          <div class="ml-4 flex-1">
+            <!-- Title and Job Info -->
+            <div class="flex justify-between items-center">
+              <div>
+                <h2 class="text-lg font-semibold text-gray-700">
+                  {{ experience.position }} - {{ experience.jobTypes }}
+                </h2>
+                <p class="text-gray-700 text-md">{{ experience.company }}</p>
+                <p class="text-gray-500 italic">
+                  {{ formatPeriod(experience.startDate, experience.endDate) }}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <!-- Edit and Delete Buttons in top-right corner -->
-          <div class="absolute top-0 right-0 flex space-x-3">
-            <!-- Edit Button -->
-            <button class="text-primary hover:text-primaryHover rounded-md" @click="editExperience(experience)">
-              <i class="fas fa-edit text-xs"></i> Edit
-            </button>
-            <!-- Delete Button -->
-            <button class="text-red-500 hover:text-red-600 rounded-md" @click="deleteExperienceUser(experience.experienceId)">
-              <i class="fas fa-trash text-xs"></i> Delete
-            </button>
-          </div>
+            <!-- Edit and Delete Buttons in top-right corner -->
+            <div class="absolute top-0 right-0 flex space-x-3">
+              <!-- Edit Button -->
+              <button
+                class="text-primary hover:text-primaryHover rounded-md"
+                @click="openModalEdit(experience.experienceId)"
+              >
+                <i class="fas fa-edit text-xs"></i> Edit
+              </button>
+              <!-- Delete Button -->
+              <button
+                class="text-red-500 hover:text-red-600 rounded-md"
+                @click="deleteExperienceUser(experience.experienceId)"
+              >
+                <i class="fas fa-trash text-xs"></i> Delete
+              </button>
+            </div>
 
-          <!-- Job Description -->
-          <div class="mt-2">
-            <p class="text-gray-700">{{ experience.description }}</p>
+            <!-- Job Description -->
+            <div class="mt-2">
+              <p class="text-gray-700">{{ experience.description }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Add Experience Button -->
+    <div class="flex justify-center mt-4">
+      <button
+        @click="showModalExperience = true"
+        class="text-primaryHover hover:text-white hover:rounded-md hover:bg-primary px-3 py-2 font-semibold flex items-center justify-center transition-all duration-250 ease-in-out"
+      >
+        <i class="fas fa-plus-circle mr-2"></i>
+        Add Experience
+      </button>
+    </div>
+
+    <ModalAddExperience
+      v-if="showModalExperience"
+      :showModal="showModalExperience"
+      :experienceId="modalId"
+      @close="showModalExperience = false"
+    />
   </div>
+</template>
 
-  <!-- Add Experience Button -->
-  <div class="flex justify-center mt-4">
-    <button
-      @click="showModalExperience = true"
-      class="text-primaryHover hover:text-white hover:rounded-md hover:bg-primary px-3 py-2 font-semibold flex items-center justify-center transition-all duration-250 ease-in-out"
-    >
-      <i class="fas fa-plus-circle mr-2"></i>
-      Add Experience
-    </button>
-  </div>
-
-  <ModalAddExperience
-    v-if="showModalExperience"
-    :showModal="showModalExperience"
-    @close="showModalExperience = false"
-  />
-</div>
-
-  </template>
-  
- <script>
-import { ref, onMounted } from 'vue';
-import ModalAddExperience from './ModalAddExperience.vue';
-import { getExperienceUser, deleteExperience } from '../../Services/Api/UserService';
-import { decodeToken } from '../../Services/JWT/JwtDecode';
-import moment from 'moment';
-import { eventBus } from '../../Services/EvenBus';
+<script>
+import { ref, onMounted } from "vue";
+import ModalAddExperience from "./ModalAddExperience.vue";
+import {
+  getExperienceUser,
+  deleteExperience,
+} from "../../Services/Api/UserService";
+import { decodeToken } from "../../Services/JWT/JwtDecode";
+import moment from "moment";
+import { eventBus } from "../../Services/EvenBus";
 import Swal from "sweetalert2";
 
-
 export default {
-  name: 'ExperienceCard',
+  name: "ExperienceCard",
   components: {
     ModalAddExperience,
   },
@@ -84,7 +100,7 @@ export default {
     const userId = ref("");
     const dataExperience = ref([]);
     const showModalExperience = ref(false);
-
+    const modalId = ref(null);
     // Mendapatkan User ID dari token
     const getUserId = async () => {
       try {
@@ -94,6 +110,11 @@ export default {
       } catch (error) {
         console.error("Error decoding token:", error);
       }
+    };
+
+    const openModalEdit = (id) => {
+      modalId.value = id;
+      showModalExperience.value = true;
     };
 
     // Fetch pengalaman kerja dari API
@@ -108,51 +129,68 @@ export default {
 
     // Format tanggal periode
     const formatPeriod = (startDate, endDate) => {
-    const start = moment(startDate);
-    
-    // If endDate is null or "Sekarang", use the current date
-    const end = (endDate === null || endDate === "Sekarang") ? moment() : moment(endDate);
+      const start = moment(startDate);
 
-    const duration = moment.duration(end.diff(start));
-    const months = duration.months() + (duration.years() * 12); // Calculate total months
+      // If endDate is null or "Sekarang", use the current date
+      const end =
+        endDate === null || endDate === "Sekarang" ? moment() : moment(endDate);
 
-    // Format start and end dates as "Month YYYY"
-    const startFormatted = start.format("MMMM YYYY");
-    const endFormatted = end.isSame(moment(), 'day') ? 'Now' : end.format("MMMM YYYY");
+      const duration = moment.duration(end.diff(start));
+      const months = duration.months() + duration.years() * 12; // Calculate total months
 
-    // If endDate is null, show "Now" instead of calculating months
-    if (endDate === null) {
+      // Format start and end dates as "Month YYYY"
+      const startFormatted = start.format("MMMM YYYY");
+      const endFormatted = end.isSame(moment(), "day")
+        ? "Now"
+        : end.format("MMMM YYYY");
+
+      // If endDate is null, show "Now" instead of calculating months
+      if (endDate === null) {
         return `${startFormatted} - Now (${months} months)`;
-    }
+      }
 
-    // Return formatted string like "May 2024 - Now (6 months)"
-    return `${startFormatted} - ${endFormatted} (${months} months)`;
+      // Return formatted string like "May 2024 - Now (6 months)"
+      return `${startFormatted} - ${endFormatted} (${months} months)`;
     };
     eventBus.on("newExperience", fetchExperienceUser);
 
     // Method untuk edit pengalaman kerja
     const editExperience = (experience) => {
-      console.log('Editing experience with id:', experience.experienceId);
+      console.log("Editing experience with id:", experience.experienceId);
     };
 
     // Method untuk hapus pengalaman kerja
-    const deleteExperienceUser = async(idExperience) => {
+    const deleteExperienceUser = async (idExperience) => {
       try {
         const data = {
           userId: userId.value,
           id: idExperience,
         };
-        await deleteExperience(data);
-        fetchExperienceUser()
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Deleted experience!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
+
+        const result = await Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this action!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes, delete it!",
+          cancelButtonText: "No, cancel!",
+          reverseButtons: true, // Untuk membalikkan posisi tombol (Yes di kiri dan No di kanan)
         });
+
+        if (result.isConfirmed) {
+          // Melakukan penghapusan pengalaman
+          await deleteExperience(data); // Menunggu penghapusan selesai
+          await fetchExperienceUser(); // Mengambil kembali data pengalaman setelah dihapus
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success deleted experience!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        }
       } catch (error) {
         console.error("Gagal menghapus pekerjaan:", error);
       }
@@ -165,6 +203,8 @@ export default {
     });
 
     return {
+      openModalEdit,
+      modalId,
       userId,
       dataExperience,
       showModalExperience,
@@ -172,10 +212,8 @@ export default {
       editExperience,
       fetchExperienceUser,
       getUserId,
-      deleteExperienceUser
+      deleteExperienceUser,
     };
   },
 };
 </script>
-
-  
