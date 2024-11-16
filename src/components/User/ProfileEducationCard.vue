@@ -84,7 +84,7 @@
     <!-- Add Education Button -->
     <div class="flex justify-center mt-4">
       <button
-        @click="showModalEducation = true"
+        @click="openModalAdd"
         class="text-primaryHover hover:text-white hover:rounded-md hover:bg-primary px-3 py-2 font-semibold flex items-center justify-center transition-all duration-250 ease-in-out"
       >
         <i class="fas fa-plus-circle mr-2"></i>
@@ -95,6 +95,7 @@
     <ModalAddEducation
       v-if="showModalEducation"
       :showModal="showModalEducation"
+      :educationId="modalId"
       @close="showModalEducation = false"
     />
   </div>
@@ -117,10 +118,16 @@ export default {
     const showModalEducation = ref(false);
     const userId = ref("");
     const dataEducations = ref("");
+    const modalId = ref(null);
 
     // Method to open modal for editing education
     const openModalEdit = (educationId) => {
-      console.log("Open Edit Modal for Education ID: " + educationId);
+        modalId.value = educationId;
+        showModalEducation.value = true;
+    };
+    const openModalAdd = () => {
+      modalId.value = null;
+      showModalEducation.value = true;
     };
 
     // Method to delete education entry
@@ -212,6 +219,7 @@ export default {
       console.log(dataEducations);
     });
     return {
+      modalId,
       showModalEducation,
       fetchEducationsUser,
       dataEducations,
@@ -219,6 +227,7 @@ export default {
       deleteEducationUser,
       formatPeriod,
       userId,
+      openModalAdd
     };
   },
 };

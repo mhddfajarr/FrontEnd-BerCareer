@@ -361,3 +361,19 @@ export const deleteEducation = async (data) => {
     throw error;
   }
 };
+
+export const updateEducation = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+  try {
+    const response = await axios.put(`${API_DETAIL_PROFILE}/Educations`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    throw e; // Throw the caught error
+  }
+}

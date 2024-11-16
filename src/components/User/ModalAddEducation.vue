@@ -7,7 +7,7 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-[50%]">
       <!-- Modal Header -->
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-xl font-semibold text-gray-700">Add Education</h3>
+        <h3 class="text-xl font-semibold text-gray-700">{{ isEditForm ? "Edit Education" : "Add Education" }}</h3>
         <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
           ✕
         </button>
@@ -180,7 +180,7 @@
 
 <script>
 import { defineComponent, ref, watch, onMounted } from "vue";
-import { addEducation } from "../../Services/Api/UserService";
+import { addEducation, getEducationUser, updateEducation } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import { eventBus } from "../../Services/EvenBus";
 import Swal from "sweetalert2";
@@ -190,6 +190,11 @@ export default defineComponent({
     showModal: {
       type: Boolean,
       required: true,
+    },
+    educationId: {
+      type: Number,
+      required: false, 
+      default: null,
     },
   },
   setup(props, { emit }) {
@@ -208,6 +213,7 @@ export default defineComponent({
       { value: 2, text: "S3" },
       { value: 3, text: "D3" },
     ];
+    const education = ref ({})
     const isEditForm = ref(false);
     const errors = ref({
       universityNameError: "",
@@ -219,7 +225,6 @@ export default defineComponent({
       descriptionError: "",
     });
 
-    // Watchers to clear error messages when inputs change
     watch(universityName, () => {
       errors.value.universityNameError = "";
     });
@@ -302,7 +307,26 @@ export default defineComponent({
         endDate: endDate.value,
         description: description.value ? description.value : null,
       };
-      try {
+      if (props.educationId) {
+        newDataEducation.educationId = props.educationId; 
+        try {
+          await updateEducation(newDataEducation);
+          eventBus.emit("newEducation");
+          closeModal();
+          Swal.fire({ 
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success edit education!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }else{
+        try {
         await addEducation(newDataEducation);
         eventBus.emit("newEducation");
         closeModal();
@@ -310,7 +334,7 @@ export default defineComponent({
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Success add new experience!",
+          title: "Success add new education!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
@@ -318,14 +342,43 @@ export default defineComponent({
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      }
+     
+    };
+
+
+    const fetchEducationUser = async ()=>{
+      try {
+        const data = await getEducationUser(userId.value);
+        education.value = data.data.filter(
+          (item) => item.educationId === props.educationId
+        );
+        console.log("Filtered education:", education.value); // Menampilkan hasil filter
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
     onMounted(async () => {
+      console.log("ini daari prop" ,props.educationId)
       await getUserId();
-
+      await fetchEducationUser();
+      if (props.educationId) {
+        universityName.value = education.value[0].universityName;
+        programStudy.value = education.value[0].programStudy;
+        degree.value = education.value[0].degree;
+        gpa.value = education.value[0].gpa;
+        startDate.value = education.value[0].startDate.split("T")[0];
+        endDate.value = education.value[0].endDate.split("T")[0];
+        description.value = education.value[0].description || "";
+        console.log("id education:", props.educationId);
+        isEditForm.value = true;
+      }
+      console.log(education)
       console.log(userId);
     });
 
     return {
+      education,
       universityName,
       programStudy,
       degree,
@@ -338,9 +391,11 @@ export default defineComponent({
       validateForm,
       degreeOptions,
       errors,
+      fetchEducationUser,
       decodeToken,
       addEducation,
       userId,
+      isEditForm
     };
   },
 });
