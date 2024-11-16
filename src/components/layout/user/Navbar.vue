@@ -78,19 +78,17 @@
             class="flex items-center text-black focus:outline-none"
             ref="dropdownButton"
           >
-            <div v-if="avatar.startsWith('https') || avatar.startsWith('http')">
+            <div>
               <img
-                :src="avatar"
+                :src="getAvatarUrl(avatar)"
                 alt="Profile"
                 class="w-10 h-10 rounded-full mr-2"
-                referrerpolicy="no-referrer"
-              />
-            </div>
-            <div v-else>
-              <img
-                src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
-                alt="Profile"
-                class="w-10 h-10 rounded-full mr-2"
+                :referrerpolicy="
+                  avatar &&
+                  (avatar.startsWith('https') || avatar.startsWith('http'))
+                    ? 'no-referrer'
+                    : ''
+                "
               />
             </div>
             <span class="relative inline-block group">
@@ -193,7 +191,7 @@ export default {
     const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("");
-    const avatar = ref("");
+    const avatar = ref(null);
     const id = ref("");
     const router = useRouter();
     const auth0 = useAuth0();
@@ -222,7 +220,7 @@ export default {
           localStorage.removeItem("authToken");
           cekLogin.value = false;
           // Redirect ke halaman login
-          router.push("/login");
+          // router.push("/login");
         }
       });
     };
@@ -307,6 +305,19 @@ export default {
       handleOutsideClick,
       avatar,
     };
+  },
+  methods: {
+    getAvatarUrl(avatar) {
+      const defaultAvatarUrl =
+        "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
+      if (!avatar) {
+        return defaultAvatarUrl;
+      }
+      if (avatar.startsWith("https") || avatar.startsWith("http")) {
+        return avatar;
+      }
+      return defaultAvatarUrl;
+    },
   },
 };
 </script>

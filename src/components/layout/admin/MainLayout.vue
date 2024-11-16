@@ -1,11 +1,11 @@
 <template>
   <div class="flex min-h-screen">
-    <Sidebar :isSidebarVisible="isSidebarVisible" />
+    <Sidebar :isSidebarVisible="isSidebarVisible" :Role="role" />
     <div
       :class="isSidebarVisible ? 'flex-1 max-w-[calc(100%-15rem)]' : 'w-full'"
       class="transition-all duration-300 flex flex-col"
     >
-      <Navbar @toggleSidebar="toggleSidebar" />
+      <Navbar @toggleSidebar="toggleSidebar" :Name="name" />
       <main class="flex-1 p-4 color-main-content overflow-x-auto">
         <RouterView />
       </main>
@@ -20,11 +20,13 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Sidebar from "./Sidebar.vue";
 import Navbar from "./Navbar.vue";
 import Swal from "sweetalert2";
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import { getDataUser } from "../../../Services/Api/UserService";
 
 export default {
   components: {
@@ -34,6 +36,9 @@ export default {
   setup() {
     const router = useRouter();
     const isSidebarVisible = ref(true); // Make the sidebar visibility reactive
+    const token = localStorage.getItem("authToken");
+    const name = ref(null);
+    const role = ref(null);
 
     const toggleSidebar = () => {
       isSidebarVisible.value = !isSidebarVisible.value; // Toggle the sidebar visibility
@@ -60,16 +65,48 @@ export default {
         }
       });
     };
+    const fetchDataUser = async (id) => {
+      try {
+        // console.log(id);
+        // const userId = id.value;
+        if (!id) {
+          // console.log(id);
+          console.error("User ID is missing");
+          return;
+        }
+        const response = await getDataUser(id); // Memanggil API untuk mendapatkan data user
+
+        if (response && response.data && response.data.fullName) {
+          // Ambil kata pertama dari fullName
+          name.value = response.data.fullName.split(" ")[0];
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    onMounted(async () => {
+      var decodedToken = await decodeToken();
+      role.value = decodedToken.role;
+      if (role.value == "User") {
+        router.push({ name: "Home" });
+      }
+      await fetchDataUser(decodedToken.uid);
+      // console.log(name.value);
+      // console.log(decodedToken);
+    });
 
     return {
       isSidebarVisible,
       toggleSidebar,
       logout,
+      token,
+      name,
+      role,
     };
-  }
+  },
 };
 </script>
-
 
 <style>
 .color-main-content {
