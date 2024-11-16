@@ -208,12 +208,11 @@ export const getProfileUser = async (userId) => {
   }
 };
 
-const API_UPDATE_PROFILE = "https://localhost:7147/api/Profiles/Update";
 export const updateProfile = async (data) => {
   const token = localStorage.getItem('authToken');
   if (!token) throw new Error('Token is missing or expired');
   try {
-    const response = await axios.put(API_UPDATE_PROFILE, data, {
+    const response = await axios.put(`${API_PROFILE}/Update`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
@@ -285,7 +284,6 @@ export const deleteExperience = async (data) => {
     throw error;
   }
 };
-
 
 export const updateExperience = async (data) => {
   const token = localStorage.getItem('authToken');
@@ -377,3 +375,64 @@ export const updateEducation = async (data) => {
     throw e; // Throw the caught error
   }
 }
+
+export const getSkillUser = async (userId) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+  console.log(`Fetching experiences for user: ${userId}`);
+  try {
+    const response = await axios.get(`${API_DETAIL_PROFILE}/Skills?userId=${encodeURIComponent(userId)}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; 
+  } catch (e) {
+    console.log(userId)
+    console.error('Error fetching user profile:', e);
+    throw e; // Throw the caught error
+  }
+};
+
+export const deleteSkill = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); 
+
+  try {
+    const response = await axios.delete(`${API_DETAIL_PROFILE}/Skills`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      data: {
+        userId: data.userId,
+        id: data.id,
+      },
+    });
+    return response.data; // Return response setelah penghapusan pekerjaan
+  } catch (error) {
+    console.log('Error deleting saved job:', error.response || error);
+    throw error;
+  }
+};
+
+export const addSkill = async (data) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired'); 
+
+  try {
+    const response = await axios.post(`${API_DETAIL_PROFILE}/Skills`,data,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data; // Return response dari API
+  } catch (error) {
+    console.error('Error saving job:', error.response || error);
+    throw error;
+  }
+};
+
+
