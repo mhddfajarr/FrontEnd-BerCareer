@@ -49,7 +49,6 @@
                 <i class="fas fa-trash text-xs"></i> Delete
               </button>
             </div>
-
             <!-- Job Description -->
             <div class="mt-2">
               <p class="text-gray-700">{{ experience.description }}</p>
@@ -62,7 +61,7 @@
     <!-- Add Experience Button -->
     <div class="flex justify-center mt-4">
       <button
-        @click="showModalExperience = true"
+        @click="openModalAdd"
         class="text-primaryHover hover:text-white hover:rounded-md hover:bg-primary px-3 py-2 font-semibold flex items-center justify-center transition-all duration-250 ease-in-out"
       >
         <i class="fas fa-plus-circle mr-2"></i>
@@ -116,6 +115,13 @@ export default {
       modalId.value = id;
       showModalExperience.value = true;
     };
+
+    const openModalAdd = () => {
+      modalId.value = null;
+      showModalExperience.value = true;
+    };
+
+
 
     // Fetch pengalaman kerja dari API
     const fetchExperienceUser = async () => {
@@ -204,6 +210,7 @@ export default {
 
     return {
       openModalEdit,
+      openModalAdd,
       modalId,
       userId,
       dataExperience,

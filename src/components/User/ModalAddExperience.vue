@@ -193,6 +193,7 @@ import { onMounted, ref } from "vue";
 import {
   addExperience,
   getExperienceUser,
+  updateExperience
 } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import Swal from "sweetalert2";
@@ -323,7 +324,23 @@ export default {
         endDate: stilWorking.value ? null : endDate.value,
       };
       if (props.experienceId) {
-        console.log("ini edit");
+        newData.experienceId = props.experienceId; 
+        try {
+          await updateExperience(newData);
+          eventBus.emit("newExperience");
+          closeModal();
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success edit experience!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       } else {
         try {
           await addExperience(newData);
@@ -357,7 +374,7 @@ export default {
           : "";
         description.value = experience.value[0].description || "";
         stilWorking.value = experience.value[0].endDate ? false : true;
-        console.log("Job Type:", jobTypes.value);
+        console.log("id experience:", props.experienceId);
         isEditForm.value = true;
       }
       console.log(experience);
