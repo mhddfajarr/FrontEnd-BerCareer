@@ -38,12 +38,32 @@
             <li class="flex items-center">
               <i class="fas fa-globe text-gray-600"></i>
               <span class="ml-2 text-gray-700">Website</span>
-              <span class="ml-auto text-gray-500">https://bootdey.com</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkPersonalWebsite"
+                  :href="dataProfile.linkPersonalWebsite"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary hover:underline"
+                >
+                  {{ dataProfile.linkPersonalWebsite }}
+                </a>
+                <span v-else>-</span>
+              </span>
             </li>
             <li class="flex items-center">
               <i class="fab fa-github text-gray-600"></i>
               <span class="ml-2 text-gray-700">Github</span>
-              <span class="ml-auto text-gray-500">bootdey</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkGithub"
+                  :href="dataProfile.linkGithub"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary "
+                >
+                  {{ dataProfile.linkGithub }}
+                </a>
+                <span v-else>-</span>
+              </span>
             </li>
           </ul>
         </div>
@@ -198,7 +218,9 @@ export default {
     };
     onMounted(async () => {
       await getUserId();
-      fetchProfileUser();
+      await fetchProfileUser();
+
+      console.log(dataProfile);
     });
     return {
       id,

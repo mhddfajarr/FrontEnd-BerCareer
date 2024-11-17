@@ -106,6 +106,7 @@
                   <span class="text-sm">Drag & drop or click to select</span>
                 </div>
               </label>
+              <p v-if="errorImage" class="text-red-500 text-xs mt-2 ml-1">{{ errorImage }}</p>
             </div>
           </div>
 
@@ -117,6 +118,7 @@
               <i class="fas fa-link text-gray-500 mr-2"></i>
               <input
                 type="text"
+                v-model="linkPersonalWebsite"
                 placeholder="Link to personal website"
                 class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               />
@@ -125,6 +127,7 @@
               <i class="fas fa-link text-gray-500 mr-2"></i>
               <input
                 type="text"
+                v-model="linkGithub"
                 placeholder="Link to github"
                 class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               />
@@ -152,10 +155,9 @@
   </div>
 </template>
 
-
 <script>
 import { ref, onMounted } from "vue";
-import { uploadImage } from "../../Services/Api/UserService";
+import { uploadImage, updateProfile, getProfileUser } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import { eventBus } from "../../Services/EvenBus";
 import Swal from "sweetalert2";
@@ -170,8 +172,15 @@ export default {
   setup(props, { emit }) {
     const imagePreview = ref(null);
     const isHovered = ref(false);
-    const selectedFile = ref(null); // Menyimpan file yang dipilih
-    const userId = ref("")
+    const selectedFile = ref(null); 
+    const userId = ref("");
+    const linkPersonalWebsite = ref(null);
+    const linkGithub = ref(null);
+    const errorImage = ref("");
+    const successMessage = ref("");
+    const failed = ref(false);
+    const dataProfile = ref({});
+
     // Close modal
     const closeModal = () => {
       emit("close");
@@ -216,34 +225,89 @@ export default {
 
     // Remove image preview
     const removeImage = () => {
+      errorImage.value = null;
       imagePreview.value = null;
-      selectedFile.value = null; // Hapus file yang dipilih
+      selectedFile.value = null; 
     };
 
     // Form submit
     const submitForm = async () => {
-      if (!selectedFile.value) {
-        alert("Please select an image.");
+      // Cek jika tidak ada input yang diisi
+      if (!selectedFile.value && !linkPersonalWebsite.value && !linkGithub.value) {
+        closeModal();
         return;
       }
-      try {
-        const data = await uploadImage(userId.value, selectedFile.value); // Panggil fungsi uploadImage dari service
-        eventBus.emit("profileUpdated");
-        closeModal();
+
+      // Jika ada gambar yang dipilih, upload gambar
+      if (selectedFile.value) {
+        const allowedExtensions = ['.png', '.jpg', '.jpeg']; 
+        const fileExtension = selectedFile.value.name.split('.').pop().toLowerCase(); // Ambil ekstensi file dan konversi ke huruf kecil
+
+        // Validasi ekstensi file
+        if (!allowedExtensions.includes('.' + fileExtension)) {
+          errorImage.value = "Invalid file type. Only PNG, JPG, and JPEG are allowed.";
+          return; 
+        }
+
+        try {
+          const data = await uploadImage(userId.value, selectedFile.value);
+          successMessage.value += "Image uploaded successfully! ";
+          console.log("Image upload successful:", data);
+        } catch (error) {
+          failed.value = true;
+          console.error("Error uploading image:", error);
+        }
+      }
+
+      if (linkPersonalWebsite.value || linkGithub.value) {
+        try {
+          const profileData = {
+            userId: userId.value,
+            fullName: dataProfile.value.fullName,
+            summary: dataProfile.value.summary,
+            phoneNumber: dataProfile.value.phoneNumber,
+            gender: dataProfile.value.gender,
+            address: dataProfile.value.address,
+            linkPersonalWebsite: linkPersonalWebsite.value || dataProfile.value.linkPersonalWebsite,
+            profileImage: dataProfile.value.profileImage, 
+            linkGithub: linkGithub.value || dataProfile.value.linkGithub
+          };
+          const data = await updateProfile(profileData); 
+          successMessage.value += "Profile updated successfully!";
+          console.log("Profile update successful:", data);
+        } catch (error) {
+          failed.value = true;
+          console.error("Error updating profile:", error);
+        }
+      }
+
+      if (failed.value) {
         Swal.fire({
           toast: true,
           position: "top-end",
-          icon: "success",
-          title: "Success apply!",
+          icon: "error",
+          title: "An error occurred while processing your request.",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
         });
-        console.log("Upload successful:", data);
-      } catch (error) {
-        console.error("Error:", error);
+      } else if (successMessage.value) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: successMessage.value,
+          showConfirmButton: false,
+          timer: 1500,
+          timerProgressBar: true,
+        });
       }
+
+      eventBus.emit("profileUpdated");
+      closeModal();
     };
+
+    // Ambil userId dari token
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
@@ -252,10 +316,28 @@ export default {
         console.error("Error decoding token:", error);
       }
     };
+
+    // Ambil data profil pengguna
+    const fetchProfileUser = async () => {
+      try {
+        const data = await getProfileUser(userId.value);
+        dataProfile.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
     onMounted(async () => {
       await getUserId();
+      await fetchProfileUser();
+      console.log(dataProfile);
     });
+
     return {
+      fetchProfileUser,
+      errorImage,
+      linkGithub,
+      linkPersonalWebsite,
       isHovered,
       imagePreview,
       closeModal,
@@ -269,7 +351,4 @@ export default {
   },
 };
 </script>
-
-
-
 
