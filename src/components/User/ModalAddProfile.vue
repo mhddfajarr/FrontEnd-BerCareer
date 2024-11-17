@@ -181,7 +181,7 @@ export default defineComponent({
         const data = await getProfileUser(userId);
         dataProfile.value = data.data;
         if (dataProfile.value.gender !== null) {
-          selectedGender.value = dataProfile.value.gender; // Update selectedGender based on fetched data
+          selectedGender.value = dataProfile.value.gender; 
         }
         console.log(dataProfile);
       } catch (error) {
@@ -261,6 +261,7 @@ export default defineComponent({
       try {
         await updateProfile(dataProfile.value);
         eventBus.emit("profileUpdated");
+
         closeModal();
         Swal.fire({
           toast: true,

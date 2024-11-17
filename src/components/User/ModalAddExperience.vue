@@ -361,6 +361,7 @@ export default {
         try {
           await addExperience(newData);
           eventBus.emit("newExperience");
+          eventBus.emit("checkProgres"); 
           closeModal();
           Swal.fire({
             toast: true,

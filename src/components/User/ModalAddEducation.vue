@@ -329,6 +329,8 @@ export default defineComponent({
         try {
         await addEducation(newDataEducation);
         eventBus.emit("newEducation");
+        eventBus.emit("checkProgres");
+
         closeModal();
         Swal.fire({
           toast: true,

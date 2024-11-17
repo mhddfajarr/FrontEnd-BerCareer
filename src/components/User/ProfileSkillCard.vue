@@ -18,10 +18,10 @@
           class="flex items-center bg-gray-200 rounded-md hover:bg-gray-300 hover:text-gray-600 text-gray-400 px-2 py-1 transition-all duration-250 ease-in-out ml-auto"
         >
           <i
-            :class="isEdit ? 'fas fa-times' : 'fas fa-pencil'"
+            :class="isEdit ? 'fas fa-times' : 'fas fa-trash'"
             class="mr-2"
           ></i>
-          <span>{{ isEdit ? "Close Delete" : "Delete Skill" }}</span>
+          <span>{{ isEdit ? "Close Delete" : "Remove Skill" }}</span>
         </button>
       </div>
     </div>
@@ -128,6 +128,7 @@ export default {
         if (result.isConfirmed) {
           await deleteSkill(data);
           await fetchSkillUser();
+          eventBus.emit("checkProgres"); 
           Swal.fire({
             toast: true,
             position: "top-end",

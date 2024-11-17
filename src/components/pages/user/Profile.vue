@@ -45,7 +45,7 @@
                   target="_blank"
                   class="text-primaryHover hover:text-primary hover:underline"
                 >
-                  {{ dataProfile.linkPersonalWebsite }}
+                  Personal Website
                 </a>
                 <span v-else>-</span>
               </span>
@@ -58,9 +58,9 @@
                   v-if="dataProfile.linkGithub"
                   :href="dataProfile.linkGithub"
                   target="_blank"
-                  class="text-primaryHover hover:text-primary "
+                  class="text-primaryHover hover:text-primary hover:underline"
                 >
-                  {{ dataProfile.linkGithub }}
+                  Profile Github
                 </a>
                 <span v-else>-</span>
               </span>
@@ -81,60 +81,78 @@
       </div>
 
       <!-- Profile Details -->
-      <div
-        class="bg-white px-6 md:px-10 h-auto rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
-      >
-        <div class="mt-3">
-          <h1 class="text-2xl font-bold text-black mb-2">Profile</h1>
-          <hr class="border-gray-300 mb-4" />
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
-            <p class="text-gray-500">{{ dataProfile.fullName }}</p>
-          </div>
-          <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
-            <p class="text-gray-500">{{ dataProfile.phoneNumber ?? "-" }}</p>
-          </div>
-          <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700">Address</h3>
-            <p class="text-gray-500">{{ dataProfile.address ?? "-" }}</p>
-          </div>
-          <div class="mt-4">
-            <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
-            <p class="text-gray-500">
-              {{
-                dataProfile.gender === 0
-                  ? "Laki-Laki"
-                  : dataProfile.gender === 1
-                  ? "Perempuan"
-                  : "-"
-              }}
-            </p>
+      <div class="bg-slate-50 h-auto md:col-span-8 flex flex-col">
+        <div v-if="!isComplete" class="mb-2">
+          <p class="text-gray-700 font-semibold">
+            Almost There! Complete your profile to start applying for jobs.
+          </p>
+          <div class="flex items-center">
+            <progress
+              class="progress progress-primary w-full"
+              :value="progress"
+              max="100"
+            ></progress>
+            <span class="ml-2 text-gray-700 font-semibold"
+              >{{ progress }}%</span
+            >
           </div>
         </div>
-
-        <div class="grid grid-cols-1 gap-6 md:mt-7">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Summary</h3>
-            <p class="text-gray-500">{{ dataProfile.summary ?? "-" }}</p>
+        <div
+          class="bg-white px-6 md:px-10 h-full rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
+        >
+          <div class="mt-3">
+            <h1 class="text-2xl font-bold text-black mb-2">Profile</h1>
+            <hr class="border-gray-300 mb-4" />
           </div>
-        </div>
 
-        <div class="mt-5 text-end">
-          <button
-            @click="showModalProfile = true"
-            class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
-          >
-            Edit Profile
-          </button>
-          <ModalEditProfile
-            v-if="showModalProfile"
-            :showModal="showModalProfile"
-            @close="showModalProfile = false"
-          />
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
+              <p class="text-gray-500">{{ dataProfile.fullName ?? "-" }}</p>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
+              <p class="text-gray-500">{{ dataProfile.phoneNumber ?? "-" }}</p>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Address</h3>
+              <p class="text-gray-500">{{ dataProfile.address ?? "-" }}</p>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
+              <p class="text-gray-500">
+                {{
+                  dataProfile.gender === 0
+                    ? "Laki-Laki"
+                    : dataProfile.gender === 1
+                    ? "Perempuan"
+                    : "-"
+                }}
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:mt-7">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700">Summary</h3>
+              <p class="text-gray-500">{{ dataProfile.summary ?? "-" }}</p>
+            </div>
+          </div>
+
+          <div class="mt-5 text-end">
+            <button
+              @click="showModalProfile = true"
+              class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
+            >
+              Edit Profile
+            </button>
+            <ModalEditProfile
+              v-if="showModalProfile"
+              :showModal="showModalProfile"
+              @close="showModalProfile = false"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -178,7 +196,12 @@ import SkillCard from "../../User/ProfileSkillCard.vue";
 import { eventBus } from "../../../Services/EvenBus";
 
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
-import { getProfileUser } from "../../../Services/Api/UserService";
+import {
+  getProfileUser,
+  getExperienceUser,
+  getEducationUser,
+  getSkillUser,
+} from "../../../Services/Api/UserService";
 
 export default {
   setup() {
@@ -188,10 +211,17 @@ export default {
     const showModalSkill = ref(false);
     const showModalCertificate = ref(false);
     const showModalCardProfile = ref(false);
-    const id = ref("");
-    const dataProfile = ref([]);
-    const email = ref("");
 
+    const id = ref("");
+    const dataProfile = ref({});
+    const dataExperience = ref([]);
+    const email = ref("");
+    const isComplete = ref(false);
+    const progress = ref(20);
+    const dataEducation = ref([]);
+    const dataSkill = ref([]);
+
+    // Fetch user profile data
     const fetchProfileUser = async () => {
       try {
         const userId = id.value;
@@ -202,11 +232,71 @@ export default {
             dataProfile.value.postDate
           ).format("MMMM DD, YYYY");
         }
+        checkProgress();
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
+    // Fetch experience data
+    const fetchExperience = async () => {
+      try {
+        const data = await getExperienceUser(id.value);
+        dataExperience.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch education data
+    const fetchEducation = async () => {
+      try {
+        const data = await getEducationUser(id.value);
+        dataEducation.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch skill data
+    const fetchSkill = async () => {
+      try {
+        const data = await getSkillUser(id.value);
+        dataSkill.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Check progress based on available data
+    const checkProgress = async () => {
+      progress.value = 20;
+      if (progress.value <100){
+        isComplete.value = false
+      }
+      await fetchExperience();
+      await fetchEducation();
+      await fetchSkill();
+      if (dataProfile.value.phoneNumber != null) {
+        progress.value += 20;
+      }
+      if (dataExperience.value.length > 0) {
+        progress.value += 20;
+      }
+      if (dataEducation.value.length > 0) {
+        progress.value += 20;
+      }
+      if (dataSkill.value.length > 0) {
+        progress.value += 20;
+      }
+      if (progress.value === 100) {
+        isComplete.value = true;
+      }
+    };
+
     eventBus.on("profileUpdated", fetchProfileUser);
+    eventBus.on("checkProgres", checkProgress);
+
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
@@ -216,17 +306,18 @@ export default {
         console.error("Error decoding token:", error);
       }
     };
+
     onMounted(async () => {
       await getUserId();
-      await fetchProfileUser();
 
-      console.log(dataProfile);
+      await fetchProfileUser();
     });
+
     return {
       id,
+      progress,
+      isComplete,
       dataProfile,
-      fetchProfileUser,
-      getUserId,
       email,
       showModalExperience,
       showModalProfile,
@@ -234,10 +325,17 @@ export default {
       showModalSkill,
       showModalCertificate,
       showModalCardProfile,
+      fetchProfileUser,
+      getUserId,
+      fetchExperience,
+      fetchEducation,
+      fetchSkill,
+      dataExperience,
+      dataEducation,
+      dataSkill,
     };
   },
   components: {
-    // CertificateCard,
     SkillCard,
     EducationCard,
     ModalEditProfile,

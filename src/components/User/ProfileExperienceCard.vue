@@ -127,12 +127,11 @@ export default {
     const toggleShow = () => {
       showItems.value = !showItems.value;
     };
-    // Mendapatkan User ID dari token
+
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
         userId.value = dataUser.uid;
-        console.log(userId.value); // Debugging ID User
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -212,6 +211,7 @@ export default {
         if (result.isConfirmed) {
           await deleteExperience(data);
           await fetchExperienceUser();
+          eventBus.emit("checkProgres"); 
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -221,6 +221,7 @@ export default {
             timer: 1500,
             timerProgressBar: true,
           });
+
         }
       } catch (error) {
         console.error("Gagal menghapus pekerjaan:", error);

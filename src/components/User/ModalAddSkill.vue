@@ -113,6 +113,7 @@ export default defineComponent({
       try {
         await addSkill(newData);
         eventBus.emit("newSkill");
+        eventBus.emit("checkProgres");
         closeModal();
         Swal.fire({
           toast: true,

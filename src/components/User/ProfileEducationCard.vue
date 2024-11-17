@@ -209,6 +209,7 @@ export default {
         if (result.isConfirmed) {
           await deleteEducation(data); 
           await fetchEducationsUser(); 
+          eventBus.emit("checkProgres"); 
           Swal.fire({
             toast: true,
             position: "top-end",
