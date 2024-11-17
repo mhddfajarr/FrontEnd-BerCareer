@@ -106,7 +106,9 @@
                   <span class="text-sm">Drag & drop or click to select</span>
                 </div>
               </label>
-              <p v-if="errorImage" class="text-red-500 text-xs mt-2 ml-1">{{ errorImage }}</p>
+              <p v-if="errorImage" class="text-red-500 text-xs mt-2 ml-1">
+                {{ errorImage }}
+              </p>
             </div>
           </div>
 
@@ -145,8 +147,9 @@
           Close
         </button>
         <button
+          :disabled="!newData"
           @click="submitForm"
-          class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
+          class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:text-gray-600"
         >
           Submit
         </button>
@@ -156,8 +159,12 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
-import { uploadImage, updateProfile, getProfileUser } from "../../Services/Api/UserService";
+import { ref, onMounted, watch } from "vue";
+import {
+  uploadImage,
+  updateProfile,
+  getProfileUser,
+} from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import { eventBus } from "../../Services/EvenBus";
 import Swal from "sweetalert2";
@@ -172,7 +179,7 @@ export default {
   setup(props, { emit }) {
     const imagePreview = ref(null);
     const isHovered = ref(false);
-    const selectedFile = ref(null); 
+    const selectedFile = ref(null);
     const userId = ref("");
     const linkPersonalWebsite = ref(null);
     const linkGithub = ref(null);
@@ -180,6 +187,9 @@ export default {
     const successMessage = ref("");
     const failed = ref(false);
     const dataProfile = ref({});
+    const newData = ref(false);
+    const oldLinkGithub = ref(null);
+    const oldLinkPersonalWebsite = ref(null);
 
     // Close modal
     const closeModal = () => {
@@ -195,7 +205,7 @@ export default {
           imagePreview.value = reader.result;
         };
         reader.readAsDataURL(file);
-        selectedFile.value = file; // Simpan file yang dipilih
+        selectedFile.value = file;
       }
     };
 
@@ -227,38 +237,46 @@ export default {
     const removeImage = () => {
       errorImage.value = null;
       imagePreview.value = null;
-      selectedFile.value = null; 
+      selectedFile.value = null;
     };
 
     // Form submit
     const submitForm = async () => {
       // Cek jika tidak ada input yang diisi
-      if (!selectedFile.value && !linkPersonalWebsite.value && !linkGithub.value) {
+      if (
+        !selectedFile.value &&
+        !linkPersonalWebsite.value &&
+        !linkGithub.value
+      ) {
         closeModal();
         return;
       }
 
       // Jika ada gambar yang dipilih, upload gambar
       if (selectedFile.value) {
-        const allowedExtensions = ['.png', '.jpg', '.jpeg']; 
-        const fileExtension = selectedFile.value.name.split('.').pop().toLowerCase(); // Ambil ekstensi file dan konversi ke huruf kecil
+        const allowedExtensions = [".png", ".jpg", ".jpeg"];
+        const fileExtension = selectedFile.value.name
+          .split(".")
+          .pop()
+          .toLowerCase(); // Ambil ekstensi file dan konversi ke huruf kecil
 
         // Validasi ekstensi file
-        if (!allowedExtensions.includes('.' + fileExtension)) {
-          errorImage.value = "Invalid file type. Only PNG, JPG, and JPEG are allowed.";
-          return; 
+        if (!allowedExtensions.includes("." + fileExtension)) {
+          errorImage.value =
+            "Invalid file type. Only PNG, JPG, and JPEG are allowed.";
+          return;
         }
 
         try {
           const data = await uploadImage(userId.value, selectedFile.value);
-          successMessage.value += "Image uploaded successfully! ";
+          const profileImageUrl = data.data.profileImage;
+          dataProfile.value.profileImage = profileImageUrl;
           console.log("Image upload successful:", data);
         } catch (error) {
           failed.value = true;
           console.error("Error uploading image:", error);
         }
       }
-
       if (linkPersonalWebsite.value || linkGithub.value) {
         try {
           const profileData = {
@@ -268,11 +286,13 @@ export default {
             phoneNumber: dataProfile.value.phoneNumber,
             gender: dataProfile.value.gender,
             address: dataProfile.value.address,
-            linkPersonalWebsite: linkPersonalWebsite.value || dataProfile.value.linkPersonalWebsite,
-            profileImage: dataProfile.value.profileImage, 
-            linkGithub: linkGithub.value || dataProfile.value.linkGithub
+            linkPersonalWebsite:
+              linkPersonalWebsite.value ||
+              dataProfile.value.linkPersonalWebsite,
+            profileImage: dataProfile.value.profileImage,
+            linkGithub: linkGithub.value || dataProfile.value.linkGithub,
           };
-          const data = await updateProfile(profileData); 
+          const data = await updateProfile(profileData);
           successMessage.value += "Profile updated successfully!";
           console.log("Profile update successful:", data);
         } catch (error) {
@@ -326,14 +346,35 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+    watch([linkGithub, linkPersonalWebsite, selectedFile], () => {
+      if (
+        linkGithub.value !== oldLinkGithub.value ||
+        linkPersonalWebsite.value !== oldLinkPersonalWebsite.value ||
+        selectedFile.value
+      ) {
+        newData.value = true;
+      } else {
+        newData.value = false;
+      }
+    });
 
+    const cekNewData = () => {
+      oldLinkGithub.value = dataProfile.value.linkGithub;
+      oldLinkPersonalWebsite.value = dataProfile.value.linkPersonalWebsite;
+
+      linkGithub.value = dataProfile.value.linkGithub;
+      linkPersonalWebsite.value = dataProfile.value.linkPersonalWebsite;
+    };
     onMounted(async () => {
       await getUserId();
       await fetchProfileUser();
-      console.log(dataProfile);
+      cekNewData();
     });
 
     return {
+      newData,
+      oldLinkGithub,
+      oldLinkPersonalWebsite,
       fetchProfileUser,
       errorImage,
       linkGithub,
@@ -351,4 +392,3 @@ export default {
   },
 };
 </script>
-
