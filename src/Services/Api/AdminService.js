@@ -125,6 +125,62 @@ export const updateJob = async (jobData, currentJob, jobs, EditModal) => {
   }
 };
 
+// Menghapus job berdasarkan ID
+export const deleteJob = async (userId, jobId) => {
+  const token = localStorage.getItem("authToken");
+  const user = await axios.post(
+    "https://localhost:7147/api/Sessions/Validate",
+    {
+      token: token,
+    }
+  );
+  // Parse the 'message' field, which contains the actual JSON string
+  const responseData = JSON.parse(user.data.message);
+  // Access the 'uid' from the parsed object
+  const uid = responseData.uid;
+  // console.log(uid);  // This will log the uid to the console
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "You will not be able to recover this job!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "No, cancel!",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await axios
+        .delete(`${API_URL}?`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          data: {
+            userId: uid,
+            jobId: jobId,
+          },
+        })
+        .then((result) => {
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            text: "Job has been deleted successfully.",
+            confirmButtonText: "OK",
+          });
+        });
+    } catch (exception) {
+      console.error("Error deleting job:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "There was an error deleting the job!",
+        confirmButtonText: "Retry",
+      });
+    }
+  }
+};
+
 export const getRoles = async () => {
   const token = localStorage.getItem("authToken");
   try {
