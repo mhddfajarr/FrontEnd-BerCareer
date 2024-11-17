@@ -13,7 +13,6 @@
 
       <!-- Navbar Links -->
       <ul class="flex space-x-1 items-center px-7">
-        
         <li class="relative group hidden md:block">
           <router-link
             to="/"
@@ -80,10 +79,18 @@
             ref="dropdownButton"
           >
             <img
-              src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
+              v-if="userImage"
+              :src="'https://localhost:7147/' + userImage"
               alt="Profile"
-              class="w-10 h-10 rounded-full mr-2"
+              class="w-10 h-10 rounded-full mr-2 object-cover"
             />
+            <img
+              v-else
+              src="../../../assets/images/default.png"
+              alt="Default Profile"
+              class="w-10 h-10 rounded-full mr-2 object-cover"
+            />
+
             <span class="relative inline-block group">
               <span
                 :class="[
@@ -175,33 +182,33 @@
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
-import { getDataUser} from "../../../Services/Api/UserService";
-import { useRouter } from 'vue-router';
-import { eventBus } from '../../../Services/EvenBus';
+import { getDataUser } from "../../../Services/Api/UserService";
+import { useRouter } from "vue-router";
+import { eventBus } from "../../../Services/EvenBus";
 
 export default {
   setup() {
-    const cekLogin = ref(localStorage.getItem('authToken') ? true : false);
+    const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("");
-    const id= ref("")
+    const id = ref("");
+    const userImage = ref("");
     const router = useRouter();
-    
 
     // ref untuk dropdown dan tombol dropdown
     const dropdownMenu = ref(null);
     const dropdownButton = ref(null);
-    
+
     // Method untuk logout
     const logout = () => {
       Swal.fire({
-        title: 'Are you sure you want to logout?',
+        title: "Are you sure you want to logout?",
         text: "You will be logged out of the application.",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, logout!',
-        cancelButtonText: 'No, stay logged in',
-        reverseButtons: true
+        confirmButtonText: "Yes, logout!",
+        cancelButtonText: "No, stay logged in",
+        reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("authToken");
@@ -225,8 +232,10 @@ export default {
     // Method untuk menangani klik di luar dropdown
     const handleOutsideClick = (event) => {
       if (
-        dropdownMenu.value && !dropdownMenu.value.contains(event.target) &&
-        dropdownButton.value && !dropdownButton.value.contains(event.target)
+        dropdownMenu.value &&
+        !dropdownMenu.value.contains(event.target) &&
+        dropdownButton.value &&
+        !dropdownButton.value.contains(event.target)
       ) {
         isDropdownVisible.value = false;
       }
@@ -238,12 +247,10 @@ export default {
           console.log(id.value);
           return;
         }
-        const response = await getDataUser(userId); 
-        
-        if (response && response.data && response.data.fullName) {
-          // Ambil kata pertama dari fullName
-          username.value = response.data.fullName.split(" ")[0];
-        }
+        const response = await getDataUser(userId);
+
+        username.value = response.data.fullName.split(" ")[0];
+        userImage.value = response.data.profileImage;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -251,33 +258,34 @@ export default {
 
     eventBus.on("profileUpdated", fetchDataUser);
 
-    const getUserId =async()=>{
+    const getUserId = async () => {
       try {
-          const dataUser = await decodeToken(); 
-          id.value = dataUser.uid; 
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
     };
     onMounted(async () => {
-      if (cekLogin.value) { // Pastikan ini memeriksa nilai reaktif .value
-    await getUserId();
-    fetchDataUser();
-  }
- 
-  document.addEventListener("click", handleOutsideClick);
+      if (cekLogin.value) {
+        // Pastikan ini memeriksa nilai reaktif .value
+        await getUserId();
+        fetchDataUser();
+      }
 
-  window.addEventListener('storage', () => {
-    cekLogin.value = localStorage.getItem('authToken') ? true : false;
-  });
-});
+      document.addEventListener("click", handleOutsideClick);
 
+      window.addEventListener("storage", () => {
+        cekLogin.value = localStorage.getItem("authToken") ? true : false;
+      });
+    });
 
     onBeforeUnmount(() => {
       document.removeEventListener("click", handleOutsideClick);
     });
 
     return {
+      userImage,
       cekLogin,
       isDropdownVisible,
       username,
@@ -290,8 +298,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 .slide-down {

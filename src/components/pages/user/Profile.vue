@@ -12,12 +12,22 @@
 
         <div class="text-center">
           <img
+            v-if="dataProfile.profileImage"
             alt="Profile picture of John Doe"
-            class="w-28 h-28 mx-auto rounded-full"
+            class="w-28 h-28 mx-auto rounded-full object-cover"
             height="100"
-            src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
+            :src="'https://localhost:7147/' + dataProfile.profileImage"
             width="100"
           />
+          <img
+            v-else
+            alt="Profile picture of John Doe"
+            class="w-28 h-28 mx-auto rounded-full object-cover"
+            height="100"
+            src="../../../assets/images/default.png"
+            width="100"
+          />
+
           <h2 class="text-xl font-semibold mt-4 text-gray-700">
             {{ dataProfile.fullName }}
           </h2>
@@ -110,36 +120,20 @@
     </div>
 
     <!-- Experience, Education, Skill, Certificate Section -->
-    <div class="flex justify-end mt-6 lg:ml-3">
+    <div class="flex justify-end mt-6 lg:ml-3 mb-20">
       <div class="w-full md:w-8/12">
         <div class="space-y-6">
           <!-- Experience -->
-          <ExperienceCard  />
+          <ExperienceCard />
 
           <!-- Education -->
           <EducationCard />
 
           <!-- Skill -->
-          <SkillCard/>
+          <SkillCard />
 
           <!-- Certificate -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Certificate</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalCertificate = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Certificate
-              </button>
-              <ModalAddCertificate
-                v-if="showModalCertificate"
-                :showModal="showModalCertificate"
-                @close="showModalCertificate = false"
-              />
-            </div>
-          </div>
+          <!-- <CertificateCard/>    -->
         </div>
       </div>
     </div>
@@ -155,10 +149,11 @@ import ModalAddEducation from "../../User/ModalAddEducation.vue";
 import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
-import ExperienceCard from '../../User/ProfileExperienceCard.vue';
-import EducationCard from '../../User/ProfileEducationCard.vue';
-import SkillCard from '../../User/ProfileSkillCard.vue';
+import ExperienceCard from "../../User/ProfileExperienceCard.vue";
+import EducationCard from "../../User/ProfileEducationCard.vue";
+import SkillCard from "../../User/ProfileSkillCard.vue";
 
+// import CertificateCard from '../../User/ProfileCertificateCard.vue';
 
 import { eventBus } from "../../../Services/EvenBus";
 
@@ -220,6 +215,7 @@ export default {
     };
   },
   components: {
+    // CertificateCard,
     SkillCard,
     EducationCard,
     ModalEditProfile,
@@ -227,7 +223,8 @@ export default {
     ModalAddEducation,
     ModalAddSkill,
     ModalAddCertificate,
-    ModalEditCardProfile,ExperienceCard
+    ModalEditCardProfile,
+    ExperienceCard,
   },
 };
 </script>

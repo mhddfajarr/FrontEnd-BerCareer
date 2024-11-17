@@ -3,7 +3,7 @@
     <!-- Main content -->
     <div class="w-full max-w-md bg-white rounded-lg shadow-md p-6 mb-8 sm:p-8 border">
       <div class="mb-6 md:mb-8 flex justify-center">
-        <img src="/src/assets/images/berCareer-logo.png" alt="Logo" class="h-20" />
+        <router-link to="/"><img src="/src/assets/images/berCareer-logo.png" alt="Logo" class="h-20" /></router-link>
       </div>
 
       <form class="space-y-4 md:space-y-6">

@@ -435,4 +435,28 @@ export const addSkill = async (data) => {
   }
 };
 
+const API_UPLOAD_IMAGE = 'https://localhost:7147/api/ImageUpload';
+
+export const uploadImage = async (userId, file) => {
+  const token = localStorage.getItem('authToken');
+  if (!token) throw new Error('Token is missing or expired');
+
+  // Membuat FormData untuk mengirim gambar dan UserId
+  const formData = new FormData();
+  formData.append('UserId', userId); // Menambahkan UserId
+  formData.append('ProfileImage', file); // Menambahkan file gambar
+
+  try {
+    const response = await axios.post(API_UPLOAD_IMAGE, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Menambahkan token ke header
+        'accept': '*/*', // Menambahkan header accept seperti yang ada pada curl
+      },
+    });
+    return response.data; // Mengembalikan response dari API
+  } catch (error) {
+    console.error('Error uploading image:', error.response || error);
+    throw error; // Mengangkat error untuk ditangani di tempat lain
+  }
+};
 
