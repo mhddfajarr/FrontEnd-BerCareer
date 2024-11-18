@@ -3,6 +3,7 @@ import axios from "axios";
 const API_URL = "https://localhost:7147/api/Jobs";
 const API_URL_BY_ID = "https://localhost:7147/api/Jobs/Detail";
 const API_URL_SAVE_JOB = "https://localhost:7147/api/SavedJobs";
+const API_URL_USER = "https://localhost:7147/api/Users";
 
 export const getAllData = async () => {
   try {
@@ -149,127 +150,137 @@ export const getApplyUser = async (userId) => {
   }
 };
 
-const API_CHANGE_PASSWORD = 'https://localhost:7147/api/Users/changePassword'
+const API_CHANGE_PASSWORD = "https://localhost:7147/api/Users/changePassword";
 export const changePassword = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   try {
     const response = await axios.put(API_CHANGE_PASSWORD, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
-    return response.data; 
+    return response.data;
   } catch (e) {
     throw e; // Throw the caught error
   }
-}
+};
 
-const API_APPLICATION ="https://localhost:7147/api/Applications/All"
+const API_APPLICATION = "https://localhost:7147/api/Applications/All";
 
 export const getAllAplication = async () => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
     const response = await axios.get(API_APPLICATION, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
-    return response.data; 
+    return response.data;
   } catch (e) {
-    console.log('Error fetching applications:', e);
+    console.log("Error fetching applications:", e);
     throw e; // Throw the caught error
   }
-}
+};
 
 const API_PROFILE = "https://localhost:7147/api/Profiles";
 
 export const getProfileUser = async (userId) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
-    const response = await axios.get(`${API_PROFILE}?userId=${encodeURIComponent(userId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data; 
+    const response = await axios.get(
+      `${API_PROFILE}?userId=${encodeURIComponent(userId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (e) {
-    console.error('Error fetching user profile:', e);
+    console.error("Error fetching user profile:", e);
     throw e; // Throw the caught error
   }
 };
 
 export const updateProfile = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   try {
     const response = await axios.put(`${API_PROFILE}/Update`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
-    return response.data; 
+    return response.data;
   } catch (e) {
     throw e; // Throw the caught error
   }
-}
+};
 
-const API_DETAIL_PROFILE = 'https://localhost:7147/api/Details'
+const API_DETAIL_PROFILE = "https://localhost:7147/api/Details";
 
 export const getExperienceUser = async (userId) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   console.log(`Fetching experiences for user: ${userId}`);
   try {
-    const response = await axios.get(`${API_DETAIL_PROFILE}/Experiences?userId=${encodeURIComponent(userId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data; 
+    const response = await axios.get(
+      `${API_DETAIL_PROFILE}/Experiences?userId=${encodeURIComponent(userId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (e) {
-    console.log(userId)
-    console.error('Error fetching user profile:', e);
+    console.log(userId);
+    console.error("Error fetching user profile:", e);
     throw e; // Throw the caught error
   }
 };
 
 export const addExperience = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); 
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
-    const response = await axios.post(`${API_DETAIL_PROFILE}/Experiences`,data,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await axios.post(
+      `${API_DETAIL_PROFILE}/Experiences`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data; // Return response dari API
   } catch (error) {
-    console.error('Error saving job:', error.response || error);
+    console.error("Error saving job:", error.response || error);
     throw error;
   }
 };
 
 export const deleteExperience = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); // Pastikan token ada
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired"); // Pastikan token ada
 
   try {
     const response = await axios.delete(`${API_DETAIL_PROFILE}/Experiences`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: {
         userId: data.userId,
@@ -278,73 +289,84 @@ export const deleteExperience = async (data) => {
     });
     return response.data; // Return response setelah penghapusan pekerjaan
   } catch (error) {
-    console.log('Error deleting saved job:', error.response || error);
+    console.log("Error deleting saved job:", error.response || error);
     throw error;
   }
 };
 
 export const updateExperience = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   try {
-    const response = await axios.put(`${API_DETAIL_PROFILE}/Experiences`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data; 
+    const response = await axios.put(
+      `${API_DETAIL_PROFILE}/Experiences`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (e) {
     throw e; // Throw the caught error
   }
-}
+};
 
 export const getEducationUser = async (userId) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   console.log(`Fetching experiences for user: ${userId}`);
   try {
-    const response = await axios.get(`${API_DETAIL_PROFILE}/Educations?userId=${encodeURIComponent(userId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data; 
+    const response = await axios.get(
+      `${API_DETAIL_PROFILE}/Educations?userId=${encodeURIComponent(userId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (e) {
-    console.log(userId)
-    console.error('Error fetching user profile:', e);
+    console.log(userId);
+    console.error("Error fetching user profile:", e);
     throw e; // Throw the caught error
   }
 };
 
 export const addEducation = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); 
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
-    const response = await axios.post(`${API_DETAIL_PROFILE}/Educations`,data,{
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await axios.post(
+      `${API_DETAIL_PROFILE}/Educations`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
     return response.data; // Return response dari API
   } catch (error) {
-    console.error('Error saving job:', error.response || error);
+    console.error("Error saving job:", error.response || error);
     throw error;
   }
 };
 
 export const deleteEducation = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); 
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
     const response = await axios.delete(`${API_DETAIL_PROFILE}/Educations`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: {
         userId: data.userId,
@@ -353,55 +375,58 @@ export const deleteEducation = async (data) => {
     });
     return response.data; // Return response setelah penghapusan pekerjaan
   } catch (error) {
-    console.log('Error deleting saved job:', error.response || error);
+    console.log("Error deleting saved job:", error.response || error);
     throw error;
   }
 };
 
 export const updateEducation = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   try {
     const response = await axios.put(`${API_DETAIL_PROFILE}/Educations`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
-    return response.data; 
+    return response.data;
   } catch (e) {
     throw e; // Throw the caught error
   }
-}
+};
 
 export const getSkillUser = async (userId) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
   console.log(`Fetching experiences for user: ${userId}`);
   try {
-    const response = await axios.get(`${API_DETAIL_PROFILE}/Skills?userId=${encodeURIComponent(userId)}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data; 
+    const response = await axios.get(
+      `${API_DETAIL_PROFILE}/Skills?userId=${encodeURIComponent(userId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
   } catch (e) {
-    console.log(userId)
-    console.error('Error fetching user profile:', e);
+    console.log(userId);
+    console.error("Error fetching user profile:", e);
     throw e; // Throw the caught error
   }
 };
 
 export const deleteSkill = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); 
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
     const response = await axios.delete(`${API_DETAIL_PROFILE}/Skills`, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: {
         userId: data.userId,
@@ -410,51 +435,72 @@ export const deleteSkill = async (data) => {
     });
     return response.data; // Return response setelah penghapusan pekerjaan
   } catch (error) {
-    console.log('Error deleting saved job:', error.response || error);
+    console.log("Error deleting saved job:", error.response || error);
     throw error;
   }
 };
 
 export const addSkill = async (data) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired'); 
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   try {
-    const response = await axios.post(`${API_DETAIL_PROFILE}/Skills`,data,{
+    const response = await axios.post(`${API_DETAIL_PROFILE}/Skills`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     return response.data; // Return response dari API
   } catch (error) {
-    console.error('Error saving job:', error.response || error);
+    console.error("Error saving job:", error.response || error);
     throw error;
   }
 };
 
-const API_UPLOAD_IMAGE = 'https://localhost:7147/api/ImageUpload';
+const API_UPLOAD_IMAGE = "https://localhost:7147/api/ImageUpload";
 
 export const uploadImage = async (userId, file) => {
-  const token = localStorage.getItem('authToken');
-  if (!token) throw new Error('Token is missing or expired');
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
 
   // Membuat FormData untuk mengirim gambar dan UserId
   const formData = new FormData();
-  formData.append('UserId', userId); // Menambahkan UserId
-  formData.append('ProfileImage', file); // Menambahkan file gambar
+  formData.append("UserId", userId); // Menambahkan UserId
+  formData.append("ProfileImage", file); // Menambahkan file gambar
 
   try {
     const response = await axios.post(API_UPLOAD_IMAGE, formData, {
       headers: {
         Authorization: `Bearer ${token}`, // Menambahkan token ke header
-        'accept': '*/*', // Menambahkan header accept seperti yang ada pada curl
+        accept: "*/*", // Menambahkan header accept seperti yang ada pada curl
       },
     });
     return response.data; // Mengembalikan response dari API
   } catch (error) {
-    console.error('Error uploading image:', error.response || error);
+    console.error("Error uploading image:", error.response || error);
     throw error; // Mengangkat error untuk ditangani di tempat lain
   }
 };
 
+export const checkGoogleUser = async (userId) => {
+  const token = localStorage.getItem("authToken");
+  if (!token) throw new Error("Token is missing or expired");
+  // console.log(`Fetching experiences for user: ${userId}`);
+  try {
+    const response = await axios.get(
+      `${API_URL_USER}/Google?userId=${encodeURIComponent(userId)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (e) {
+    console.log(userId);
+    console.error("Error fetching user profile:", e);
+    throw e; // Throw the caught error
+  }
+};
