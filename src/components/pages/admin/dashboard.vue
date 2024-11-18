@@ -9,19 +9,15 @@
         <!-- Main content -->
         <div class="flex justify-between gap-4">
         <!-- Menambahkan gap antar card -->
-        <div
-            class="card  w-full shadow-xl border-t-4 border-t-primary bg-white"
-        >
+        <div class="card w-full shadow-xl border-t-4 border-t-primary bg-white">
             <div class="card-body">
-            <h2 class="card-title">Total Applicates</h2>
-            <p>If a dog chews shoes whose shoes does he choose?</p>
-            <h1 class="text-5xl font-bold">30</h1>
+            <h2 class="card-title">Total Applicants</h2>
+            <p>The total number of applicants available.</p>
+            <h1 class="text-5xl font-bold">{{ totalApplications }}</h1>
             </div>
         </div>
 
-        <div
-            class="card  w-full shadow-xl border-t-4 border-t-primary bg-white"
-        >
+        <div class="card w-full shadow-xl border-t-4 border-t-primary bg-white">
             <div class="card-body">
             <h2 class="card-title">Total Post Job</h2>
             <p>Number of jobs posted on the platform</p>
@@ -35,64 +31,85 @@
     </template>
 
     <script>
-    import { getAllData } from "../../../Services/Api/AdminService";
+    import axios from "axios"; // Pastikan Anda sudah mengimpor axios
+    import { getAllData } from "../../../Services/Api/AdminService"; // Fungsi untuk mengambil data pekerjaan
 
     export default {
     data() {
         return {
-        showModal: false,
-        selectedTitle: "", // Untuk menyimpan judul yang dipilih
-        searchQuery: "", // Untuk menyimpan query pencarian
-        dataJobs: [], // Data pekerjaan yang diambil dari API
-        filteredJobs: [], // Data pekerjaan yang telah difilter
-        totalPostJobs: 0, // Variabel untuk menyimpan jumlah total pekerjaan
+        dataJobs: [], // Menyimpan data pekerjaan
+        filteredJobs: [], // Data pekerjaan yang difilter
+        totalPostJobs: 0, // Total pekerjaan
+
+        dataApplications: [], // Menyimpan data pelamar
+        filteredApplications: [], // Data pelamar yang difilter
+        totalApplications: 0, // Total pelamar
         };
     },
     methods: {
         // Mengambil data pekerjaan dari API
         async fetchJobDetail() {
         try {
-            const response = await getAllData(); // Ambil semua data pekerjaan dari API
-            this.dataJobs = response.data; // Menyimpan data pekerjaan ke dataJobs
-            this.filteredJobs = response.data; // Inisialisasi filteredJobs dengan data semua pekerjaan
-            this.totalPostJobs = response.data.length; // Menghitung jumlah total pekerjaan
+            const response = await getAllData();
+            this.dataJobs = response.data;
+            this.filteredJobs = response.data;
+            this.totalPostJobs = response.data.length; // Hitung total pekerjaan
         } catch (error) {
-            console.error("Error fetching data:", error);
+            console.error("Error fetching jobs:", error);
         }
         },
 
-        // Fungsi untuk memfilter pekerjaan berdasarkan judul yang dipilih
-        filterJobsByTitle(title) {
-        this.selectedTitle = title; // Simpan judul yang dipilih
-        this.searchQuery = ""; // Reset pencarian saat filter berdasarkan judul
-        this.filteredJobs = this.dataJobs.filter((job) => job.title === title); // Filter dataJobs berdasarkan title
-        },
+        // Mengambil data pelamar dari API
+        async fetchApplications() {
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+            throw new Error(
+                "Token tidak ditemukan. Silakan login terlebih dahulu."
+            );
+            }
 
-        // Fungsi untuk memfilter pekerjaan berdasarkan query pencarian
-        filterBySearch() {
-        const query = this.searchQuery.toLowerCase(); // Menyesuaikan pencarian menjadi huruf kecil
-        this.filteredJobs = this.dataJobs.filter(
-            (job) =>
-            job.title.toLowerCase().includes(query) ||
-            job.description.toLowerCase().includes(query) ||
-            job.location.toLowerCase().includes(query)
-        );
-        },
+            const response = await axios.get(
+            "https://localhost:7147/api/Applications/All",
+            {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                },
+            }
+            );
 
-        // Fungsi untuk mengedit pekerjaan
-        editJob(job) {
-        console.log("Edit Job:", job); // Menampilkan pekerjaan yang dipilih untuk diedit
-        },
-
-        // Fungsi untuk menghapus pekerjaan
-        deleteJob(jobId) {
-        console.log("Delete Job:", jobId); // Menampilkan pekerjaan yang dipilih untuk dihapus
+            this.dataApplications = response.data.data; // Asumsi data ada di response.data.data
+            this.filteredApplications = this.dataApplications;
+            this.totalApplications = this.dataApplications.length; // Hitung total aplikasi
+        } catch (error) {
+            console.error("Error fetching applications:", error);
+        }
         },
     },
     created() {
-        this.fetchJobDetail(); // Ambil data pekerjaan ketika komponen dibuat
+        this.fetchJobDetail(); // Ambil data pekerjaan saat komponen dibuat
+        this.fetchApplications(); // Ambil data pelamar saat komponen dibuat
     },
     };
     </script>
 
-    <style lang="scss" scoped></style>
+    <style scoped>
+    .card {
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    }
+
+    .card-body {
+    text-align: center;
+    }
+
+    .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    }
+
+    .text-5xl {
+    color: #333;
+    }
+    </style>

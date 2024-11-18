@@ -128,6 +128,7 @@
                             </div>
                             </div>
                         </div>
+
                         <div
                             v-if="editModal"
                             class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 w-full"
@@ -150,82 +151,81 @@
                             </div>
                             <!-- Modal Body -->
                             <div class="modal-body">
-                                <form @submit.prevent="updateJob">
+                                <form @submit.prevent="handleUpdateJob">
                                 <div class="card-body">
-                                    <!-- Job Title -->
+                                    <!-- Job ID -->
+                                    <input
+                                    v-bind:value="jobId"
+                                    disabled
+                                    class="w-full text-gray-400 border bg-gray-100 rounded px-3 py-2 mt-1 focus:outline-none cursor-not-allowed hidden"
+                                    />
                                     <h4 class="text-lg font-bold mb-2">Title</h4>
                                     <input
-                                    v-model="newJobTitle"
+                                    v-model="editJobTitle"
                                     type="text"
                                     placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
-
-                                    <!-- Job Description -->
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <QuillEditor
-                                    v-model:content="newJobDescription"
-                                    placeholder="Enter job description"
+                                    <!-- <input
+                                    v-model="editJobDescription"
+                                    type="text"
+                                    placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                    /> -->
+                                    <div>
+                                    <QuillEditor
+                                        v-model:content="editJobDescription"
+                                        type="text"
+                                        placeholder="Description"
+                                        class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     ></QuillEditor>
-
-                                    <!-- Job Requirement -->
+                                    <div
+                                        v-html="editJobDescription"
+                                        class="hidden"
+                                    ></div>
+                                    </div>
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
                                     <input
-                                    v-model="newJobRequirement"
+                                    v-model="editJobRequirement"
                                     type="text"
                                     placeholder="Enter job requirement"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
-
-                                    <!-- Job Type -->
                                     <h4 class="text-lg font-bold mb-2">Job Type</h4>
                                     <input
-                                    v-model="newJobType"
+                                    v-model="editJobType"
                                     type="text"
                                     placeholder="Enter job type (e.g., Full-time)"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
-
-                                    <!-- Salary -->
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
                                     <input
-                                    v-model="newJobSalary"
+                                    v-model="editJobSalary"
                                     type="text"
                                     placeholder="Enter salary"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
-
-                                    <!-- Location -->
                                     <h4 class="text-lg font-bold mb-2">Location</h4>
                                     <input
-                                    v-model="newJobLocation"
+                                    v-model="editJobLocation"
                                     type="text"
                                     placeholder="Enter location"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
-                                    <input
-                                    v-model="newJobUserId"
-                                    type="text"
-                                    placeholder="Location"
-                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50 hidden"
-                                    />
                                 </div>
-
                                 <!-- Modal Footer with buttons -->
                                 <div class="mt-6 flex justify-end space-x-4">
-                                    <!-- Close Button -->
                                     <button
                                     @click="editModal = false"
                                     class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md"
                                     >
                                     Close
                                     </button>
-                                    <!-- Save Button -->
                                     <button
                                     type="submit"
                                     class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
@@ -257,7 +257,6 @@
                                 </li>
                             </ul>
                             </details>
-                            <!-- Data per page selection -->
                             <select
                             v-model="perPage"
                             @change="updatePagination"
@@ -280,9 +279,7 @@
                         </div>
                         </div>
                     </div>
-
                     <div class="card-body">
-                        <!-- Responsive Table Wrapper -->
                         <div class="overflow-x-auto">
                         <table class="table bg-white text-black w-full">
                             <thead class="text-black text-center">
@@ -316,17 +313,13 @@
                                 <td>{{ job.location }}</td>
                                 <td>{{ job.applicantsCount || 0 }}</td>
                                 <td class="text-center">
-                                <!-- Edit Button -->
                                 <button
                                     type="button"
                                     class="btn bg-yellow-500 text-white border-none"
-                                    data-toggle="modal"
-                                    data-target="#modal-default"
-                                    @click="editModal = true"
+                                    @click="openEditModal(job.jobId)"
                                 >
                                     <i class="fas fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <!-- Delete Button -->
                                 <button
                                     @click="deleteJobHandler(job.userId, job.jobId)"
                                     class="btn bg-red-500 ml-2 text-white"
@@ -375,65 +368,32 @@
     <script>
     import { ref, computed, onMounted } from "vue";
     import {
+    getJobsById,
     getAllData,
     deleteJob,
     addJob,
     updateJob,
-    } from "../../../Services/Api/AdminService"; // Import API functions
+    } from "../../../Services/Api/AdminService";
     import { decodeToken } from "../../../Services/JWT/JwtDecode";
     import Swal from "sweetalert2";
-    import {
-    RichTextEditorComponent,
-    Toolbar,
-    Image,
-    HtmlEditor,
-    Link,
-    Table,
-    } from "@syncfusion/ej2-vue-richtexteditor";
     import { QuillEditor } from "@vueup/vue-quill";
     import "@vueup/vue-quill/dist/vue-quill.snow.css";
     import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+    import { uid } from "ckeditor5";
     export default {
     components: {
-        "ejs-richtexteditor": RichTextEditorComponent,
         QuillEditor,
-    },
-    methods: {
-        openEditModal(jobId) {
-        this.jobId = jobId;
-        this.editModal = true;
-        this.getJobsById(jobId);
-        },
-
-        getJobsById(jobId) {
-        fetch(`/api/jobs/${jobId}`)
-            .then((response) => response.json())
-            .then((data) => {
-            // Isi data untuk diedit
-            this.newJobTitle = data.title;
-            this.newJobDescription = data.description;
-            this.newJobRequirement = data.requirement;
-            this.newJobType = data.type;
-            this.newJobSalary = data.salary;
-            this.newJobLocation = data.location;
-            })
-            .catch((error) => console.error("Error fetching job data:", error));
-        },
-    },
-    provide: {
-        richtexteditor: [Toolbar, Image, HtmlEditor, Link, Table],
     },
     setup() {
         // State variables
         const showModal = ref(false);
-        const editModal = ref(false);
         const selectedTitle = ref("");
         const searchQuery = ref("");
         const dataJobs = ref([]);
         const filteredJobs = ref([]);
-        const perPage = ref(10); // Default number of jobs per page
-        const currentPage = ref(1); // Default to first page
-        const totalPages = ref(1); // For pagination calculation
+        const perPage = ref(10);
+        const currentPage = ref(1);
+        const totalPages = ref(1);
         const newJobTitle = ref("");
         const newJobDescription = ref("");
         const newJobType = ref("");
@@ -442,7 +402,16 @@
         const newJobRequirement = ref("");
         const newJobUserId = ref("");
         const id = ref("");
-        const userId = ref("");
+        const editModal = ref(false);
+        const jobId = ref(null);
+        // Data pekerjaan untuk diedit
+        const editJobTitle = ref("");
+        const editJobDescription = ref("");
+        const editJobRequirement = ref("");
+        const editJobType = ref("");
+        const editJobSalary = ref("");
+        const editJobLocation = ref("");
+        const jobs = ref([]); // Asumsikan ini daftar pekerjaan
 
         // Fetch job details from API
         const fetchJobDetail = async () => {
@@ -526,8 +495,6 @@
         };
 
         const addJobHandler = async () => {
-        // const insertValues = getInsertValues(newJobDescription.value);
-        // const descriptionHTML = newJobDescription.value;
         const descriptionHTML = getInsertValues(newJobDescription.value);
         const newJob = {
             Title: newJobTitle.value,
@@ -548,109 +515,113 @@
         }
         };
 
-        // const updateJobHandler = async (
-        // jobId,
-        // newJobTitle,
-        // newJobDescription,
-        // newJobRequirement,
-        // newJobSalary,
-        // newJobType,
-        // newJobLocation,
-        // id
-        // ) => {
-        const token = localStorage.getItem("authToken");
+        // Membuka modal edit
+        const openEditModal = async (id) => {
+        // Reset form state sebelum mengisi data baru
+        editJobTitle.value = "";
+        editJobDescription.value = "";
+        editJobRequirement.value = "";
+        editJobType.value = "";
+        editJobSalary.value = "";
+        editJobLocation.value = "";
 
-        const dateNewJob = {
-        title: newJobTitle.value,
-        description: newJobDescription.value, // Ensure `newJobDescription` is a ref
-        requirement: newJobRequirement.value,
-        salary: newJobSalary.value,
-        type: newJobType.value,
-        location: newJobLocation.value,
-        uid: id.value, // Make sure `id` holds the correct job identifier
+        jobId.value = id; // Menyimpan ID pekerjaan yang dipilih
+        editModal.value = true; // Menampilkan modal edit
+
+        try {
+            const response = await getJobsById(id); // Mengambil data pekerjaan berdasarkan ID dan mengisinya di form modal
+            editJobTitle.value = response.data.title;
+            editJobDescription.value = response.data.description;
+            editJobRequirement.value = response.data.requirement;
+            editJobType.value = response.data.type;
+            editJobSalary.value = response.data.salary;
+            editJobLocation.value = response.data.location;
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
         };
 
-        const updateJob = async () => {
+        // Update
+        const handleUpdateJob = async () => {
+        const token = localStorage.getItem("authToken");
+
+        // Validasi token
         if (!token) {
-            console.error("No authentication token found.");
             Swal.fire({
             icon: "error",
             title: "Authentication Error",
             text: "Please log in again.",
-            confirmButtonText: "OK",
             });
             return;
         }
 
-        // Input validation
+        // Data pekerjaan yang diperbarui
+        const editdescriptionHTML = getInsertValues(editJobDescription.value);
+        const updatedJob = {
+            jobId: jobId.value,
+            title: editJobTitle.value,
+            description: editdescriptionHTML,
+            requirement: editJobRequirement.value,
+            type: editJobType.value,
+            salary: editJobSalary.value,
+            location: editJobLocation.value,
+            userId: id.value,
+        };
+
+        // Validasi input
         if (
-            !dateNewJob.title ||
-            !dateNewJob.description ||
-            !dateNewJob.requirement ||
-            !dateNewJob.salary ||
-            !dateNewJob.type ||
-            !dateNewJob.location ||
-            !dateNewJob.uid // Check if the userId/jobId is also provided
+            !updatedJob.title ||
+            !updatedJob.description ||
+            !updatedJob.requirement ||
+            !updatedJob.type ||
+            !updatedJob.salary ||
+            !updatedJob.location ||
+            !updatedJob.userId
         ) {
-            console.error("Missing required job fields.");
             Swal.fire({
             icon: "error",
             title: "Input Error",
             text: "Please fill in all required fields.",
-            confirmButtonText: "Retry",
             });
             return;
         }
 
+        // Panggil fungsi API
         try {
-            console.log("Updating job with data:", dateNewJob);
+            console.log({
+            id: jobId.value,
+            updated: updatedJob,
+            token: token,
+            });
+            const updatedData = await updateJob(jobId.value, updatedJob, token);
 
-            // Assuming the URL is correct with userId/jobId
-            const response = await axios.put(
-            `${API_URL}/${dateNewJob.uid}`, // Make sure userId is correct identifier
-            dateNewJob,
-            {
-                headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                },
+            // Perbarui data di state jobs
+            const index = jobs.value.findIndex((job) => job.jobId === jobId.value);
+            if (index !== -1) {
+            jobs.value.splice(index, 1, updatedData);
             }
-            );
-
-            if (response?.data) {
-            // Check if response.data exists
-            console.log("Job updated successfully:", response.data);
 
             Swal.fire({
-                icon: "success",
-                title: "Success!",
-                text: "Job updated successfully.",
-                showConfirmButton: false,
-                timer: 1500,
+            icon: "success",
+            title: "Success!",
+            text: "Job updated successfully.",
+            showConfirmButton: false,
+            timer: 1500,
             });
-            } else {
-            throw new Error("Unexpected response structure");
-            }
-        } catch (error) {
-            console.error(
-            "Error updating job:",
-            error.response ? error.response.data : error.message
-            );
 
+            editModal.value = false;
+        } catch (error) {
             Swal.fire({
             icon: "error",
             title: "Oops...",
             text:
                 error.response?.data?.message ||
                 "There was an error updating the job!",
-            confirmButtonText: "Retry",
             });
         }
         };
 
-        // };
-
-        // Function to delete job
+        // Hapus
         const deleteJobHandler = async (userId, jobId) => {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -663,7 +634,7 @@
 
         if (result.isConfirmed) {
             try {
-            await deleteJob(userId, jobId); // API call to delete job
+            await deleteJob(userId, jobId);
             filteredJobs.value = filteredJobs.value.filter(
                 (job) => job.jobId !== jobId
             ); // Remove job from list
@@ -677,7 +648,6 @@
         }
         };
 
-        // Fetch job details when component is mounted
         onMounted(() => {
         getUserId();
         fetchJobDetail();
@@ -686,7 +656,6 @@
         return {
         showModal,
         id,
-        userId,
         newJobUserId,
         newJobTitle,
         newJobDescription,
@@ -694,7 +663,6 @@
         newJobLocation,
         newJobSalary,
         newJobType,
-        editModal,
         selectedTitle,
         searchQuery,
         dataJobs,
@@ -710,30 +678,30 @@
         updatePagination,
         deleteJobHandler,
         addJobHandler,
-        updateJob,
-        // updateJobHandler,
+        editModal,
+        jobId,
+        editJobTitle,
+        editJobDescription,
+        editJobRequirement,
+        editJobType,
+        editJobSalary,
+        editJobLocation,
+        postDate: new Date().toISOString(),
+        jobs,
+        openEditModal,
+        handleUpdateJob,
         };
     },
     };
     </script>
-
     <style>
     .ql-editor {
     height: 15vh;
     }
-    /* Styling for pagination and other elements */
     .pagination-container {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     margin-top: 20px;
     }
-    @import "/node_modules/@syncfusion/ej2-base/styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-inputs/styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-lists/styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-popups/styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-buttons//styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-navigations/styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-splitbuttons//styles/material.css";
-    @import "/node_modules/@syncfusion/ej2-vue-richtexteditor/styles/material.css";
     </style>
