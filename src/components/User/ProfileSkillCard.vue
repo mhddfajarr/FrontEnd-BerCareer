@@ -11,7 +11,9 @@
         ></i>
       </span>
       <div class="flex justify-between w-full items-center">
-        <h1 class="text-xl font-bold text-black" @click="toggleShow">Skill</h1>
+        <h1 class="text-xl font-bold text-black" @click="toggleShow">Skill
+          <span v-if="dataSkill.length < 1"  class="text-red-500">*</span>
+        </h1>
         <button
           v-if="dataSkill.length > 0"
           @click="isEdit = !isEdit "

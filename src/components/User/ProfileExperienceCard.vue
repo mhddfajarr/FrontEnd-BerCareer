@@ -3,10 +3,17 @@
     <div class="flex items-center mb-2 cursor-pointer" @click="toggleShow">
       <span class="mr-2">
         <i
-          :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
+          :class="
+            showItems
+              ? 'fas fa-chevron-down text-gray-700'
+              : 'fas fa-chevron-right text-gray-700'
+          "
         ></i>
       </span>
-      <h1 class="text-xl font-bold text-black">Experience</h1>
+      <h1 class="text-xl font-bold text-black">
+        Experience
+        <span v-if="dataExperience.length < 1"  class="text-red-500">*</span>
+      </h1>
     </div>
     <div class="mt-5 bg-gray-700 h-px mb-4"></div>
 
@@ -143,7 +150,7 @@ export default {
     };
 
     const openModalAdd = () => {
-      showItems.value =true;  
+      showItems.value = true;
       modalId.value = null;
       showModalExperience.value = true;
     };
@@ -211,7 +218,7 @@ export default {
         if (result.isConfirmed) {
           await deleteExperience(data);
           await fetchExperienceUser();
-          eventBus.emit("checkProgres"); 
+          eventBus.emit("checkProgres");
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -221,7 +228,6 @@ export default {
             timer: 1500,
             timerProgressBar: true,
           });
-
         }
       } catch (error) {
         console.error("Gagal menghapus pekerjaan:", error);
@@ -230,7 +236,8 @@ export default {
 
     onMounted(async () => {
       await getUserId();
-      fetchExperienceUser();
+      await fetchExperienceUser();
+      console.log("ini data", dataExperience)
     });
 
     return {

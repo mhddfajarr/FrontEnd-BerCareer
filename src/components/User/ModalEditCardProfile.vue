@@ -117,7 +117,7 @@
               Social accounts
             </h2>
             <div class="flex items-center mb-4">
-              <i class="fas fa-link text-gray-500 mr-2"></i>
+              <i class="fas fa-globe text-gray-500 mr-2"></i>
               <input
                 type="text"
                 v-model="linkPersonalWebsite"
@@ -126,7 +126,7 @@
               />
             </div>
             <div class="flex items-center">
-              <i class="fas fa-link text-gray-500 mr-2"></i>
+              <i class="fab fa-github text-gray-500 mr-2"></i>
               <input
                 type="text"
                 v-model="linkGithub"
@@ -271,6 +271,7 @@ export default {
           const data = await uploadImage(userId.value, selectedFile.value);
           const profileImageUrl = data.data.profileImage;
           dataProfile.value.profileImage = profileImageUrl;
+          successMessage.value += "Image updated successfully!";
           console.log("Image upload successful:", data);
         } catch (error) {
           failed.value = true;

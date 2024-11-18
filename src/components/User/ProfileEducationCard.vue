@@ -6,7 +6,9 @@
           :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
         ></i>
       </span>
-      <h1 class="text-xl font-bold text-black">Education</h1>
+      <h1 class="text-xl font-bold text-black">Education
+        <span v-if="dataEducations.length < 1"  class="text-red-500">*</span>
+      </h1>
     </div>
     <div class="mt-4 bg-gray-700 h-px mb-4"></div>
 
