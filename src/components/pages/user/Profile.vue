@@ -24,7 +24,7 @@
               <img
                 :src="dataProfile.profileImage"
                 alt="Default Google"
-                class="w-28 h-28 mx-auto rounded-full object-cover"
+                class="w-40 h-28 mx-auto rounded-full object-cover"
                 height="100"
                 referrerpolicy="no-referrer"
               />
@@ -34,7 +34,7 @@
             <img
               src="../../../assets/images/default.png"
               alt="Default Profile"
-              class="w-10 h-10 rounded-full mr-2 object-cover"
+              class="w-28 h-28 mx-auto rounded-full object-cover"
             />
           </div>
           <h2 class="text-xl font-semibold mt-4 text-gray-700">
