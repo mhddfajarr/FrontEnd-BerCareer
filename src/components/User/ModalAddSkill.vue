@@ -7,7 +7,7 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-[50%]">
       <!-- Modal Header -->
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-xl font-semibold text-gray-700">Add Skill</h3>
+        <h3 class="text-xl font-semibold text-gray-700">Add Skills</h3>
         <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
           ✕
         </button>
@@ -17,21 +17,35 @@
       <div class="mt-4 max-h-full md:max-h-80 overflow-y-auto p-2">
         <form @submit.prevent="submitForm">
           <div class="mb-4">
-            <label
+            <!-- <label
               for="skillName"
               class="block text-gray-700 font-semibold text-left"
-              >Skill</label
+              >Skills</label
+            > -->
+            <div v-for="(skill, index) in skills" :key="index" class="flex items-center mb-2">
+              <input
+                v-model="skills[index]"
+                type="text"
+                class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                placeholder="Enter skill"
+              />
+              <button
+                v-if="skills.length > 1"
+                type="button"
+                @click="removeSkill(index)"
+                class="ml-2 text-red-500 hover:text-red-700"
+              >
+                ✕
+              </button>
+            </div>
+            <button
+              @click="addSkillInput"
+              type="button"
+              class="text-primary hover:text-primaryHover"
             >
-            <input
-              type="text"
-              id="skillName"
-              v-model="skillName"
-              class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-            />
-            <p
-              v-if="skillNameError"
-              class="text-red-500 text-xs text-left mt-1"
-            >
+              + Add another skill
+            </button>
+            <p v-if="skillNameError" class="text-red-500 text-xs text-left mt-1">
               {{ skillNameError }}
             </p>
           </div>
@@ -57,10 +71,12 @@
   </div>
 </template>
 
+
+
 <script>
 import { ref, defineComponent, watch, onMounted, toRefs } from 'vue';
 import { decodeToken } from '../../Services/JWT/JwtDecode';
-import { addSkill } from '../../Services/Api/UserService';
+import { addSkill as apiAddSkill } from '../../Services/Api/UserService';
 import { eventBus } from '../../Services/EvenBus';
 import Swal from 'sweetalert2';
 
@@ -72,10 +88,9 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-    // Ensure toRefs is imported and used properly
     const { showModal } = toRefs(props);
     const userId = ref("");
-    const skillName = ref("");
+    const skills = ref([""]); 
     const skillNameError = ref("");
 
     const closeModal = () => {
@@ -91,14 +106,14 @@ export default defineComponent({
       }
     };
 
-    watch(skillName, () => {
+    watch(skills, () => {
       skillNameError.value = "";
     });
 
     const validateForm = () => {
       let isValid = true;
-      if (!skillName.value) {
-        skillNameError.value = "Skill name is required";
+      if (skills.value.some(skill => !skill.trim())) {
+        skillNameError.value = "All skills are required";
         isValid = false;
       } else {
         skillNameError.value = "";
@@ -106,30 +121,43 @@ export default defineComponent({
       return isValid;
     };
 
+    const addSkillInput = () => {
+      skills.value.push(""); 
+    };
+
+    const removeSkill = (index) => {
+      skills.value.splice(index, 1); 
+    };
+
     const submitForm = async () => {
       if (!validateForm()) return;
 
-      const newData = {
-        skillName: skillName.value,
-        userId: userId.value,
-      };
-      try {
-        await addSkill(newData);
-        eventBus.emit("newSkill");
-        eventBus.emit("checkProgres");
-        closeModal();
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Success add new skill!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-        });
-      } catch (error) {
-        console.error("Error adding skill:", error);
+      for (let skill of skills.value) {
+        const newData = {
+          skillName: skill.trim(), 
+          userId: userId.value,
+        };
+
+        try {
+          await apiAddSkill(newData);
+        } catch (error) {
+          console.error("Error adding skill:", error);
+          return; 
+        }
       }
+
+      eventBus.emit("newSkill");
+      eventBus.emit("checkProgres");
+      closeModal();
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Success add new skills!",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
     };
 
     onMounted(() => {
@@ -138,12 +166,14 @@ export default defineComponent({
 
     return {
       showModal,
-      skillName,
+      skills,
       userId,
       closeModal,
       skillNameError,
       submitForm,
       getUserId,
+      addSkillInput,
+      removeSkill,
     };
   },
 });
