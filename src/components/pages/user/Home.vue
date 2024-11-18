@@ -115,7 +115,7 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock  mr-1"></i>
+          <i class="fas fa-user-clock mr-1"></i>
           <span class="">{{ job.type }}</span>
         </p>
         <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
@@ -124,12 +124,12 @@
       </div>
       <hr class="mt-4 mb-2" />
       <div class="flex justify-between items-center">
-
-  <span  class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full">
-    Posted On {{ job.postDate }}
-  </span>
-</div>
-
+        <span
+          class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full"
+        >
+          Posted On {{ job.postDate }}
+        </span>
+      </div>
 
       <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
       <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">
@@ -232,17 +232,25 @@ export default {
       return filteredJobs.value.length > visibleJobs.value.length;
     });
 
-    // Mounted lifecycle hook
-    onMounted(async () => {
+    const fetchJobs = async () => {
       try {
         const data = await getAllData();
         jobs.value = data.data;
         console.log(jobs);
         jobs.value.forEach((job) => {
-          if (job.postDate) {
+          if (job.postDate && job.dueDate) {
             job.postDate = moment(job.postDate).format("MMMM DD, YYYY");
+            job.dueDate = moment(job.dueDate).format("MMMM DD, YYYY");
           }
         });
+
+        // Remove jobs with past due dates
+        const today = new Date();
+        jobs.value = jobs.value.filter((job) => {
+          const dueDate = moment(job.dueDate, "MMMM DD, YYYY").toDate();
+          return dueDate >= today;
+        });
+
         // Set isApplied for each job based on appliedJobs
         jobs.value = jobs.value.map((job) => {
           return {
@@ -257,39 +265,52 @@ export default {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+    };
 
-      if (token) {
-        try {
-          const dataUser = await decodeToken();
-          id.value = dataUser.uid;
-          console.log(id.value);
-        } catch (error) {
-          console.error("Error decoding token:", error);
-        }
-        try {
-          const data = await getSaveJob(id.value);
-          savedJobs.value = data.data;
-        } catch (error) {
-          console.error("Error fetching saved jobs:", error);
-        }
-
-        try {
-          const data = await getApplyUser(id.value);
-          appliedJobs.value = data.data;
-          console.log(appliedJobs.value);
-
-          jobs.value = jobs.value.map((job) => {
-            return {
-              ...job,
-              isApplied: appliedJobs.value.some(
-                (appliedJob) => appliedJob.jobId === job.jobId
-              ),
-            };
-          });
-        } catch (error) {
-          console.error("Error fetching applied jobs:", error);
-        }
+    const fetchUserId = async () => {
+      try {
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+        console.log(id.value);
+      } catch (error) {
+        console.error("Error decoding token:", error);
       }
+    };
+
+    const fetchSavedJob = async () => {
+      try {
+        const data = await getSaveJob(id.value);
+        savedJobs.value = data.data;
+      } catch (error) {
+        console.error("Error fetching saved jobs:", error);
+      }
+    };
+
+    const fetchAppliedJob = async () => {
+      try {
+        const data = await getApplyUser(id.value);
+        appliedJobs.value = data.data;
+        console.log(appliedJobs.value);
+
+        jobs.value = jobs.value.map((job) => {
+          return {
+            ...job,
+            isApplied: appliedJobs.value.some(
+              (appliedJob) => appliedJob.jobId === job.jobId
+            ),
+          };
+        });
+      } catch (error) {
+        console.error("Error fetching applied jobs:", error);
+      }
+    };
+
+    // Mounted lifecycle hook
+    onMounted(async () => {
+      await fetchJobs();
+      await fetchUserId();
+      await fetchSavedJob();
+      await fetchAppliedJob();
     });
 
     // Methods

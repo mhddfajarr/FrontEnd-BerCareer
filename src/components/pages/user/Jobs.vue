@@ -43,12 +43,27 @@
 
         <div class="flex flex-wrap items-center mb-7 mt-7">
           <!-- Tombol Apply -->
-          <button
-            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
-            @click="postApplyJob(jobs.jobId)"
+
+          <div
+            v-if="isExpired"
+            class="cursor-not-allowed tooltip"
+            data-tip="This job is expired"
           >
-            {{ isApplied ? "Applied" : "Apply" }}
-          </button>
+            <button
+              class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base btn-disabled cursor-pointer"
+              @click="postApplyJob(jobs.jobId)"
+            >
+              {{ isApplied ? "Applied" : "Apply" }}
+            </button>
+          </div>
+          <div v-else>
+            <button
+              class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
+              @click="postApplyJob(jobs.jobId)"
+            >
+              {{ isApplied ? "Applied" : "Apply" }}
+            </button>
+          </div>
 
           <!-- Tombol Save/Remove Favorite -->
           <button
@@ -95,20 +110,26 @@
 
     <!-- Kolom 2: Card Benefit Perusahaan -->
     <div
-      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md h-52 rounded-lg sticky top-0 border-t-4 border-primary"
+      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md h-60 rounded-lg sticky top-0 border-t-4 border-primary"
     >
-      <h2 class="text-2xl font-bold text-gray-700 mt-2">Job Information</h2>
-      <hr class="my-4" />
-      <ul>
-        <li class="flex items-center p-2">
-          <i class="fas fa-user-check text-gray-600 mr-2"></i>
-          <span>{{ totalApplications }} Applicants</span>
-        </li>
-        <li class="flex items-center p-2">
-          <i class="fas fa-calendar-day text-gray-600 mr-2"></i>
-          <span>Posted on {{ jobs.postDate }}</span>
-        </li>
-      </ul>
+      <div class="w-full h-full">
+        <h2 class="text-2xl font-bold text-gray-700 mt-2">Job Information</h2>
+        <hr class="my-4" />
+        <ul class="">
+          <li class="flex items-center p-2">
+            <i class="fas fa-user-check text-gray-600 mr-2"></i>
+            <span>{{ totalApplications }} Applicants</span>
+          </li>
+          <li class="flex items-center p-2">
+            <i class="fas fa-calendar-day text-gray-600 mr-2"></i>
+            <span>Posted on {{ jobs.postDate }}</span>
+          </li>
+          <li class="flex items-center p-2">
+            <i class="fas fa-calendar-check text-gray-600 mr-2"></i>
+            <span>Due to {{ jobs.dueDate }}</span>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -158,6 +179,7 @@ export default {
     const dataExperience = ref([]);
     const dataEducation = ref([]);
     const dataSkill = ref([]);
+    const isExpired = ref(false);
 
     const fetchAllAplication = async () => {
       try {
@@ -175,51 +197,50 @@ export default {
     };
 
     const postApplyJob = async (jobId) => {
-  // cek login
-  if (!token) {
-    Swal.fire("Error", "Please login first.", "error");
-    return;
-  }
-  if (isApplied.value) {
-    Swal.fire("You have already applied for this job.", "", "info");
-    return;
-  }
-  // Cek profile si  user
-  if (
-    dataProfile.value.profileImage == null ||  
-    dataExperience.value.length < 1 ||      
-    dataEducation.value.length < 1 ||  
-    dataSkill.value.length < 1      
-  ) {
-    Swal.fire("Please complete your profile first.", "", "info");
-    return;
-  }  else {
-    try {
-      const data = {
-        userId: id.value,
-        jobId: jobId,
-        applyDate: new Date().toISOString(),
-      };
-      await applyJob(data);
-      isApplied.value = true;
-      await fetchAllAplication();
+      // cek login
+      if (!token) {
+        Swal.fire("Error", "Please login first.", "error");
+        return;
+      }
+      if (isApplied.value) {
+        Swal.fire("You have already applied for this job.", "", "info");
+        return;
+      }
+      // Cek profile si  user
+      if (
+        dataProfile.value.profileImage == null ||
+        dataExperience.value.length < 1 ||
+        dataEducation.value.length < 1 ||
+        dataSkill.value.length < 1
+      ) {
+        Swal.fire("Please complete your profile first.", "", "info");
+        return;
+      } else {
+        try {
+          const data = {
+            userId: id.value,
+            jobId: jobId,
+            applyDate: new Date().toISOString(),
+          };
+          await applyJob(data);
+          isApplied.value = true;
+          await fetchAllAplication();
 
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        title: "Success apply!",
-        showConfirmButton: false,
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    } catch (exception) {
-      console.log(exception);
-      Swal.fire("Error", "An error occurred while applying.", "error");
-    }
-  }
-};
-
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success apply!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (exception) {
+          console.log(exception);
+          Swal.fire("Error", "An error occurred while applying.", "error");
+        }
+      }
+    };
 
     const saveJob = async (jobId) => {
       if (!token) {
@@ -307,10 +328,19 @@ export default {
         const data = await getJobsById(jobId);
         jobs.value = data.data;
 
-        if (jobs.value && jobs.value.postDate) {
+        if (jobs.value && jobs.value.postDate && jobs.value.dueDate) {
           jobs.value.postDate = moment(jobs.value.postDate).format(
             "MMMM DD, YYYY"
           );
+          jobs.value.dueDate = moment(jobs.value.dueDate).format(
+            "MMMM DD, YYYY"
+          );
+
+          const dueDate = moment(jobs.value.dueDate, "MMMM DD, YYYY")
+            .startOf("day")
+            .toDate();
+          const today = moment().startOf("day").toDate();
+          isExpired.value = dueDate < today;
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -377,7 +407,6 @@ export default {
         fetchAllAplication();
       }
 
-      
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -407,6 +436,7 @@ export default {
       route,
       isApplied,
       fullUrl,
+      isExpired,
     };
   },
 };
