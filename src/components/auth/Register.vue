@@ -5,11 +5,7 @@
       class="w-full max-w-md bg-white rounded-lg border shadow-md p-6 mb-8 sm:p-8"
     >
       <div class="mb-6 md:mb-8 flex justify-center">
-        <img
-          src="/src/assets/images/berCareer-logo.png"
-          alt="Logo"
-          class="h-20"
-        />
+        <router-link to="/"><img src="/src/assets/images/berCareer-logo.png" alt="Logo" class="h-20" /></router-link>
       </div>
 
       <form class="space-y-4 md:space-y-6">

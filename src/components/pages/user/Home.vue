@@ -28,7 +28,7 @@
             :options="provinces"
             label="name"
             placeholder="Pilih Lokasi"
-            class="w-56  text-gray-500 text-md rounded-md border-2 bg-white focus:border-none"
+            class="w-56 text-gray-500 text-md rounded-md border-2 bg-white focus:border-none"
           />
 
           <button
@@ -53,16 +53,20 @@
         class="py-1 text-gray-700 px-2 text-md rounded-md border-4 bg-white"
       />
       <v-select
-            v-model="selectedProvince"
-            :options="provinces"
-            label="name"
-            placeholder="Pilih Lokasi"
-            class="w-full text-gray-500 text-md rounded-md border-2 bg-white "
-          />
+        v-model="selectedProvince"
+        :options="provinces"
+        label="name"
+        placeholder="Pilih Lokasi"
+        class="w-full text-gray-500 text-md rounded-md border-2 bg-white"
+      />
     </div>
   </div>
 
-  <div v-if="filteredJobs.length === 0 && (searchQuery.length > 0 || selectedProvince)">
+  <div
+    v-if="
+      filteredJobs.length === 0 && (searchQuery.length > 0 || selectedProvince)
+    "
+  >
     <div class="flex justify-center p-7 items-center h-80">
       <div
         class="bg-white rounded-lg shadow-md text-center w-full h-full flex justify-center items-center"
@@ -83,12 +87,19 @@
     <router-link
       v-for="(job, index) in filteredVisibleJobs"
       :key="job.jobId"
+      v-model="selectedProvince"
       :to="{ name: 'Jobs', params: { id: job.jobId } }"
       class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
     >
-      <div
+      <!-- <div
         v-if="job.isApplied"
         class="absolute top-0 left-0 bg-blue-100 text-gray-500 text-xs font-semibold italic px-4 py-2 rounded-tl-lg rounded-br-lg flex items-center"
+      >
+        Applied
+      </div> -->
+      <div
+        v-if="job.isApplied"
+        class="absolute top-2 left-2 bg-green-100 text-green-500 text-xs font-semibold italic px-2 py-1 rounded-full flex items-center"
       >
         Applied
       </div>
@@ -104,19 +115,21 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock text-purple-500 mr-1"></i>
-          <span class="text-purple-500">{{ job.type }}</span>
+          <i class="fas fa-user-clock  mr-1"></i>
+          <span class="">{{ job.type }}</span>
         </p>
         <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
         <p><i class="fas fa-briefcase mr-1"></i> {{ job.requirement }}</p>
         <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.salary }}</p>
       </div>
+      <hr class="mt-4 mb-2" />
+      <div class="flex justify-between items-center">
 
-      <div class="mt-4">
-        <span class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full">
-          Rekruter aktif 1 jam lalu
-        </span>
-      </div>
+  <span  class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full">
+    Posted On {{ job.postDate }}
+  </span>
+</div>
+
 
       <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
       <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">
@@ -162,8 +175,8 @@ import {
 } from "../../../Services/Api/UserService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import vSelect from "vue-select";
-// Import CSS untuk styling
 import "vue-select/dist/vue-select.css";
+import moment from "moment";
 
 export default {
   components: {
@@ -180,7 +193,13 @@ export default {
     const itemsToShow = ref(6);
     const savedJobs = ref([]);
     const appliedJobs = ref([]);
-    const provinces = ref([]);
+    const provinces = [
+      { id: "1", name: "Jakarta" },
+      { id: "2", name: "Bogor" },
+      { id: "3", name: "Depok" },
+      { id: "4", name: "Tanggerang" },
+      { id: "5", name: "Bekasi" },
+    ];
 
     // console.log(auth0);
     // Computed properties
@@ -192,16 +211,18 @@ export default {
 
     const filteredJobs = computed(() => {
       return jobs.value.filter((job) => {
-        const matchesSearchQuery =
-          job.title.toLowerCase().includes(searchQuery.value.toLowerCase())
-        
+        const matchesSearchQuery = job.title
+          .toLowerCase()
+          .includes(searchQuery.value.toLowerCase());
         const matchesProvince =
-          !selectedProvince.value || job.location.toLowerCase().includes(selectedProvince.value.name.toLowerCase());
+          !selectedProvince.value ||
+          job.location
+            .toLowerCase()
+            .includes(selectedProvince.value.name.toLowerCase());
 
         return matchesSearchQuery && matchesProvince;
       });
     });
-
 
     const filteredVisibleJobs = computed(() => {
       return filteredJobs.value.slice(0, visibleJobs.value.length);
@@ -216,7 +237,12 @@ export default {
       try {
         const data = await getAllData();
         jobs.value = data.data;
-
+        console.log(jobs);
+        jobs.value.forEach((job) => {
+          if (job.postDate) {
+            job.postDate = moment(job.postDate).format("MMMM DD, YYYY");
+          }
+        });
         // Set isApplied for each job based on appliedJobs
         jobs.value = jobs.value.map((job) => {
           return {
@@ -231,16 +257,7 @@ export default {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then((response) => response.json()) // Mengkonversi response menjadi JSON
-        .then((data) => {
-          provinces.value = data;
-          console.log(provinces);
-          // Menyimpan data provinsi ke dalam state `provinces`
-        })
-        .catch((error) => {
-          console.error("Error fetching provinces:", error); // Menangani error jika ada
-        });
+
       if (token) {
         try {
           const dataUser = await decodeToken();
@@ -326,4 +343,3 @@ export default {
   },
 };
 </script>
-

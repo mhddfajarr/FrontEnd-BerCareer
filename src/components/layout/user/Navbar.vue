@@ -78,19 +78,19 @@
             class="flex items-center text-black focus:outline-none"
             ref="dropdownButton"
           >
-            <div>
-              <img
-                :src="getAvatarUrl(avatar)"
-                alt="Profile"
-                class="w-10 h-10 rounded-full mr-2"
-                :referrerpolicy="
-                  avatar &&
-                  (avatar.startsWith('https') || avatar.startsWith('http'))
-                    ? 'no-referrer'
-                    : ''
-                "
-              />
-            </div>
+            <img
+              v-if="userImage"
+              :src="'https://localhost:7147/' + userImage"
+              alt="Profile"
+              class="w-10 h-10 rounded-full mr-2 object-cover"
+            />
+            <img
+              v-else
+              src="../../../assets/images/default.png"
+              alt="Default Profile"
+              class="w-10 h-10 rounded-full mr-2 object-cover"
+            />
+
             <span class="relative inline-block group">
               <span
                 :class="[
@@ -126,12 +126,12 @@
                   to="/"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
                   @click="closeDropdown"
-                  >Menu</router-link
+                  >Home</router-link
                 >
               </li>
               <li>
                 <router-link
-                  to="Profile"
+                  to="/Profile"
                   class="block px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-t-md"
                   @click="closeDropdown"
                   >Profile</router-link
@@ -185,14 +185,15 @@ import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import { getDataUser } from "../../../Services/Api/UserService";
 import { useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
+import { eventBus } from "../../../Services/EvenBus";
 
 export default {
   setup() {
     const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
     const isDropdownVisible = ref(false);
     const username = ref("");
-    const avatar = ref(null);
     const id = ref("");
+    const userImage = ref("");
     const router = useRouter();
     const auth0 = useAuth0();
 
@@ -251,7 +252,6 @@ export default {
         const userId = id.value;
         if (!userId) {
           console.log(id.value);
-          console.error("User ID is missing");
           return;
         }
         const response = await getDataUser(userId); // Memanggil API untuk mendapatkan data user
@@ -260,12 +260,14 @@ export default {
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName
           username.value = response.data.fullName.split(" ")[0];
-          avatar.value = response.data.profileImage;
+          userImage.value = response.data.profileImage;
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
+
+    eventBus.on("profileUpdated", fetchDataUser);
 
     const getUserId = async () => {
       try {
@@ -294,6 +296,7 @@ export default {
     });
 
     return {
+      userImage,
       cekLogin,
       isDropdownVisible,
       username,
@@ -303,21 +306,7 @@ export default {
       dropdownMenu,
       dropdownButton,
       handleOutsideClick,
-      avatar,
     };
-  },
-  methods: {
-    getAvatarUrl(avatar) {
-      const defaultAvatarUrl =
-        "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
-      if (!avatar) {
-        return defaultAvatarUrl;
-      }
-      if (avatar.startsWith("https") || avatar.startsWith("http")) {
-        return avatar;
-      }
-      return defaultAvatarUrl;
-    },
   },
 };
 </script>
