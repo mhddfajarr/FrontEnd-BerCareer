@@ -374,9 +374,10 @@ export default {
         fetchExperience();
         fetchEducation();
         fetchSkill();
+        fetchAllAplication();
       }
 
-      fetchAllAplication();
+      
       window.scrollTo({
         top: 0,
         behavior: "smooth",

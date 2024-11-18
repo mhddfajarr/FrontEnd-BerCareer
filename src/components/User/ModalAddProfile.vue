@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { ref, onMounted, toRefs, defineComponent } from "vue";
+import { ref, onMounted, toRefs, defineComponent, watch } from "vue";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import { getProfileUser, updateProfile } from "../../Services/Api/UserService";
 import Swal from "sweetalert2";
@@ -156,7 +156,7 @@ export default defineComponent({
     const dataProfile = ref({
       userId: "",
       fullName: "",
-      gender: null, // Initially null, will be updated
+      gender: null,
       phoneNumber: "",
       address: "",
       summary: "",
