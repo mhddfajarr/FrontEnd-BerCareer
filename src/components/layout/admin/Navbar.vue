@@ -30,12 +30,22 @@
           <span class="badge badge-xs badge-primary indicator-item"></span>
         </div>
       </button>
+      <div>
+        <p class="font-semibold text-black">{{ Name }}</p>
+      </div>
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
             <img
-              alt="Tailwind CSS Navbar component"
-              src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              :src="getAvatarUrl(Avatar)"
+              alt="Profile"
+              class="w-10 h-10 rounded-full mr-2"
+              :referrerpolicy="
+                Avatar &&
+                (Avatar.startsWith('https') || Avatar.startsWith('http'))
+                  ? 'no-referrer'
+                  : ''
+              "
             />
           </div>
         </div>
@@ -57,13 +67,13 @@
             </RouterLink>
           </li>
           <li>
-                <button
-                  class="block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-b-md"
-                  @click="logout"
-                >
-                  Logout
-                </button>
-              </li>
+            <button
+              class="block text-left w-full px-4 py-2 text-gray-700 hover:bg-gray-200 hover:rounded-b-md"
+              @click="logout"
+            >
+              Logout
+            </button>
+          </li>
         </ul>
       </div>
       <div
@@ -138,76 +148,115 @@
 </template>
 
 <script>
+import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import Swal from "sweetalert2";
+import { useRouter } from "vue-router";
+import { getDataUser } from "../../../Services/Api/UserService";
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
-  data() {
-    return {
-      passwordModal: false,
-      cekLogin: localStorage.getItem('authToken') ? true : false,
-      isDropdownVisible: false,
-      username: "Username", 
-    };
-  },
-  methods: {
-    logout() {
+  props: ["Name", "Avatar"],
+  setup(props) {
+    const passwordModal = ref(false);
+    const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
+    const isDropdownVisible = ref(false);
+    const username = ref("Username");
+    // const avatar = ref(null);
+    const id = ref(null);
+    const router = useRouter();
+    const dropdownMenu = ref(null);
+    const dropdownButton = ref(null);
+
+    // console.log(props.Avatar);
+
+    const logout = () => {
       Swal.fire({
-        title: 'Are you sure you want to logout?',
+        title: "Are you sure you want to logout?",
         text: "You will be logged out of the application.",
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, logout!',
-        cancelButtonText: 'No, stay logged in',
-        reverseButtons: true
+        confirmButtonText: "Yes, logout!",
+        cancelButtonText: "No, stay logged in",
+        reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
           localStorage.removeItem("authToken");
-          localStorage.setItem('logoutNotif', 'true');
-          this.cekLogin = false; 
-          this.$router.push("/");
+          localStorage.setItem("logoutNotif", "true");
+          cekLogin.value = false;
+          router.push("/");
         }
       });
-    },
+    };
 
-    toggleDropdown() {
-      // Toggle the dropdown visibility on click
-      this.isDropdownVisible = !this.isDropdownVisible;
-    },
-    closeDropdown() {
-      this.isDropdownVisible = false;
-    },
-    handleOutsideClick(event) {
-      const dropdown = this.$refs.dropdownMenu;
-      const button = this.$refs.dropdownButton;
-
-      if (
-        dropdown &&
-        !dropdown.contains(event.target) &&
-        button &&
-        !button.contains(event.target)
-      ) {
-        this.isDropdownVisible = false;
+    const getAvatarUrl = (avatar) => {
+      const defaultAvatarUrl =
+        "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
+      if (!avatar) {
+        return defaultAvatarUrl;
       }
-    },
-  },
-  watch: {
-    cekLogin(newValue) {
+      if (avatar.startsWith("https") || avatar.startsWith("http")) {
+        return avatar;
+      }
+      return defaultAvatarUrl;
+    };
+
+    const toggleDropdown = () => {
+      isDropdownVisible.value = !isDropdownVisible.value;
+    };
+
+    const closeDropdown = () => {
+      isDropdownVisible.value = false;
+    };
+
+    const handleOutsideClick = (event) => {
+      if (
+        dropdownMenu.value &&
+        !dropdownMenu.value.contains(event.target) &&
+        dropdownButton.value &&
+        !dropdownButton.value.contains(event.target)
+      ) {
+        isDropdownVisible.value = false;
+      }
+    };
+
+    watch(cekLogin, (newValue) => {
       if (newValue) {
-        localStorage.setItem("authToken", localStorage.getItem('authToken')); 
+        localStorage.setItem("authToken", localStorage.getItem("authToken"));
       } else {
         localStorage.removeItem("authToken");
       }
-    }
-  },
-  mounted() {
-    document.addEventListener("click", this.handleOutsideClick);
-
-    window.addEventListener('storage', () => {
-      this.cekLogin = localStorage.getItem('authToken') ? true : false;
     });
-  },
-  beforeDestroy() {
-    document.removeEventListener("click", this.handleOutsideClick);
+
+    onMounted(() => {
+      // getUser();
+      // fetchDataUser();
+      document.addEventListener("click", handleOutsideClick);
+
+      window.addEventListener("storage", () => {
+        cekLogin.value = localStorage.getItem("authToken") ? true : false;
+      });
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener("click", handleOutsideClick);
+    });
+
+    return {
+      dropdownMenu,
+      dropdownButton,
+      passwordModal,
+      cekLogin,
+      isDropdownVisible,
+      username,
+      logout,
+      getAvatarUrl,
+      toggleDropdown,
+      closeDropdown,
+      handleOutsideClick,
+      // avatar,
+      router,
+      id,
+    };
   },
 };
 </script>

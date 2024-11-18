@@ -5,34 +5,66 @@
       <div
         class="bg-white px-6 rounded-lg shadow-md h-auto md:col-span-4 border-t-4 border-primary"
       >
-        <div class="flex justify-center px-3 py-2">
-          <h1 class="text-xl font-bold text-gray-700">Card Profile</h1>
+        <div class="mt-3">
+          <h1 class="text-xl font-bold text-black mb-2">Card Profile</h1>
+          <hr class="border-gray-300 mb-4" />
         </div>
-        <!-- Garis dibawah tulisan -->
-        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
+
         <div class="text-center">
           <img
+            v-if="dataProfile.profileImage"
             alt="Profile picture of John Doe"
-            class="w-28 h-28 mx-auto rounded-full"
+            class="w-28 h-28 mx-auto rounded-full object-cover"
             height="100"
-            src="https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg"
+            :src="'https://localhost:7147/' + dataProfile.profileImage"
             width="100"
           />
-          <h2 class="text-xl font-semibold mt-4 text-gray-700">John Doe</h2>
-          <p class="text-gray-600">Full Stack Developer</p>
-          <p class="text-gray-600">Bay Area, San Francisco, CA</p>
+          <img
+            v-else
+            alt="Profile picture of John Doe"
+            class="w-28 h-28 mx-auto rounded-full object-cover"
+            height="100"
+            src="../../../assets/images/default.png"
+            width="100"
+          />
+
+          <h2 class="text-xl font-semibold mt-4 text-gray-700">
+            {{ dataProfile.fullName }}
+          </h2>
+          <p class="text-gray-600">{{ email }}</p>
         </div>
         <div class="mt-6 mb-4">
+          <p class="text-gray-700 mb-3 font-semibold">Social Account</p>
           <ul class="space-y-4">
             <li class="flex items-center">
               <i class="fas fa-globe text-gray-600"></i>
               <span class="ml-2 text-gray-700">Website</span>
-              <span class="ml-auto text-gray-500">https://bootdey.com</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkPersonalWebsite"
+                  :href="dataProfile.linkPersonalWebsite"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary hover:underline"
+                >
+                  Personal Website
+                </a>
+                <span v-else>-</span>
+              </span>
             </li>
             <li class="flex items-center">
               <i class="fab fa-github text-gray-600"></i>
               <span class="ml-2 text-gray-700">Github</span>
-              <span class="ml-auto text-gray-500">bootdey</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkGithub"
+                  :href="dataProfile.linkGithub"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary hover:underline"
+                >
+                  Profile Github
+                </a>
+                <span v-else>-</span>
+              </span>
             </li>
           </ul>
         </div>
@@ -50,146 +82,97 @@
       </div>
 
       <!-- Profile Details -->
-      <div
-        class="bg-white px-6 rounded-lg shadow-md md:col-span-8 border-t-4 border-primary"
-      >
-      <div class="flex justify-center ">
-          <h1 class="text-xl font-bold text-gray-700 px-3 py-2">Profile</h1>
+      <div class="bg-slate-50 h-auto md:col-span-8 flex flex-col">
+        <div v-if="!isComplete" class="mb-2">
+          <p class="text-gray-700 font-semibold">
+            Almost There! Complete your profile to start applying for jobs.
+          </p>
+          <div class="flex items-center">
+            <progress
+              class="progress progress-primary w-full"
+              :value="progress"
+              max="100"
+            ></progress>
+            <span class="ml-2 text-gray-700 font-semibold"
+              >{{ progress }}%</span
+            >
+          </div>
         </div>
+        <div
+          class="bg-white px-6 md:px-10 h-full rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
+        >
+          <div class="mt-3">
+            <h1 class="text-2xl font-bold text-black mb-2">Personal Info</h1>
+            <hr class="border-gray-300 mb-4" />
+          </div>
 
-        <hr class="border-t-1 border-gray-200 my-1 mx-auto w-full mb-4" />
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
-            <p class="text-gray-500">Kenneth Valdez</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Full Name</h3>
+              <p class="text-gray-500">{{ dataProfile.fullName ?? "-" }}</p>
+            </div>
+
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
+              <p class="text-gray-500">{{ dataProfile.phoneNumber ?? "-" }}</p>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Address</h3>
+              <p class="text-gray-500">{{ dataProfile.address ?? "-" }}</p>
+            </div>
+            <div class="mt-4">
+              <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
+              <p class="text-gray-500">
+                {{
+                  dataProfile.gender === 0
+                    ? "Laki-Laki"
+                    : dataProfile.gender === 1
+                    ? "Perempuan"
+                    : "-"
+                }}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Email</h3>
-            <p class="text-gray-500">fip@jukmuh.al</p>
+
+          <div class="grid grid-cols-1 gap-6 md:mt-7">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700">Summary</h3>
+              <p class="text-gray-500">{{ dataProfile.summary ?? "-" }}</p>
+            </div>
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Phone</h3>
-            <p class="text-gray-500">(239) 816-9029</p>
+
+          <div class="mt-5 text-end">
+            <button
+              @click="showModalProfile = true"
+              class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
+            >
+              Edit Profile
+            </button>
+            <ModalEditProfile
+              v-if="showModalProfile"
+              :showModal="showModalProfile"
+              @close="showModalProfile = false"
+            />
           </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">Gender</h3>
-            <p class="text-gray-500">Female</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-6 mt-4">
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700">About Me</h3>
-            <p class="text-gray-500">
-              "Saya adalah seorang profesional yang memiliki pengalaman lebih
-              dari 5 tahun di bidang pengembangan perangkat lunak, dengan
-              spesialisasi dalam pengembangan aplikasi web dan API menggunakan
-              teknologi terkini seperti ASP.NET Core, Vue.js, dan Tailwind CSS.
-              Saya berkomitmen untuk terus belajar dan mengembangkan
-              keterampilan teknis, serta berkolaborasi dalam tim untuk
-              menciptakan solusi yang inovatif dan efisien. Selain itu, saya
-              juga memiliki minat dalam desain antarmuka pengguna yang intuitif
-              dan fokus pada pengalaman pengguna yang optimal. Di luar
-              pekerjaan, saya senang mengeksplorasi tren teknologi terbaru dan
-              berbagi pengetahuan dengan komunitas pengembang."
-            </p>
-          </div>
-        </div>
-        <div class="mt-6 text-end">
-          <button
-            @click="showModalProfile = true"
-            class="bg-primary hover:bg-primaryHover text-white px-4 py-2 mb-6 rounded-md"
-          >
-            Edit Profile
-          </button>
-          <ModalEditProfile
-            v-if="showModalProfile"
-            :showModal="showModalProfile"
-            @close="showModalProfile = false"
-          />
         </div>
       </div>
     </div>
 
     <!-- Experience, Education, Skill, Certificate Section -->
-    <div class="flex justify-end mt-6 lg:ml-3">
+    <div class="flex justify-end mt-6 lg:ml-3 mb-20">
       <div class="w-full md:w-8/12">
         <div class="space-y-6">
           <!-- Experience -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Experience</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalExperience = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Experience
-              </button>
-              <ModalAddExperience
-                v-if="showModalExperience"
-                :showModal="showModalExperience"
-                @close="showModalExperience = false"
-              />
-            </div>
-          </div>
+          <ExperienceCard />
 
           <!-- Education -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Education</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalEducation = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Education
-              </button>
-              <ModalAddEducation
-                v-if="showModalEducation"
-                :showModal="showModalEducation"
-                @close="showModalEducation = false"
-              />
-            </div>
-          </div>
+          <EducationCard />
 
           <!-- Skill -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Skill</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalSkill = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Skill
-              </button>
-              <ModalAddSkill
-                v-if="showModalSkill"
-                :showModal="showModalSkill"
-                @close="showModalSkill = false"
-              />
-            </div>
-          </div>
+          <SkillCard />
 
           <!-- Certificate -->
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold text-gray-600">Certificate</h3>
-            <div class="mt-4"></div>
-            <div class="mt-6 text-end">
-              <button
-                @click="showModalCertificate = true"
-                class="bg-primary hover:bg-primaryHover text-white px-4 py-2 rounded-md"
-              >
-                Add Certificate
-              </button>
-              <ModalAddCertificate
-                v-if="showModalCertificate"
-                :showModal="showModalCertificate"
-                @close="showModalCertificate = false"
-              />
-            </div>
-          </div>
+          <!-- <CertificateCard/>    -->
         </div>
       </div>
     </div>
@@ -197,32 +180,174 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
+import Swal from "sweetalert2";
 import ModalAddExperience from "../../User/ModalAddExperience.vue";
 import ModalEditProfile from "../../User/ModalAddProfile.vue";
 import ModalAddEducation from "../../User/ModalAddEducation.vue";
 import ModalAddSkill from "../../User/ModalAddSkill.vue";
 import ModalAddCertificate from "../../User/ModalAddCertificate.vue";
 import ModalEditCardProfile from "../../User/ModalEditCardProfile.vue";
+import ExperienceCard from "../../User/ProfileExperienceCard.vue";
+import EducationCard from "../../User/ProfileEducationCard.vue";
+import SkillCard from "../../User/ProfileSkillCard.vue";
+
+// import CertificateCard from '../../User/ProfileCertificateCard.vue';
+
+import { eventBus } from "../../../Services/EvenBus";
+
+import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import {
+  getProfileUser,
+  getExperienceUser,
+  getEducationUser,
+  getSkillUser,
+} from "../../../Services/Api/UserService";
 
 export default {
-  data() {
+  setup() {
+    const showModalExperience = ref(false);
+    const showModalProfile = ref(false);
+    const showModalEducation = ref(false);
+    const showModalSkill = ref(false);
+    const showModalCertificate = ref(false);
+    const showModalCardProfile = ref(false);
+
+    const id = ref("");
+    const dataProfile = ref({});
+    const dataExperience = ref([]);
+    const email = ref("");
+    const isComplete = ref(false);
+    const progress = ref(20);
+    const dataEducation = ref([]);
+    const dataSkill = ref([]);
+
+    // Fetch user profile data
+    const fetchProfileUser = async () => {
+      try {
+        const userId = id.value;
+        const data = await getProfileUser(userId);
+        dataProfile.value = data.data;
+        if (dataProfile.value && dataProfile.value.postDate) {
+          dataProfile.value.postDate = moment(
+            dataProfile.value.postDate
+          ).format("MMMM DD, YYYY");
+        }
+        checkProgress();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    const fetchExperience = async () => {
+      try {
+        const data = await getExperienceUser(id.value);
+        dataExperience.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch education data
+    const fetchEducation = async () => {
+      try {
+        const data = await getEducationUser(id.value);
+        dataEducation.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch skill data
+    const fetchSkill = async () => {
+      try {
+        const data = await getSkillUser(id.value);
+        dataSkill.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Check progress based on available data
+    const checkProgress = async () => {
+      progress.value = 20;
+      if (progress.value < 100) {
+        isComplete.value = false;
+      }
+      await fetchExperience();
+      await fetchEducation();
+      await fetchSkill();
+      if (dataProfile.value.phoneNumber != null) {
+        progress.value += 20;
+      }
+      if (dataProfile.value.profileImage != null) {
+        progress.value += 10;
+      }
+      if (dataExperience.value.length > 0) {
+        progress.value += 20;
+      }
+      if (dataEducation.value.length > 0) {
+        progress.value += 20;
+      }
+      if (dataSkill.value.length > 0) {
+        progress.value += 10;
+      }
+      if (progress.value === 100) {
+        isComplete.value = true;
+      }
+    };
+
+    eventBus.on("profileUpdated", fetchProfileUser);
+    eventBus.on("checkProgres", checkProgress);
+
+    const getUserId = async () => {
+      try {
+        const dataUser = await decodeToken();
+        id.value = dataUser.uid;
+        email.value = dataUser.email;
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    };
+
+    onMounted(async () => {
+      await getUserId();
+
+      await fetchProfileUser();
+    });
+
     return {
-      showModalExperience: false,
-      showModalProfile: false,
-      showModalEducation: false,
-      showModalSkill: false,
-      showModalCertificate: false,
-      showModalCardProfile: false,
+      id,
+      progress,
+      isComplete,
+      dataProfile,
+      email,
+      showModalExperience,
+      showModalProfile,
+      showModalEducation,
+      showModalSkill,
+      showModalCertificate,
+      showModalCardProfile,
+      fetchProfileUser,
+      getUserId,
+      fetchExperience,
+      fetchEducation,
+      fetchSkill,
+      dataExperience,
+      dataEducation,
+      dataSkill,
     };
   },
-  methods: {},
   components: {
+    SkillCard,
+    EducationCard,
     ModalEditProfile,
     ModalAddExperience,
     ModalAddEducation,
     ModalAddSkill,
     ModalAddCertificate,
     ModalEditCardProfile,
+    ExperienceCard,
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-   <Breadcrumbs :title="jobs.title || 'Default Title'" />
+  <Breadcrumbs :title="jobs.title || 'Default Title'" />
   <div class="max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 py-5 px-5">
     <!-- Kolom 1: Card Utama dan Deskripsi Pekerjaan -->
     <div class="w-full lg:w-2/3">
@@ -41,19 +41,46 @@
           </div>
         </div>
 
-        <div class="flex items-center mb-7 mt-7">
+        <div class="flex flex-wrap items-center mb-7 mt-7">
+          <!-- Tombol Apply -->
           <button
-            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-lg mr-2"
+            class="bg-primary hover:bg-primaryHover font-semibold text-white px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
             @click="postApplyJob(jobs.jobId)"
           >
             {{ isApplied ? "Applied" : "Apply" }}
           </button>
+
+          <!-- Tombol Save/Remove Favorite -->
           <button
-            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-lg mr-2"
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
             @click="isSaved ? deleteSaveJob(jobs.jobId) : saveJob(jobs.jobId)"
           >
-            {{ isSaved ? 'Remove from favorite' : 'Save Job' }}
+            <i
+              :class="
+                isSaved
+                  ? 'fas fa-bookmark text-primary mr-2'
+                  : 'far fa-bookmark text-gray-400 mr-2'
+              "
+            ></i>
+            {{ isSaved ? "Remove from favorite" : "Save Job" }}
           </button>
+
+          <!-- Tombol Share -->
+          <button
+            @click="showModalShareLink = true"
+            class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base"
+          >
+            <i class="fas fa-share-alt text-primary"></i>
+            Share
+          </button>
+
+          <!-- Modal Share Link -->
+          <ModalShareLink
+            v-if="showModalShareLink"
+            :showModal="showModalShareLink"
+            :shareLink="fullUrl"
+            @close="showModalShareLink = false"
+          />
         </div>
 
         <hr class="my-4" />
@@ -61,31 +88,25 @@
         <!-- Card Deskripsi Pekerjaan -->
         <div class="text-gray-700">
           <h2 class="text-xl font-bold mb-4">Description</h2>
-          <p class="mb-4">
-            {{ jobs.description }}
-          </p>
+          <p v-html="jobs.description" class="mb-4"></p>
         </div>
       </div>
     </div>
 
     <!-- Kolom 2: Card Benefit Perusahaan -->
     <div
-      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md rounded-lg max-h-[250px] overflow-y-auto sticky top-0 border-t-4 border-primary"
+      class="w-full lg:w-1/3 bg-white p-4 text-gray-700 shadow-md h-52 rounded-lg sticky top-0 border-t-4 border-primary"
     >
-      <h2 class="text-lg font-bold mb-4">Benefit Perusahaan</h2>
+      <h2 class="text-2xl font-bold text-gray-700 mt-2">Job Information</h2>
       <hr class="my-4" />
       <ul>
-        <li class="flex items-center mb-2">
-          <i class="fas fa-dollar-sign text-gray-600 mr-2"></i>
-          <span>Competitive Salary</span>
+        <li class="flex items-center p-2">
+          <i class="fas fa-user-check text-gray-600 mr-2"></i>
+          <span>{{ totalApplications }} Applicants</span>
         </li>
-        <li class="flex items-center mb-2">
-          <i class="fas fa-medkit text-gray-600 mr-2"></i>
-          <span>Medical Insurance</span>
-        </li>
-        <li class="flex items-center">
-          <i class="fas fa-gift text-gray-600 mr-2"></i>
-          <span>THR / Bonus system</span>
+        <li class="flex items-center p-2">
+          <i class="fas fa-calendar-day text-gray-600 mr-2"></i>
+          <span>Posted on {{ jobs.postDate }}</span>
         </li>
       </ul>
     </div>
@@ -100,59 +121,105 @@ import {
   saveJobs,
   getSaveJob,
   applyJob,
-  getApplyUser 
+  getApplyUser,
+  getAllAplication,
+  getProfileUser,
+  getExperienceUser,
+  getEducationUser,
+  getSkillUser,
 } from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import moment from "moment";
+import ModalShareLink from "../../User/modalShareLink.vue";
 
 export default {
   components: {
     Breadcrumbs,
+    ModalShareLink,
   },
   setup() {
+    const showModalShareLink = ref(false);
     const id = ref("");
     const jobs = ref({});
     const savedJob = ref([]);
-    const applyJobArray = ref([])
+    const applyJobArray = ref([]);
     const token = localStorage.getItem("authToken");
     const isSaved = ref(false);
     const route = useRoute();
     const getJobId = ref(route.params.id);
     const isApplied = ref(false);
-    
-    const postApplyJob = async (jobId) => {
-      if (!token) {
-        Swal.fire("Error", "Please login first.", "error");
-        return;
-      }
-      if (isApplied.value) {
-        Swal.fire("You have already applied for this job.", "", "info");
-        return;
-      }
-      try {
-        const data = {
-          userId: id.value,
-          jobId: jobId,
-        };
-        await applyJob(data);
-        isApplied.value = true;
+    const totalApplications = ref(0);
+    const dataApplication = ref([]);
+    const fullUrl = window.location.href;
+    const dataProfile = ref([]);
+    const dataExperience = ref([]);
+    const dataEducation = ref([]);
+    const dataSkill = ref([]);
 
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Success apply!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-        });
-      } catch (exception) {
-        console.log(exception);
-        Swal.fire("Error", "An error occurred while applying.", "error");
+    const fetchAllAplication = async () => {
+      try {
+        const data = await getAllAplication();
+        dataApplication.value = data.data;
+
+        const filteredApplications = data.data.filter(
+          (application) => application.jobId === getJobId.value
+        );
+
+        totalApplications.value = filteredApplications.length;
+      } catch (error) {
+        console.error("Error fetching saved jobs:", error);
       }
     };
+
+    const postApplyJob = async (jobId) => {
+  // cek login
+  if (!token) {
+    Swal.fire("Error", "Please login first.", "error");
+    return;
+  }
+  if (isApplied.value) {
+    Swal.fire("You have already applied for this job.", "", "info");
+    return;
+  }
+  // Cek profile si  user
+  if (
+    dataProfile.value.profileImage == null ||  
+    dataExperience.value.length < 1 ||      
+    dataEducation.value.length < 1 ||  
+    dataSkill.value.length < 1      
+  ) {
+    Swal.fire("Please complete your profile first.", "", "info");
+    return;
+  }  else {
+    try {
+      const data = {
+        userId: id.value,
+        jobId: jobId,
+        applyDate: new Date().toISOString(),
+      };
+      await applyJob(data);
+      isApplied.value = true;
+      await fetchAllAplication();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Success apply!",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
+    } catch (exception) {
+      console.log(exception);
+      Swal.fire("Error", "An error occurred while applying.", "error");
+    }
+  }
+};
+
 
     const saveJob = async (jobId) => {
       if (!token) {
@@ -181,7 +248,7 @@ export default {
     };
 
     const fetchSavedJobs = async () => {
-      if (!token) return; 
+      if (!token) return;
 
       try {
         const data = await getSaveJob(id.value);
@@ -196,9 +263,8 @@ export default {
       }
     };
 
-
     const fetchApplyUser = async () => {
-      if (!token) return; 
+      if (!token) return;
       try {
         const data = await getApplyUser(id.value);
         applyJobArray.value = data.data;
@@ -240,6 +306,50 @@ export default {
         const jobId = getJobId.value;
         const data = await getJobsById(jobId);
         jobs.value = data.data;
+
+        if (jobs.value && jobs.value.postDate) {
+          jobs.value.postDate = moment(jobs.value.postDate).format(
+            "MMMM DD, YYYY"
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    const fetchProfile = async () => {
+      try {
+        const userId = id.value;
+        const data = await getProfileUser(userId);
+        dataProfile.value = data.data;
+        console.log("ya ini berhaisl ygy", dataProfile);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    const fetchExperience = async () => {
+      try {
+        const data = await getExperienceUser(id.value);
+        dataExperience.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch education data
+    const fetchEducation = async () => {
+      try {
+        const data = await getEducationUser(id.value);
+        dataEducation.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch skill data
+    const fetchSkill = async () => {
+      try {
+        const data = await getSkillUser(id.value);
+        dataSkill.value = data.data;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -257,11 +367,17 @@ export default {
 
     onMounted(async () => {
       if (token) {
-        await getUserId(); 
-        fetchSavedJobs(); 
+        await getUserId();
+        fetchSavedJobs();
         fetchApplyUser();
-
+        fetchProfile();
+        fetchExperience();
+        fetchEducation();
+        fetchSkill();
+        fetchAllAplication();
       }
+
+      
       window.scrollTo({
         top: 0,
         behavior: "smooth",
@@ -270,6 +386,14 @@ export default {
     });
 
     return {
+      dataProfile,
+      fetchExperience,
+      fetchEducation,
+      fetchSkill,
+      fetchProfile,
+      showModalShareLink,
+      dataApplication,
+      totalApplications,
       jobs,
       savedJob,
       isSaved,
@@ -282,6 +406,7 @@ export default {
       postApplyJob,
       route,
       isApplied,
+      fullUrl,
     };
   },
 };
