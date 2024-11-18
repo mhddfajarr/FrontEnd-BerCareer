@@ -135,6 +135,7 @@ import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import moment from "moment";
 import ModalShareLink from "../../User/modalShareLink.vue";
 
+
 export default {
   components: {
     Breadcrumbs,
@@ -158,6 +159,8 @@ export default {
     const dataExperience = ref([]);
     const dataEducation = ref([]);
     const dataSkill = ref([]);
+    const router = useRouter();
+
 
     const fetchAllAplication = async () => {
       try {
@@ -191,7 +194,20 @@ export default {
     dataEducation.value.length < 1 ||  
     dataSkill.value.length < 1      
   ) {
-    Swal.fire("Please complete your profile first.", "", "info");
+    Swal.fire({
+  title: "Please complete your profile first.",
+  icon: "info",
+  showCancelButton: true,
+  cancelButtonText: "Close",
+  confirmButtonText: "Go to Profile",
+  confirmButtonColor: "#0a4d80", // Customize the color of the Go to Profile button
+  cancelButtonColor: "#d33", // Customize the color of the Close button
+}).then((result) => {
+  if (result.isConfirmed) {
+    router.push("/profile");
+  }
+});
+
     return;
   }  else {
     try {
