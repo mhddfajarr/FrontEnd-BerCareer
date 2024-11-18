@@ -88,8 +88,7 @@
         <!-- Card Deskripsi Pekerjaan -->
         <div class="text-gray-700">
           <h2 class="text-xl font-bold mb-4">Description</h2>
-          <p v-html="jobs.description" class="mb-4">
-          </p>
+          <p v-html="jobs.description" class="mb-4"></p>
         </div>
       </div>
     </div>
@@ -124,6 +123,10 @@ import {
   applyJob,
   getApplyUser,
   getAllAplication,
+  getProfileUser,
+  getExperienceUser,
+  getEducationUser,
+  getSkillUser,
 } from "../../../Services/Api/UserService";
 import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
@@ -151,6 +154,10 @@ export default {
     const totalApplications = ref(0);
     const dataApplication = ref([]);
     const fullUrl = window.location.href;
+    const dataProfile = ref([]);
+    const dataExperience = ref([]);
+    const dataEducation = ref([]);
+    const dataSkill = ref([]);
 
     const fetchAllAplication = async () => {
       try {
@@ -168,38 +175,51 @@ export default {
     };
 
     const postApplyJob = async (jobId) => {
-      if (!token) {
-        Swal.fire("Error", "Please login first.", "error");
-        return;
-      }
-      if (isApplied.value) {
-        Swal.fire("You have already applied for this job.", "", "info");
-        return;
-      }
-      try {
-        const data = {
-          userId: id.value,
-          jobId: jobId,
-          applyDate: new Date().toISOString(),
-        };
-        await applyJob(data);
-        isApplied.value = true;
-        await fetchAllAplication();
+  // cek login
+  if (!token) {
+    Swal.fire("Error", "Please login first.", "error");
+    return;
+  }
+  if (isApplied.value) {
+    Swal.fire("You have already applied for this job.", "", "info");
+    return;
+  }
+  // Cek profile si  user
+  if (
+    dataProfile.value.profileImage == null ||  
+    dataExperience.value.length < 1 ||      
+    dataEducation.value.length < 1 ||  
+    dataSkill.value.length < 1      
+  ) {
+    Swal.fire("Please complete your profile first.", "", "info");
+    return;
+  }  else {
+    try {
+      const data = {
+        userId: id.value,
+        jobId: jobId,
+        applyDate: new Date().toISOString(),
+      };
+      await applyJob(data);
+      isApplied.value = true;
+      await fetchAllAplication();
 
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Success apply!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-        });
-      } catch (exception) {
-        console.log(exception);
-        Swal.fire("Error", "An error occurred while applying.", "error");
-      }
-    };
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Success apply!",
+        showConfirmButton: false,
+        timer: 1500,
+        timerProgressBar: true,
+      });
+    } catch (exception) {
+      console.log(exception);
+      Swal.fire("Error", "An error occurred while applying.", "error");
+    }
+  }
+};
+
 
     const saveJob = async (jobId) => {
       if (!token) {
@@ -296,6 +316,44 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+    const fetchProfile = async () => {
+      try {
+        const userId = id.value;
+        const data = await getProfileUser(userId);
+        dataProfile.value = data.data;
+        console.log("ya ini berhaisl ygy", dataProfile);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    const fetchExperience = async () => {
+      try {
+        const data = await getExperienceUser(id.value);
+        dataExperience.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch education data
+    const fetchEducation = async () => {
+      try {
+        const data = await getEducationUser(id.value);
+        dataEducation.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    // Fetch skill data
+    const fetchSkill = async () => {
+      try {
+        const data = await getSkillUser(id.value);
+        dataSkill.value = data.data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
     const getUserId = async () => {
       try {
@@ -308,12 +366,16 @@ export default {
     };
 
     onMounted(async () => {
-      console.log(fullUrl);
       if (token) {
         await getUserId();
         fetchSavedJobs();
         fetchApplyUser();
+        fetchProfile();
+        fetchExperience();
+        fetchEducation();
+        fetchSkill();
       }
+
       fetchAllAplication();
       window.scrollTo({
         top: 0,
@@ -323,6 +385,11 @@ export default {
     });
 
     return {
+      dataProfile,
+      fetchExperience,
+      fetchEducation,
+      fetchSkill,
+      fetchProfile,
       showModalShareLink,
       dataApplication,
       totalApplications,

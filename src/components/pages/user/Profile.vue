@@ -34,6 +34,7 @@
           <p class="text-gray-600">{{ email }}</p>
         </div>
         <div class="mt-6 mb-4">
+          <p class="text-gray-700 mb-3 font-semibold">Social Account</p>
           <ul class="space-y-4">
             <li class="flex items-center">
               <i class="fas fa-globe text-gray-600"></i>
@@ -101,7 +102,7 @@
           class="bg-white px-6 md:px-10 h-full rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
         >
           <div class="mt-3">
-            <h1 class="text-2xl font-bold text-black mb-2">Profile</h1>
+            <h1 class="text-2xl font-bold text-black mb-2">Personal Info</h1>
             <hr class="border-gray-300 mb-4" />
           </div>
 
@@ -238,7 +239,6 @@ export default {
       }
     };
 
-    // Fetch experience data
     const fetchExperience = async () => {
       try {
         const data = await getExperienceUser(id.value);
@@ -271,14 +271,17 @@ export default {
     // Check progress based on available data
     const checkProgress = async () => {
       progress.value = 20;
-      if (progress.value <100){
-        isComplete.value = false
+      if (progress.value < 100) {
+        isComplete.value = false;
       }
       await fetchExperience();
       await fetchEducation();
       await fetchSkill();
       if (dataProfile.value.phoneNumber != null) {
         progress.value += 20;
+      }
+      if (dataProfile.value.profileImage != null) {
+        progress.value += 10;
       }
       if (dataExperience.value.length > 0) {
         progress.value += 20;
@@ -287,7 +290,7 @@ export default {
         progress.value += 20;
       }
       if (dataSkill.value.length > 0) {
-        progress.value += 20;
+        progress.value += 10;
       }
       if (progress.value === 100) {
         isComplete.value = true;

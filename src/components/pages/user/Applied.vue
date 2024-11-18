@@ -49,12 +49,12 @@
           <span
             :class="{
               'w-full text-center text-sm font-semibold  px-2 py-2 rounded-full': true,
-              'bg-gray-100 text-gray-600': job.jobStastus === 'Pending',
-              'bg-green-100 text-green-600': job.jobStastus === 'Approved',
-              'bg-pink-100 text-pink-600': job.jobStastus === 'Rejected',
+              'bg-gray-100 text-gray-800': job.jobStatus === 'Pending',
+              'bg-green-100 text-green-600': job.jobStatus === 'Approved',
+              'bg-pink-100 text-pink-600': job.jobStatus === 'Rejected',
             }"
           >
-            {{ job.jobStastus }}
+            {{ job.jobStatus }}
           </span>
         </div>
       </routerLink>
