@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { ref, defineComponent, watch, onMounted } from 'vue';
+import { ref, defineComponent, watch, onMounted, toRefs } from 'vue';
 import { decodeToken } from '../../Services/JWT/JwtDecode';
 import { addSkill } from '../../Services/Api/UserService';
 import { eventBus } from '../../Services/EvenBus';
@@ -72,6 +72,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    // Ensure toRefs is imported and used properly
     const { showModal } = toRefs(props);
     const userId = ref("");
     const skillName = ref("");
@@ -127,7 +128,7 @@ export default defineComponent({
           timerProgressBar: true,
         });
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error adding skill:", error);
       }
     };
 
