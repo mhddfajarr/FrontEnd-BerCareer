@@ -356,67 +356,30 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import {
-  getAllData,
   getRoleDetails,
   getRoles,
-  deleteJob,
-  addJob,
   changeRole,
 } from "../../../../Services/Api/AdminService"; // Import API functions
-import { decodeToken } from "../../../../Services/JWT/JwtDecode";
 import Swal from "sweetalert2";
-import {
-  RichTextEditorComponent,
-  Toolbar,
-  Image,
-  HtmlEditor,
-  Link,
-  Table,
-} from "@syncfusion/ej2-vue-richtexteditor";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+
 export default {
   components: {
-    "ejs-richtexteditor": RichTextEditorComponent,
     QuillEditor,
   },
   setup() {
     // State variables
     const showModal = ref(false);
     const editModal = ref(false);
-    const selectedTitle = ref("");
     const selectedName = ref("");
     const searchQuery = ref("");
-    const dataJobs = ref([]);
     const dataRoles = ref([]);
     const dataRolesOptions = ref([]);
-    const filteredJobs = ref([]);
     const filteredRoles = ref([]);
-    const perPage = ref(10); // Default number of jobs per page
+    const perPage = ref(10); // Default number of roles per page
     const currentPage = ref(1); // Default to first page
     const totalPages = ref(1); // For pagination calculation
-    const newJobTitle = ref("");
-    const newJobDescription = ref("");
-    const newJobType = ref("");
-    const newJobSalary = ref("");
-    const newJobLocation = ref("");
-    const newJobRequirement = ref("");
-    const newJobUserId = ref("");
-    const id = ref("");
-    const userId = ref("");
-
-    // Fetch job details from API
-    const fetchJobDetail = async () => {
-      try {
-        const response = await getAllData();
-        dataJobs.value = response.data;
-        filteredJobs.value = response.data; // Initialize filteredJobs with all data
-        totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Calculate total pages
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
 
     const fetchRoleDetail = async () => {
       try {
@@ -433,28 +396,13 @@ export default {
       }
     };
 
-    // // Calculate paginated jobs based on current page and items per page
-    // const paginatedJobs = computed(() => {
-    //   const start = (currentPage.value - 1) * perPage.value;
-    //   const end = start + perPage.value;
-    //   return filteredJobs.value.slice(start, end);
-    // });
-    // Calculate paginated jobs based on current page and items per page
+    // Calculate paginated roles based on current page and items per page
     const paginatedRoles = computed(() => {
       const start = (currentPage.value - 1) * perPage.value;
       const end = start + perPage.value;
       return filteredRoles.value.slice(start, end);
     });
 
-    // Handle sorting of data by column
-    // const sortTable = (column) => {
-    //   const sortedJobs = [...filteredJobs.value].sort((a, b) => {
-    //     if (a[column] < b[column]) return -1;
-    //     if (a[column] > b[column]) return 1;
-    //     return 0;
-    //   });
-    //   filteredJobs.value = sortedJobs;
-    // };
     const sortTable = (column) => {
       const sortedRole = [...filteredRoles.value].sort((a, b) => {
         if (a[column] < b[column]) return -1;
@@ -464,36 +412,33 @@ export default {
       filteredRoles.value = sortedRole;
     };
 
-    // Handle search filtering
-    const filterBySearch = () => {
-      const query = searchQuery.value.toLowerCase();
-      filteredJobs.value = dataJobs.value.filter(
-        (job) =>
-          job.title.toLowerCase().includes(query) ||
-          job.description.toLowerCase().includes(query) ||
-          job.location.toLowerCase().includes(query)
-      );
-      totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Recalculate total pages after search
-    };
-
-    // Handle filtering by job title
-    const filterJobsByTitle = (title) => {
-      selectedTitle.value = title;
-      searchQuery.value = ""; // Reset search query when filtering by title
-      filteredJobs.value = dataJobs.value.filter((job) => job.title === title);
-      totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Recalculate total pages
-    };
-    // Handle filtering by job title
+    // Handle filtering by role name
     const filterRolesByName = (name) => {
       selectedName.value = name;
       searchQuery.value = ""; // Reset search query when filtering by title
+
+      let uniqueRoles = new Set();
+      let filtered = [];
+
       if (name === "All") {
-        filteredRoles.value = dataRoles.value;
+        filtered = dataRoles.value.filter((role) => {
+          if (!uniqueRoles.has(role.roleName)) {
+            uniqueRoles.add(role.roleName);
+            return true;
+          }
+          return false;
+        });
       } else {
-        filteredRoles.value = dataRoles.value.filter(
-          (role) => role.roleName === name
-        );
+        filtered = dataRoles.value.filter((role) => {
+          if (role.roleName === name && !uniqueRoles.has(role.roleName)) {
+            uniqueRoles.add(role.roleName);
+            return true;
+          }
+          return false;
+        });
       }
+
+      filteredRoles.value = filtered;
       totalPages.value = Math.ceil(filteredRoles.value.length / perPage.value); // Recalculate total pages
     };
 
@@ -506,145 +451,34 @@ export default {
     // Update pagination when items per page changes
     const updatePagination = () => {
       currentPage.value = 1; // Reset to first page when items per page is changed
-      totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Recalculate total pages
+      totalPages.value = Math.ceil(filteredRoles.value.length / perPage.value); // Recalculate total pages
     };
 
-    const getUserId = async () => {
-      try {
-        const dataUser = await decodeToken();
-        id.value = dataUser.uid;
-      } catch (error) {
-        console.error("Error decoding token:", error);
-      }
-    };
-
-    const getInsertValues = (delta) => {
-      if (!delta || !delta.ops) {
-        return "";
-      }
-      // Menggunakan QuillDeltaToHtmlConverter untuk mengonversi Delta ke HTML
-      const converter = new QuillDeltaToHtmlConverter(delta.ops, {});
-
-      const html = converter.convert();
-      return html;
-    };
-
-    const addJobHandler = async () => {
-      // const insertValues = getInsertValues(newJobDescription.value);
-      // const descriptionHTML = newJobDescription.value;
-      const descriptionHTML = getInsertValues(newJobDescription.value);
-      const newJob = {
-        Title: newJobTitle.value,
-        Description: descriptionHTML,
-        Requirement: newJobRequirement.value,
-        Salary: newJobSalary.value,
-        Type: newJobType.value,
-        Location: newJobLocation.value,
-        uid: id.value,
-      };
-      console.log("Job data to be added:", newJob);
-
-      try {
-        await addJob(newJob);
-        console.log("Job successfully added!");
-      } catch (exception) {
-        console.error("Error adding job:", exception);
-      }
-    };
-
-    // Function to delete job
-    const deleteJobHandler = async (userId, jobId) => {
-      const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You will not be able to recover this job!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
-      });
-
-      if (result.isConfirmed) {
-        try {
-          await deleteJob(userId, jobId); // API call to delete job
-          filteredJobs.value = filteredJobs.value.filter(
-            (job) => job.jobId !== jobId
-          ); // Remove job from list
-          totalPages.value = Math.ceil(
-            filteredJobs.value.length / perPage.value
-          ); // Recalculate total pages
-          Swal.fire("Deleted!", "Job has been deleted.", "success");
-        } catch (error) {
-          Swal.fire("Error", "There was an error deleting the job.", "error");
-        }
-      }
-    };
-
-    // Fetch job details when component is mounted
+    // Fetch role details when component is mounted
     onMounted(() => {
-      getUserId();
       fetchRoleDetail();
-      //   fetchRoles();
-      //   fetchJobDetail();
     });
 
     return {
       showModal,
-      id,
-      userId,
-      newJobUserId,
-      newJobTitle,
-      newJobDescription,
-      newJobRequirement,
-      newJobLocation,
-      newJobSalary,
-      newJobType,
       editModal,
-      selectedTitle,
+      selectedName,
       searchQuery,
-      dataJobs,
       dataRoles,
       dataRolesOptions,
-      filteredJobs,
+      filteredRoles,
       perPage,
       currentPage,
       totalPages,
       paginatedRoles,
       sortTable,
-      filterBySearch,
-      filterJobsByTitle,
       filterRolesByName,
       changePage,
       updatePagination,
-      deleteJobHandler,
-      addJobHandler,
-      componentKey: 0,
     };
   },
   methods: {
-    openEditModal(jobId) {
-      this.jobId = jobId;
-      this.editModal = true;
-      this.getJobsById(jobId);
-    },
-
-    getJobsById(jobId) {
-      fetch(`/api/jobs/${jobId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          // Isi data untuk diedit
-          this.newJobTitle = data.title;
-          this.newJobDescription = data.description;
-          this.newJobRequirement = data.requirement;
-          this.newJobType = data.type;
-          this.newJobSalary = data.salary;
-          this.newJobLocation = data.location;
-        })
-        .catch((error) => console.error("Error fetching job data:", error));
-    },
-
     updateRole(e, id) {
-      //   console.log(id);
-      //   console.log(e.target.value);
       const roleId = e.target.value;
       const userId = id;
       const roleData = {
@@ -652,21 +486,14 @@ export default {
         roleId: roleId,
       };
       changeRole(roleData).then(() => {
-        // this.remountComponent();
         window.location.reload();
       });
     },
-    remountComponent() {
-      this.componentKey += 1;
-    },
-  },
-  provide: {
-    richtexteditor: [Toolbar, Image, HtmlEditor, Link, Table],
   },
 };
 </script>
 
-<style>
+<style scoped>
 .ql-editor {
   height: 15vh;
 }
@@ -677,12 +504,4 @@ export default {
   align-items: center;
   margin-top: 20px;
 }
-@import "/node_modules/@syncfusion/ej2-base/styles/material.css";
-@import "/node_modules/@syncfusion/ej2-inputs/styles/material.css";
-@import "/node_modules/@syncfusion/ej2-lists/styles/material.css";
-@import "/node_modules/@syncfusion/ej2-popups/styles/material.css";
-@import "/node_modules/@syncfusion/ej2-buttons//styles/material.css";
-@import "/node_modules/@syncfusion/ej2-navigations/styles/material.css";
-@import "/node_modules/@syncfusion/ej2-splitbuttons//styles/material.css";
-@import "/node_modules/@syncfusion/ej2-vue-richtexteditor/styles/material.css";
 </style>
