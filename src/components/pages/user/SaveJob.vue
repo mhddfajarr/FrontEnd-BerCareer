@@ -13,40 +13,53 @@
 
   <div v-else class="py-6 flex-grow">
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-6 pb-6">
-      <!-- Job Card 1 -->
-      <routerLink
-        v-for="(job, index) in dataSaveJobs"
-        :key="job.jobId"
-        :to="{ name: 'Jobs', params: { id: job.jobId } }"
-        class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
+    <!-- Job Card -->
+    <router-link
+      v-for="(job, index) in dataSaveJobs"
+      :key="job.jobId"
+      v-model="selectedProvince"
+      :to="{ name: 'Jobs', params: { id: job.jobId } }"
+      class="bg-white rounded-lg shadow-lg p-4 relative hover:border border-primary"
+    >
+      <!-- <div
+        v-if="job.isApplied"
+        class="absolute top-0 left-0 bg-blue-100 text-gray-500 text-xs font-semibold italic px-4 py-2 rounded-tl-lg rounded-br-lg flex items-center"
       >
-        <div class="flex items-center justify-center mb-2">
-          <div>
-            <h2 class="text-xl font-bold text-gray-700">
-              {{ job.jobTitle }}
-            </h2>
-          </div>
+        Applied
+      </div> -->
+      <div
+        v-if="job.isApplied"
+        class="absolute top-2 left-2 bg-green-100 text-green-500 text-xs font-semibold italic px-2 py-1 rounded-full flex items-center"
+      >
+        Applied
+      </div>
+
+      <div class="flex items-center justify-center mb-2">
+        <div>
+          <h2 class="text-xl font-bold text-gray-700">{{ job.jobTitle }}</h2>
         </div>
+      </div>
 
-        <!-- Garis horizontal di bawah h2 -->
-        <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
+      <!-- Garis horizontal di bawah h2 -->
+      <div class="w-24 mx-auto border-t-4 rounded-sm border-primary mb-4"></div>
 
-        <div class="text-sm text-gray-600 space-y-2">
-          <p>
-            <i class="fas fa-user-clock text-purple-500"></i>
-            <span class="text-purple-500"> {{ job.jobType }}</span>
-          </p>
-          <p><i class="fas fa-map-marker-alt"></i> {{ job.jobLocation }}</p>
+      <div class="text-sm text-gray-600 space-y-2">
+        <p>
+          <i class="fas fa-user-clock  mr-1"></i>
+          <span class="">{{ job.jobType }}</span>
+        </p>
+        <p><i class="fas fa-map-marker-alt"></i> {{ job.jobLocation }}</p>
           <p><i class="fas fa-briefcase"></i> {{ job.jobRequirement }}</p>
-          <p><i class="fas fa-dollar-sign"></i> {{ job.jobSalary }}</p>
-        </div>
+        <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.jobSalary }}</p>
+      </div>
+      <hr class="mt-4 mb-2" />
+      <div class="flex justify-between items-center">
 
-        <div class="mt-4">
-  <button class="bg-pink-100 text-pink-600 text-xs px-2 py-1 rounded-full hover:bg-pink-200 transition-all duration-200 ease-in-out">
-    Rekruter aktif 1 jam lalu
-  </button>
+  <span  class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full">
+    Posted On {{ job.postDate }}
+  </span>
 </div>
-      </routerLink>
+    </router-link>
     </div>
   </div>
 </template>
@@ -59,6 +72,7 @@ import Swal from "sweetalert2";
 import { onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
+import moment from 'moment';
 
 export default {
   setup() {
@@ -81,6 +95,12 @@ export default {
         const data = await getSaveJob(id.value);
         dataSaveJobs.value = data.data;
         console.log("Saved jobs:", dataSaveJobs.value);
+        dataSaveJobs.value.forEach((job) => {
+          if (job.postDate) {
+            job.postDate = moment(job.postDate).format("MMMM DD, YYYY");
+          }
+        });
+        
       } catch (error) {
         console.error(error)
       }
@@ -89,7 +109,7 @@ export default {
     onMounted(async () => {
       await getUserId();  
         await fetchSavedJobs();
-      
+      console.log(dataSaveJobs)
     });
 
     return {
