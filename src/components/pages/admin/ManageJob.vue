@@ -169,18 +169,24 @@
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <input
+                                    <!-- <input
                                     v-model="editJobDescription"
                                     type="text"
                                     placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
-                                    <!-- <QuillEditor
-                                        v-model="editJobDescription"
-                                        placeholder="Edit Description"
-                                        theme="snow"
+                                    /> -->
+                                    <div>
+                                    <QuillEditor
+                                        v-model:content="editJobDescription"
+                                        type="text"
+                                        placeholder="Description"
                                         class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                        ></QuillEditor> -->
+                                    ></QuillEditor>
+                                    <div
+                                        v-html="editJobDescription"
+                                        class="hidden"
+                                    ></div>
+                                    </div>
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
@@ -550,10 +556,11 @@
         }
 
         // Data pekerjaan yang diperbarui
+        const editdescriptionHTML = getInsertValues(editJobDescription.value);
         const updatedJob = {
             jobId: jobId.value,
             title: editJobTitle.value,
-            description: editJobDescription.value,
+            description: editdescriptionHTML,
             requirement: editJobRequirement.value,
             type: editJobType.value,
             salary: editJobSalary.value,
