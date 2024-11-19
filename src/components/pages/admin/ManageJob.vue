@@ -222,7 +222,7 @@
                                 <input
                                   type="date"
                                   id="dueDate"
-                                  v-model="editJob.dueDate"
+                                  v-model="editJob.formatedDueDate"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   required
                                 />
@@ -402,6 +402,7 @@ import Swal from "sweetalert2";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+import moment from "moment";
 import { uid } from "ckeditor5";
 export default {
   components: {
@@ -430,6 +431,7 @@ export default {
     const jobId = ref(null);
     // Data pekerjaan untuk diedit
     const editJob = ref({});
+    const dueDate = ref("");
     const jobs = ref([]); // Asumsikan ini daftar pekerjaan
 
     // Fetch job details from API
@@ -546,6 +548,10 @@ export default {
       try {
         const response = await getJobsById(id); // Mengambil data pekerjaan berdasarkan ID dan mengisinya di form modal
         editJob.value = response.data;
+        editJob.value.formatedDueDate = moment(response.data.dueDate).format(
+          "YYYY-MM-DD"
+        );
+        console.log(editJob.value.formatedDueDate);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -575,6 +581,7 @@ export default {
         type: editJob.value.type,
         salary: editJob.value.salary,
         location: editJob.value.location,
+        dueDate: editJob.value.dueDate,
         userId: id.value,
       };
 
@@ -696,6 +703,7 @@ export default {
       openEditModal,
       handleUpdateJob,
       editJob,
+      dueDate,
     };
   },
 };
