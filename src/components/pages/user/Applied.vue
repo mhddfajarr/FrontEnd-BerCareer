@@ -70,6 +70,13 @@
             {{ job.jobStatus }}
           </span>
         </div>
+        <!-- <div v-if="job.isExpire" class="flex flex-col">
+          <span
+            class="justify-end text-end italic text-red-500 text-xs px-2 py-1"
+          >
+            This job is expired
+          </span>
+        </div> -->
       </routerLink>
     </div>
   </div>
@@ -88,14 +95,21 @@ export default {
     const fetchApplyUser = async () => {
       try {
         const data = await getApplyUser(id.value);
+        applyJobArray.value = data.data;
+        console.log(applyJobArray);
+        applyJobArray.value.forEach((job) => {
+          if (job.dueDate) {
+            const dueDate = moment(job.dueDate).toDate();
+            const today = new Date();
+            job.isExpire = dueDate < today;
+          }
+        });
         applyJobArray.value = data.data
           .map((job) => ({
             ...job,
             applyDate: moment(job.applyDate).format("MMM DD, YYYY"),
           }))
           .sort((a, b) => new Date(b.applyDate) - new Date(a.applyDate));
-
-        console.log(applyJobArray.value);
       } catch (error) {
         console.error("Error fetching saved jobs:", error);
       }
@@ -112,7 +126,7 @@ export default {
 
     onMounted(async () => {
       await getUserId();
-      await fetchApplyUser()
+      await fetchApplyUser();
     });
     return {
       fetchApplyUser,
