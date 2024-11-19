@@ -62,13 +62,13 @@
             {{ job.jobStatus }}
           </span>
         </div>
-        <div v-if="job.isExpire" class="flex flex-col">
+        <!-- <div v-if="job.isExpire" class="flex flex-col">
           <span
             class="justify-end text-end italic text-red-500 text-xs px-2 py-1"
           >
             This job is expired
           </span>
-        </div>
+        </div> -->
       </routerLink>
     </div>
   </div>
