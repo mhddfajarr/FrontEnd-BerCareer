@@ -51,9 +51,7 @@
             {{ formatPeriod(experience.startDate, experience.endDate) }}
           </p>
 
-          <h5 class="text-md font-medium text-gray-700 mb-2">
-            
-          </h5>
+          <h5 class="text-md font-medium text-gray-700 mb-2"></h5>
           <ul class="list-disc list-inside text-gray-700">
             {{
               experience.description
@@ -78,7 +76,7 @@
             <span v-else-if="education.degree === 1">S2</span>
             <span v-else-if="education.degree === 2">S3</span>
             <span v-else-if="education.degree === 4">D3</span>
-            <span v-else>Unknown</span> - {{ education.programStudy }} 
+            <span v-else>Unknown</span> - {{ education.programStudy }}
           </p>
 
           <p class="text-gray-600">
@@ -190,7 +188,9 @@ export default {
     const fetchExperienceUser = async () => {
       try {
         const data = await getExperienceUser(userId);
-        dataExperience.value = data.data;
+        dataExperience.value = data.data.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -198,7 +198,10 @@ export default {
     const fetchEducationsUser = async () => {
       try {
         const data = await getEducationUser(userId);
-        dataEducations.value = data.data.map((education) => ({
+        const sortedData = data.data.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+        );
+        dataEducations.value = sortedData.map((education) => ({
           ...education,
           startDateFormatted: moment(education.startDate).format("MMM YYYY"),
           endDateFormatted: moment(education.endDate).format("MMM YYYY"),
@@ -207,6 +210,7 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+
     const fetchSkillUser = async () => {
       try {
         const data = await getSkillUser(userId);

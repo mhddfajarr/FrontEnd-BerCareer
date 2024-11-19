@@ -182,14 +182,15 @@ export default {
       }
     };
     const fetchEducationsUser = async () => {
-        await getUserId()
-      try {
-        const data = await getEducationUser(userId.value);
-        dataEducations.value = data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  await getUserId();
+  try {
+    const data = await getEducationUser(userId.value);
+    dataEducations.value = data.data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 
     const deleteEducationUser = async(educationId) => {
       try {

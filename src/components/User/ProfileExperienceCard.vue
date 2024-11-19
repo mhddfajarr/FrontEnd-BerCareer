@@ -157,13 +157,14 @@ export default {
 
     // Fetch pengalaman kerja dari API
     const fetchExperienceUser = async () => {
-      try {
-        const data = await getExperienceUser(userId.value);
-        dataExperience.value = data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  try {
+    const data = await getExperienceUser(userId.value);
+    dataExperience.value = data.data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 
     // Format tanggal periode
     const formatPeriod = (startDate, endDate) => {
