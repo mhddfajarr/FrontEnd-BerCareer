@@ -280,7 +280,7 @@
                         </thead>
                         <tbody class="text-center">
                           <tr
-                            v-for="(role, index) in paginatedRoles"
+                            v-for="(role, index) in filteredAdminRoles"
                             :key="role.userId"
                           >
                             <td><input type="checkbox" class="checkbox" /></td>
@@ -291,6 +291,7 @@
                                 @click.stop
                                 v-model="role.roleName"
                                 @change="updateRole($event, role.userId)"
+                                class="select select-bordered w-full max-w-xs"
                               >
                                 <option disabled>
                                   {{ role.roleName }}
@@ -444,6 +445,12 @@ export default {
       const start = (currentPage.value - 1) * perPage.value;
       const end = start + perPage.value;
       return filteredRoles.value.slice(start, end);
+    });
+
+    const filteredAdminRoles = computed(() => {
+      return paginatedRoles.value.filter(
+        (role) => role.roleName !== "Super Admin"
+      );
     });
 
     // Handle sorting of data by column
@@ -617,6 +624,7 @@ export default {
       updatePagination,
       deleteJobHandler,
       addJobHandler,
+      filteredAdminRoles,
       componentKey: 0,
     };
   },

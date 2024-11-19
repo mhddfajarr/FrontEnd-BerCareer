@@ -23,16 +23,21 @@ const routes = [
     path: "/admin",
     component: MainLayoutAdmin,
     beforeEnter: async (to, from, next) => {
-      try {
-        const decodedToken = await decodeToken();
-        const role = decodedToken.role;
-        if (role == "User") {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const decodedToken = await decodeToken();
+          const role = decodedToken.role;
+          if (role == "User") {
+            next({ name: "Home" });
+          } else {
+            next();
+          }
+        } catch (error) {
+          console.error("Error decoding token:", error);
           next({ name: "Home" });
-        } else {
-          next();
         }
-      } catch (error) {
-        console.error("Error decoding token:", error);
+      } else {
         next({ name: "Home" });
       }
     },
@@ -81,6 +86,24 @@ const routes = [
   {
     path: "/",
     component: MainLayoutUser,
+    beforeEnter: async (to, from, next) => {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          const decodedToken = await decodeToken();
+          const role = decodedToken.role;
+          if (role == "Admin" || role == "Super Admin") {
+            router.push({ name: "Dashboard" });
+          } else {
+            next();
+          }
+        } catch (error) {
+          console.error("Error decoding token:", error);
+          next({ name: "Home" });
+        }
+      }
+      next();
+    },
     children: [
       {
         path: "",

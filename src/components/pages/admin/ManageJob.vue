@@ -224,8 +224,7 @@
                                         v-html="editJobDescription"
                                         class="hidden"
                                     ></div>
-                                    </div>
-
+                                    </div>
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>

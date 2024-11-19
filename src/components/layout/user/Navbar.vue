@@ -78,18 +78,30 @@
             class="flex items-center text-black focus:outline-none"
             ref="dropdownButton"
           >
-            <img
-              v-if="userImage"
-              :src="'https://localhost:7147/' + userImage"
-              alt="Profile"
-              class="w-10 h-10 rounded-full mr-2 object-cover"
-            />
-            <img
-              v-else
-              src="../../../assets/images/default.png"
-              alt="Default Profile"
-              class="w-10 h-10 rounded-full mr-2 object-cover"
-            />
+            <div v-if="userImage">
+              <div v-if="userImage.includes('uploads')">
+                <img
+                  :src="'https://localhost:7147/' + userImage"
+                  alt="Profile"
+                  class="w-10 h-10 rounded-full mr-2 object-cover"
+                />
+              </div>
+              <div v-else>
+                <img
+                  :src="userImage"
+                  alt="Default Google"
+                  class="w-10 h-10 rounded-full mr-2 object-cover"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+            </div>
+            <div v-else>
+              <img
+                src="../../../assets/images/default.png"
+                alt="Default Profile"
+                class="w-10 h-10 rounded-full mr-2 object-cover"
+              />
+            </div>
 
             <span class="relative inline-block group">
               <span

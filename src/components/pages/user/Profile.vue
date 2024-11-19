@@ -11,23 +11,32 @@
         </div>
 
         <div class="text-center">
-          <img
-            v-if="dataProfile.profileImage"
-            alt="Profile picture of John Doe"
-            class="w-28 h-28 mx-auto rounded-full object-cover"
-            height="100"
-            :src="'https://localhost:7147/' + dataProfile.profileImage"
-            width="100"
-          />
-          <img
-            v-else
-            alt="Profile picture of John Doe"
-            class="w-28 h-28 mx-auto rounded-full object-cover"
-            height="100"
-            src="../../../assets/images/default.png"
-            width="100"
-          />
-
+          <div v-if="dataProfile.profileImage">
+            <div v-if="dataProfile.profileImage.includes('uploads')">
+              <img
+                :src="'https://localhost:7147/' + dataProfile.profileImage"
+                alt="Profile"
+                class="w-28 h-28 mx-auto rounded-full object-cover"
+                height="100"
+              />
+            </div>
+            <div v-else>
+              <img
+                :src="dataProfile.profileImage"
+                alt="Default Google"
+                class="w-40 h-28 mx-auto rounded-full object-cover"
+                height="100"
+                referrerpolicy="no-referrer"
+              />
+            </div>
+          </div>
+          <div v-else>
+            <img
+              src="../../../assets/images/default.png"
+              alt="Default Profile"
+              class="w-28 h-28 mx-auto rounded-full object-cover"
+            />
+          </div>
           <h2 class="text-xl font-semibold mt-4 text-gray-700">
             {{ dataProfile.fullName }}
           </h2>
