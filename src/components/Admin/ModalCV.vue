@@ -38,13 +38,13 @@
         <hr class="border-gray-300 mb-6" />
 
         <!-- Work Experience Section -->
-        <h3 class="text-xl font-bold mb-4 text-gray-700">WORK EXPERIENCE</h3>
+        <h3 class="text-lg font-bold mb-4 text-gray-700">WORK EXPERIENCE</h3>
         <div
           v-for="(experience, index) in dataExperience"
           :key="experience.experienceId"
           class="mb-6"
         >
-          <h4 class="text-lg font-semibold text-gray-800">
+          <h4 class="text-md font-semibold text-gray-800">
             {{ experience.position }} - {{ experience.company }}
           </h4>
           <p class="text-gray-600">
@@ -61,13 +61,13 @@
         <hr class="border-gray-300 mb-6" />
 
         <!-- Education Section -->
-        <h3 class="text-xl font-bold mb-4 text-gray-700">EDUCATION</h3>
+        <h3 class="text-lg font-bold mb-4 text-gray-700">EDUCATION</h3>
         <div
           v-for="(education, index) in dataEducations"
           :key="education.educationId"
           class="mb-6"
         >
-          <h4 class="text-lg font-semibold text-gray-800">
+          <h4 class="text-md font-semibold text-gray-800">
             {{ education.universityName }}
           </h4>
 
@@ -98,7 +98,7 @@
         <!-- Skills and Language Sections -->
         <div class="flex">
           <div class="w-1/2 pr-4">
-            <h3 class="text-xl font-bold mb-4 text-gray-700">SKILLS</h3>
+            <h3 class="text-lg font-bold mb-4 text-gray-700">SKILLS</h3>
             <ul class="list-disc list-inside text-gray-700">
               <li v-for="(skill, index) in dataSkill" :key="skill.skillId">
                 {{ skill.skillName }}
@@ -106,7 +106,7 @@
             </ul>
           </div>
           <div class="w-1/2 pl-4">
-            <h3 class="text-xl font-bold mb-4 text-gray-700">Social Account</h3>
+            <h3 class="text-lg font-bold mb-4 text-gray-700">Social Account</h3>
             <ul class="space-y-4">
               <li class="flex items-center">
                 <i class="fas fa-globe text-gray-600"></i>
@@ -132,6 +132,20 @@
                     class="text-primaryHover hover:text-primary hover:underline"
                   >
                     Profile Github
+                  </a>
+                  <span v-else>-</span></span
+                >
+              </li>
+              <li class="flex items-center">
+                <i class="fab fa-linkedin text-gray-600"></i>
+                <span class="ml-2 text-gray-700"
+                  ><a
+                    v-if="dataProfile.linkedin"
+                    :href="dataProfile.linkedin"
+                    target="_blank"
+                    class="text-primaryHover hover:text-primary hover:underline"
+                  >
+                    Profile LinkedIn
                   </a>
                   <span v-else>-</span></span
                 >
