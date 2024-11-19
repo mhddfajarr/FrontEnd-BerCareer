@@ -62,7 +62,7 @@
                   : 'far fa-bookmark text-gray-400 mr-2'
               "
             ></i>
-            {{ isSaved ? "Remove from favorite" : "Save Job" }}
+            {{ isSaved ? "Remove save job" : "Save Job" }}
           </button>
 
           <!-- Tombol Share -->
@@ -200,8 +200,8 @@ export default {
   showCancelButton: true,
   cancelButtonText: "Close",
   confirmButtonText: "Go to Profile",
-  confirmButtonColor: "#0a4d80", // Customize the color of the Go to Profile button
-  cancelButtonColor: "#d33", // Customize the color of the Close button
+  confirmButtonColor: "#0a4d80", 
+  cancelButtonColor: "#d33", 
 }).then((result) => {
   if (result.isConfirmed) {
     router.push("/profile");
@@ -253,7 +253,7 @@ export default {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Success add job to favorite!",
+          title: "Success save job!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
@@ -307,7 +307,7 @@ export default {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Deleted save job!",
+          title: "Removed save job!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
@@ -337,7 +337,6 @@ export default {
         const userId = id.value;
         const data = await getProfileUser(userId);
         dataProfile.value = data.data;
-        console.log("ya ini berhaisl ygy", dataProfile);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
