@@ -37,7 +37,8 @@ export const addJob = async (jobData) => {
     requirement: jobData.Requirement,
     salary: jobData.Salary,
     location: jobData.Location,
-    postDate: jobData.postDate,
+    postDate: jobData.PostDate,
+    dueDate: jobData.DueDate,
     userId: jobData.uid,
   };
   console.log(newJob);
@@ -138,7 +139,7 @@ export const updateJob = async (jobId, updatedJob, token) => {
   }
 
   try {
-    const response = await axios.put(`${API_URL}/`, updatedJob, {
+    const response = await axios.patch(`${API_URL}/`, updatedJob, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",

@@ -88,6 +88,19 @@
                                   placeholder="Type"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
+                                <h4
+                                  for="newDueDate"
+                                  class="text-lg font-bold mb-2"
+                                >
+                                  Due Date
+                                </h4>
+                                <input
+                                  type="date"
+                                  id="newDueDate"
+                                  v-model="newDueDate"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                  required
+                                />
                                 <h4 class="text-lg font-bold mb-2">Salary</h4>
                                 <input
                                   v-model="newJobSalary"
@@ -199,6 +212,19 @@
                                   type="text"
                                   placeholder="Enter job type (e.g., Full-time)"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                />
+                                <h4
+                                  for="dueDate"
+                                  class="text-lg font-bold mb-2"
+                                >
+                                  Due Date
+                                </h4>
+                                <input
+                                  type="date"
+                                  id="dueDate"
+                                  v-model="editJob.dueDate"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                  required
                                 />
                                 <h4 class="text-lg font-bold mb-2">Salary</h4>
                                 <input
@@ -394,6 +420,7 @@ export default {
     const newJobTitle = ref("");
     const newJobDescription = ref("");
     const newJobType = ref("");
+    const newDueDate = ref("");
     const newJobSalary = ref("");
     const newJobLocation = ref("");
     const newJobRequirement = ref("");
@@ -495,6 +522,8 @@ export default {
         Salary: newJobSalary.value,
         Type: newJobType.value,
         Location: newJobLocation.value,
+        PostDate: new Date(),
+        DueDate: newDueDate.value,
         uid: id.value,
       };
       console.log("Job data to be added:", newJob);
@@ -537,16 +566,15 @@ export default {
       }
 
       // Data pekerjaan yang diperbarui
-      const editdescriptionHTML = getInsertValues(editJobDescription.value);
+      // const editdescriptionHTML = getInsertValues(editJobDescription.value);
       const updatedJob = {
         jobId: jobId.value,
-        title: editJobTitle.value,
-        description: editdescriptionHTML,
-        requirement: editJobRequirement.value,
-        type: editJobType.value,
-        salary: editJobSalary.value,
-        location: editJobLocation.value,
-        postDate: new Date(),
+        title: editJob.value.title,
+        description: editJob.value.description,
+        requirement: editJob.value.requirement,
+        type: editJob.value.type,
+        salary: editJob.value.salary,
+        location: editJob.value.location,
         userId: id.value,
       };
 
@@ -644,6 +672,7 @@ export default {
       newJobRequirement,
       newJobLocation,
       newJobSalary,
+      newDueDate,
       newJobType,
       selectedTitle,
       searchQuery,
