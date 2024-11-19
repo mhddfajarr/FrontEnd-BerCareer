@@ -193,7 +193,7 @@ import { onMounted, ref, watch } from "vue";
 import {
   addExperience,
   getExperienceUser,
-  updateExperience
+  updateExperience,
 } from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import Swal from "sweetalert2";
@@ -283,6 +283,7 @@ export default {
     const validateForm = () => {
       let isValid = true;
 
+      // Check if position is provided
       if (!position.value) {
         errors.value.positionError = "Position is required";
         isValid = false;
@@ -290,6 +291,7 @@ export default {
         errors.value.positionError = "";
       }
 
+      // Check if company name is provided
       if (!companyName.value) {
         errors.value.companyNameError = "Company name is required";
         isValid = false;
@@ -297,6 +299,7 @@ export default {
         errors.value.companyNameError = "";
       }
 
+      // Check if job type is selected
       if (!jobTypes.value) {
         errors.value.jobTypeError = "Job type is required";
         isValid = false;
@@ -304,13 +307,20 @@ export default {
         errors.value.jobTypeError = "";
       }
 
+      // Check if start date is provided and is not in the future
+      const today = new Date();
+      const startDateValue = new Date(startDate.value);
       if (!startDate.value) {
         errors.value.startDateError = "Start date is required";
+        isValid = false;
+      } else if (startDateValue > today) {
+        errors.value.startDateError = "Start date cannot be in the future";
         isValid = false;
       } else {
         errors.value.startDateError = "";
       }
 
+      // Check if description is provided
       if (!description.value) {
         errors.value.descriptionError = "Description is required";
         isValid = false;
@@ -318,8 +328,14 @@ export default {
         errors.value.descriptionError = "";
       }
 
+      // Check if end date is provided and is not less than start date
+      const endDateValue = new Date(endDate.value);
       if (!stilWorking.value && !endDate.value) {
         errors.value.endDateError = "End date is required";
+        isValid = false;
+      } else if (endDateValue < startDateValue) {
+        errors.value.endDateError =
+          "End date cannot be earlier than start date";
         isValid = false;
       } else {
         errors.value.endDateError = "";
@@ -340,7 +356,7 @@ export default {
         endDate: stilWorking.value ? null : endDate.value,
       };
       if (props.experienceId) {
-        newData.experienceId = props.experienceId; 
+        newData.experienceId = props.experienceId;
         try {
           await updateExperience(newData);
           eventBus.emit("newExperience");
@@ -361,7 +377,7 @@ export default {
         try {
           await addExperience(newData);
           eventBus.emit("newExperience");
-          eventBus.emit("checkProgres"); 
+          eventBus.emit("checkProgres");
           closeModal();
           Swal.fire({
             toast: true,
