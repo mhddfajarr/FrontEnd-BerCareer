@@ -161,7 +161,7 @@
                                 />
                                 <h4 class="text-lg font-bold mb-2">Title</h4>
                                 <input
-                                  v-model="editJobTitle"
+                                  v-model="editJob.title"
                                   type="text"
                                   placeholder="Enter job title"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -175,45 +175,41 @@
                                     placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     /> -->
-                                <div>
+                                <div v-if="editJob.description !== undefined">
                                   <QuillEditor
-                                    v-model:content="editJobDescription"
+                                    v-model:content="editJob.description"
+                                    content-type="html"
                                     type="text"
                                     placeholder="Description"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   ></QuillEditor>
-                                  <div
-                                    v-html="editJobDescription"
-                                    class="hidden"
-                                  ></div>
-                                            
                                 </div>
                                 <h4 class="text-lg font-bold mb-2">
                                   Requirement
                                 </h4>
                                 <input
-                                  v-model="editJobRequirement"
+                                  v-model="editJob.requirement"
                                   type="text"
                                   placeholder="Enter job requirement"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
                                 <h4 class="text-lg font-bold mb-2">Job Type</h4>
                                 <input
-                                  v-model="editJobType"
+                                  v-model="editJob.type"
                                   type="text"
                                   placeholder="Enter job type (e.g., Full-time)"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
                                 <h4 class="text-lg font-bold mb-2">Salary</h4>
                                 <input
-                                  v-model="editJobSalary"
+                                  v-model="editJob.salary"
                                   type="text"
                                   placeholder="Enter salary"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
                                 <h4 class="text-lg font-bold mb-2">Location</h4>
                                 <input
-                                  v-model="editJobLocation"
+                                  v-model="editJob.location"
                                   type="text"
                                   placeholder="Enter location"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -406,12 +402,7 @@ export default {
     const editModal = ref(false);
     const jobId = ref(null);
     // Data pekerjaan untuk diedit
-    const editJobTitle = ref("");
-    const editJobDescription = ref("");
-    const editJobRequirement = ref("");
-    const editJobType = ref("");
-    const editJobSalary = ref("");
-    const editJobLocation = ref("");
+    const editJob = ref({});
     const jobs = ref([]); // Asumsikan ini daftar pekerjaan
 
     // Fetch job details from API
@@ -519,24 +510,13 @@ export default {
     // Membuka modal edit
     const openEditModal = async (id) => {
       // Reset form state sebelum mengisi data baru
-      editJobTitle.value = "";
-      editJobDescription.value = "";
-      editJobRequirement.value = "";
-      editJobType.value = "";
-      editJobSalary.value = "";
-      editJobLocation.value = "";
 
       jobId.value = id; // Menyimpan ID pekerjaan yang dipilih
       editModal.value = true; // Menampilkan modal edit
 
       try {
         const response = await getJobsById(id); // Mengambil data pekerjaan berdasarkan ID dan mengisinya di form modal
-        editJobTitle.value = response.data.title;
-        editJobDescription.value = response.data.description;
-        editJobRequirement.value = response.data.requirement;
-        editJobType.value = response.data.type;
-        editJobSalary.value = response.data.salary;
-        editJobLocation.value = response.data.location;
+        editJob.value = response.data;
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -566,6 +546,7 @@ export default {
         type: editJobType.value,
         salary: editJobSalary.value,
         location: editJobLocation.value,
+        postDate: new Date(),
         userId: id.value,
       };
 
@@ -681,16 +662,11 @@ export default {
       addJobHandler,
       editModal,
       jobId,
-      editJobTitle,
-      editJobDescription,
-      editJobRequirement,
-      editJobType,
-      editJobSalary,
-      editJobLocation,
       postDate: new Date().toISOString(),
       jobs,
       openEditModal,
       handleUpdateJob,
+      editJob,
     };
   },
 };
