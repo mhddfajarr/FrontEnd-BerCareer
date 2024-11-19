@@ -75,6 +75,21 @@
                 <span v-else>-</span>
               </span>
             </li>
+            <li class="flex items-center">
+              <i class="fab fa-linkedin text-gray-600"></i>
+              <span class="ml-2 text-gray-700">LinkedIn</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkedin"
+                  :href="dataProfile.linkedin"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary hover:underline"
+                >
+                  Profile LinkedIn
+                </a>
+                <span v-else>-</span>
+              </span>
+            </li>
           </ul>
         </div>
         <button
@@ -87,6 +102,7 @@
           v-if="showModalCardProfile"
           :showModal="showModalCardProfile"
           @close="showModalCardProfile = false"
+          @click.self="showModalCardProfile = false" 
         />
       </div>
 
@@ -94,8 +110,21 @@
       <div class="bg-slate-50 h-auto md:col-span-8 flex flex-col">
         <div v-if="!isComplete" class="mb-2">
           <p class="text-gray-700 font-semibold">
-            Almost There! Complete your profile to start applying for jobs.
+            Complete your
+            <template v-if="requiredPersonalInfo"
+              >{{ requiredPersonalInfo }},
+            </template>
+            <template v-if="requiredImage">{{ requiredImage }}, </template>
+            <template v-if="requiredExperience"
+              >{{ requiredExperience }},
+            </template>
+            <template v-if="requiredEducation"
+              >{{ requiredEducation }},
+            </template>
+            <template v-if="requiredSkill">{{ requiredSkill }}</template>
+            to start applying for jobs.
           </p>
+
           <div class="flex items-center">
             <progress
               class="progress progress-primary w-full"
@@ -111,7 +140,14 @@
           class="bg-white px-6 md:px-10 h-full rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
         >
           <div class="mt-3">
-            <h1 class="text-2xl font-bold text-black mb-2">Personal Info</h1>
+            <h1 class="text-2xl font-bold text-black mb-2">
+              Personal Info
+              <span
+                v-if="requiredPersonalInfo == 'Personal Info'"
+                class="text-red-500"
+                >*</span
+              >
+            </h1>
             <hr class="border-gray-300 mb-4" />
           </div>
 
@@ -134,9 +170,9 @@
               <p class="text-gray-500">
                 {{
                   dataProfile.gender === 0
-                    ? "Laki-Laki"
+                    ? "Male"
                     : dataProfile.gender === 1
-                    ? "Perempuan"
+                    ? "Female"
                     : "-"
                 }}
               </p>
@@ -161,6 +197,7 @@
               v-if="showModalProfile"
               :showModal="showModalProfile"
               @close="showModalProfile = false"
+              @click.self="showModalProfile = false" 
             />
           </div>
         </div>
@@ -230,6 +267,11 @@ export default {
     const progress = ref(20);
     const dataEducation = ref([]);
     const dataSkill = ref([]);
+    const requiredImage = ref("Profile Image");
+    const requiredPersonalInfo = ref("Personal Info");
+    const requiredExperience = ref("Experience");
+    const requiredEducation = ref("Education");
+    const requiredSkill = ref("Skill");
 
     // Fetch user profile data
     const fetchProfileUser = async () => {
@@ -288,18 +330,23 @@ export default {
       await fetchSkill();
       if (dataProfile.value.phoneNumber != null) {
         progress.value += 20;
+        requiredPersonalInfo.value = "";
       }
       if (dataProfile.value.profileImage != null) {
         progress.value += 10;
+        requiredImage.value = "";
       }
       if (dataExperience.value.length > 0) {
         progress.value += 20;
+        requiredExperience.value = "";
       }
       if (dataEducation.value.length > 0) {
         progress.value += 20;
+        requiredEducation.value = "";
       }
       if (dataSkill.value.length > 0) {
         progress.value += 10;
+        requiredSkill.value = "";
       }
       if (progress.value === 100) {
         isComplete.value = true;
@@ -323,6 +370,7 @@ export default {
       await getUserId();
 
       await fetchProfileUser();
+      console.log("youwas",dataProfile)
     });
 
     return {
@@ -345,6 +393,11 @@ export default {
       dataExperience,
       dataEducation,
       dataSkill,
+      requiredImage,
+      requiredPersonalInfo,
+      requiredExperience,
+      requiredEducation,
+      requiredSkill,
     };
   },
   components: {

@@ -119,6 +119,13 @@
                                     >
                                     <i class="fas fa-solid fa-info"></i>
                                     </button>
+                                    <button class="btn btn-circle" @click="showModal('modal-' + index)">
+        <i class="fas fa-solid fa-info"></i>
+                                    </button>
+                                    <ModalComponent
+                                        :modalId="'modal-' + index"
+                                        :userId="application.userId"
+                                    />
                                 </td>
                                 <td>{{ application.jobTitle }}</td>
                                 <td>{{ application.fullName }}</td>
@@ -198,8 +205,12 @@
     import { getAllData, updateStatus } from "../../../Services/Api/AdminService";
     import axios from "axios";
     import Swal from "sweetalert2";
+    import ModalComponent from "../../../components/Admin/ModalCV.vue"
 
     export default {
+        components: {
+    ModalComponent,
+  },
     data() {
         return {
         // Jobs Data
@@ -257,6 +268,10 @@
         },
     },
     methods: {
+        showModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.showModal();
+    },
         async fetchJobDetail() {
         try {
             const response = await getAllData();

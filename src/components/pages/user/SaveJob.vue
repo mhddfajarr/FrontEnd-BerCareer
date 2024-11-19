@@ -83,7 +83,6 @@ export default {
       try {
         const dataUser = await decodeToken();
         id.value = dataUser.uid;
-        console.log("User ID:", id.value);
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -93,7 +92,6 @@ export default {
       try {
         const data = await getSaveJob(id.value);
         dataSaveJobs.value = data.data;
-        console.log("Saved jobs:", dataSaveJobs.value);
         dataSaveJobs.value.forEach((job) => {
           if (job.postDate) {
             job.postDate = moment(job.postDate).format("MMMM DD, YYYY");

@@ -7,7 +7,9 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-[50%]">
       <!-- Modal Header -->
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-xl font-semibold text-gray-700">{{ isEditForm ? "Edit Education" : "Add Education" }}</h3>
+        <h3 class="text-xl font-semibold text-gray-700">
+          {{ isEditForm ? "Edit Education" : "Add Education" }}
+        </h3>
         <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
           ✕
         </button>
@@ -180,7 +182,11 @@
 
 <script>
 import { defineComponent, ref, watch, onMounted } from "vue";
-import { addEducation, getEducationUser, updateEducation } from "../../Services/Api/UserService";
+import {
+  addEducation,
+  getEducationUser,
+  updateEducation,
+} from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import { eventBus } from "../../Services/EvenBus";
 import Swal from "sweetalert2";
@@ -193,7 +199,7 @@ export default defineComponent({
     },
     educationId: {
       type: Number,
-      required: false, 
+      required: false,
       default: null,
     },
   },
@@ -213,7 +219,7 @@ export default defineComponent({
       { value: 2, text: "S3" },
       { value: 3, text: "D3" },
     ];
-    const education = ref ({})
+    const education = ref({});
     const isEditForm = ref(false);
     const errors = ref({
       universityNameError: "",
@@ -254,11 +260,17 @@ export default defineComponent({
         errors.value.universityNameError = "University Name is required";
         isValid = false;
       }
+
       if (!programStudy.value) {
         errors.value.programStudyError = "Program Study is required";
         isValid = false;
       }
-      if (degree.value === null || degree.value === undefined || degree.value === '') {
+
+      if (
+        degree.value === null ||
+        degree.value === undefined ||
+        degree.value === ""
+      ) {
         errors.value.degreeError = "Degree is required";
         isValid = false;
       }
@@ -270,12 +282,25 @@ export default defineComponent({
         errors.value.gpaError = "GPA must be a number between 0 and 4.00";
         isValid = false;
       }
+
+      const today = new Date();
+      const startDateValue = new Date(startDate.value);
       if (!startDate.value) {
         errors.value.startDateError = "Start date is required";
         isValid = false;
+      } else if (startDateValue > today) {
+        errors.value.startDateError = "Start date cannot be in the future";
+        isValid = false;
       }
+
+      // Validasi endDate dan tidak kurang dari startDate
+      const endDateValue = new Date(endDate.value);
       if (!endDate.value) {
         errors.value.endDateError = "End date is required";
+        isValid = false;
+      } else if (endDateValue < startDateValue) {
+        errors.value.endDateError =
+          "End date cannot be earlier than start date";
         isValid = false;
       }
 
@@ -308,12 +333,12 @@ export default defineComponent({
         description: description.value ? description.value : null,
       };
       if (props.educationId) {
-        newDataEducation.educationId = props.educationId; 
+        newDataEducation.educationId = props.educationId;
         try {
           await updateEducation(newDataEducation);
           eventBus.emit("newEducation");
           closeModal();
-          Swal.fire({ 
+          Swal.fire({
             toast: true,
             position: "top-end",
             icon: "success",
@@ -325,31 +350,29 @@ export default defineComponent({
         } catch (error) {
           console.error("Error fetching data:", error);
         }
-      }else{
+      } else {
         try {
-        await addEducation(newDataEducation);
-        eventBus.emit("newEducation");
-        eventBus.emit("checkProgres");
+          await addEducation(newDataEducation);
+          eventBus.emit("newEducation");
+          eventBus.emit("checkProgres");
 
-        closeModal();
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "Success add new education!",
-          showConfirmButton: false,
-          timer: 1500,
-          timerProgressBar: true,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
+          closeModal();
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: "Success add new education!",
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
       }
-      }
-     
     };
 
-
-    const fetchEducationUser = async ()=>{
+    const fetchEducationUser = async () => {
       try {
         const data = await getEducationUser(userId.value);
         education.value = data.data.filter(
@@ -361,7 +384,7 @@ export default defineComponent({
       }
     };
     onMounted(async () => {
-      console.log("ini daari prop" ,props.educationId)
+      console.log("ini daari prop", props.educationId);
       await getUserId();
       await fetchEducationUser();
       if (props.educationId) {
@@ -375,7 +398,7 @@ export default defineComponent({
         console.log("id education:", props.educationId);
         isEditForm.value = true;
       }
-      console.log(education)
+      console.log(education);
       console.log(userId);
     });
 
@@ -397,7 +420,7 @@ export default defineComponent({
       decodeToken,
       addEducation,
       userId,
-      isEditForm
+      isEditForm,
     };
   },
 });

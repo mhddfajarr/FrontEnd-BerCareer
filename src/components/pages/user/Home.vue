@@ -85,7 +85,7 @@
   >
     <!-- Job Card -->
     <router-link
-      v-for="(job, index) in filteredVisibleJobs"
+      v-for="(job, index) in paginatedJobs"
       :key="job.jobId"
       v-model="selectedProvince"
       :to="{ name: 'Jobs', params: { id: job.jobId } }"
@@ -115,7 +115,7 @@
 
       <div class="text-sm text-gray-600 space-y-2">
         <p>
-          <i class="fas fa-user-clock  mr-1"></i>
+          <i class="fas fa-user-clock mr-1"></i>
           <span class="">{{ job.type }}</span>
         </p>
         <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
@@ -124,12 +124,12 @@
       </div>
       <hr class="mt-4 mb-2" />
       <div class="flex justify-between items-center">
-
-  <span  class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full">
-    Posted On {{ job.postDate }}
-  </span>
-</div>
-
+        <span
+          class="ml-auto italic text-gray-600 text-xs px-2 py-1 rounded-full"
+        >
+          Posted On {{ job.postDate }}
+        </span>
+      </div>
 
       <!-- Tombol bookmark di dalam router-link dengan @click.stop -->
       <div class="absolute top-0 right-0 p-3" @click.stop="saveJob(job.jobId)">
@@ -145,29 +145,34 @@
   </div>
 
   <!-- Show More Button -->
-  <div
-    v-if="showMoreButton"
-    class="relative w-full flex items-center justify-center mb-10"
+  <!-- Pagination Controls -->
+  <div class="relative w-full flex items-center justify-center space-x-4 mb-10">
+  <!-- Previous Button -->
+  <button
+    @click="prevPage(); scrollToSection()"
+    :disabled="currentPage === 1"
+    class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
   >
-    <div class="flex-grow border-t-2 ml-10 border-primary"></div>
-    <div class="mx-4">
-      <button
-        @click="loadMore"
-        class="bg-primary hover:bg-primary-dark text-white font-semibold py-2 px-6 rounded-full shadow-lg border-2 transition duration-300 ease-in-out opacity-85 hover:opacity-100 flex items-center group"
-      >
-        See More
-        <i
-          class="fas fa-caret-left ml-2 transition-transform duration-300 group-hover:-rotate-90"
-        ></i>
-      </button>
-    </div>
-    <div class="flex-grow border-t-2 mr-10 border-primary"></div>
+    Previous
+  </button>
+
+  <span class="text-gray-700 font-medium">
+    Page {{ currentPage }} of {{ totalPages }}
+  </span>
+
+  <button
+    @click="nextPage(); scrollToSection()"
+    :disabled="currentPage === totalPages"
+    class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
+  >
+    Next
+  </button>
+
   </div>
 </template>
 
 <script>
 import { ref, reactive, computed, onMounted } from "vue";
-import Swal from "sweetalert2";
 import {
   getAllData,
   getSaveJob,
@@ -180,7 +185,7 @@ import moment from "moment";
 
 export default {
   components: {
-    vSelect, // Daftarkan v-select sebagai komponen
+    vSelect, 
   },
   name: "Home",
   setup() {
@@ -190,7 +195,7 @@ export default {
     const jobs = ref([]);
     const selectedProvince = ref(null);
     const visibleJobs = ref([]);
-    const itemsToShow = ref(6);
+    const itemsToShow = ref(9);
     const savedJobs = ref([]);
     const appliedJobs = ref([]);
     const provinces = [
@@ -200,9 +205,31 @@ export default {
       { id: "4", name: "Tanggerang" },
       { id: "5", name: "Bekasi" },
     ];
+   
+    const currentPage = ref(1);
+    const itemsPerPage = ref(9);
 
-    // console.log(auth0);
-    // Computed properties
+    const totalPages = computed(() => {
+      return Math.ceil(filteredJobs.value.length / itemsPerPage.value);
+    });
+
+    const paginatedJobs = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage.value;
+      return filteredJobs.value.slice(start, start + itemsPerPage.value);
+    });
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
+    };
+  
     const isSavedJob = computed(() => {
       return (jobId) => {
         return savedJobs.value.some((savedJob) => savedJob.jobId === jobId);
@@ -293,13 +320,13 @@ export default {
     });
 
     // Methods
-    const loadMore = () => {
-      const nextItems = filteredJobs.value.slice(
-        visibleJobs.value.length,
-        visibleJobs.value.length + itemsToShow.value
-      );
-      visibleJobs.value = [...visibleJobs.value, ...nextItems]; // Add new jobs to visibleJobs
-    };
+    // const loadMore = () => {
+    //   const nextItems = filteredJobs.value.slice(
+    //     visibleJobs.value.length,
+    //     visibleJobs.value.length + itemsToShow.value
+    //   );
+    //   visibleJobs.value = [...visibleJobs.value, ...nextItems]; // Add new jobs to visibleJobs
+    // };
 
     const saveJob = (jobId) => {
       if (!isSavedJob.value(jobId)) {
@@ -334,11 +361,15 @@ export default {
       filteredJobs,
       filteredVisibleJobs,
       showMoreButton,
-      loadMore,
       saveJob,
       scrollToSection,
       selectedProvince,
       provinces,
+      currentPage,
+      totalPages,
+      paginatedJobs,
+      nextPage,
+      prevPage,
     };
   },
 };

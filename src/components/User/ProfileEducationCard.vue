@@ -3,10 +3,17 @@
     <div class="flex items-center mb-2 cursor-pointer" @click="toggleShow">
       <span class="mr-2">
         <i
-          :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
+          :class="
+            showItems
+              ? 'fas fa-chevron-down text-gray-700'
+              : 'fas fa-chevron-right text-gray-700'
+          "
         ></i>
       </span>
-      <h1 class="text-xl font-bold text-black">Education</h1>
+      <h1 class="text-xl font-bold text-black">
+        Education
+        <span v-if="dataEducations.length < 1" class="text-red-500">*</span>
+      </h1>
     </div>
     <div class="mt-4 bg-gray-700 h-px mb-4"></div>
 
@@ -29,14 +36,15 @@
             <div class="flex justify-between items-center">
               <div>
                 <h2 class="text-lg font-semibold text-gray-700">
-                  {{ education.universityName}} 
+                  {{ education.universityName }}
                 </h2>
                 <p class="text-gray-700 text-md">
-                <span v-if="education.degree === 0">S1</span>
-                <span v-else-if="education.degree === 1">S2</span>
-                <span v-else-if="education.degree === 2">S3</span>
-                <span v-else-if="education.degree === 3">D3</span>
-                <span v-else>{{ education.degree }}</span> - {{ education.programStudy }}
+                  <span v-if="education.degree === 0">S1</span>
+                  <span v-else-if="education.degree === 1">S2</span>
+                  <span v-else-if="education.degree === 2">S3</span>
+                  <span v-else-if="education.degree === 3">D3</span>
+                  <span v-else>{{ education.degree }}</span> -
+                  {{ education.programStudy }}
                 </p>
                 <p class="text-gray-700 text-md">{{ education.school }}</p>
                 <p class="text-gray-500 italic">
@@ -103,13 +111,17 @@
       :showModal="showModalEducation"
       :educationId="modalId"
       @close="showModalEducation = false"
+      @click.self="showModalEducation = false" 
     />
   </div>
 </template>
 <script>
 import { ref, onMounted } from "vue";
 import ModalAddEducation from "./ModalAddEducation.vue";
-import { getEducationUser, deleteEducation } from "../../Services/Api/UserService";
+import {
+  getEducationUser,
+  deleteEducation,
+} from "../../Services/Api/UserService";
 import { decodeToken } from "../../Services/JWT/JwtDecode";
 import moment from "moment";
 import { eventBus } from "../../Services/EvenBus";
@@ -132,43 +144,42 @@ export default {
 
     // Method to open modal for editing education
     const openModalEdit = (educationId) => {
-        modalId.value = educationId;
-        showModalEducation.value = true;
+      modalId.value = educationId;
+      showModalEducation.value = true;
     };
     const openModalAdd = () => {
-      showItems.value = true
+      showItems.value = true;
       modalId.value = null;
       showModalEducation.value = true;
     };
 
     // Method to delete education entry
-   
 
     // Method to format period (startDate to endDate)
     const formatPeriod = (startDate, endDate) => {
-        const start = moment(startDate);
+      const start = moment(startDate);
 
-        // If endDate is null or "Sekarang", use the current date
-        const end =
-            endDate === null || endDate === "Sekarang" ? moment() : moment(endDate);
+      // If endDate is null or "Sekarang", use the current date
+      const end =
+        endDate === null || endDate === "Sekarang" ? moment() : moment(endDate);
 
-        const duration = moment.duration(end.diff(start));
-        const months = duration.months() + duration.years() * 12; // Calculate total months
+      const duration = moment.duration(end.diff(start));
+      const months = duration.months() + duration.years() * 12; // Calculate total months
 
-        // Format start and end dates as "Month YYYY"
-        const startFormatted = start.format("MMMM YYYY");
-        const endFormatted = end.isSame(moment(), "day")
-            ? "Now"
-            : end.format("MMMM YYYY");
+      // Format start and end dates as "Month YYYY"
+      const startFormatted = start.format("MMMM YYYY");
+      const endFormatted = end.isSame(moment(), "day")
+        ? "Now"
+        : end.format("MMMM YYYY");
 
-        // If endDate is null, show "Now" instead of calculating months
-        if (endDate === null) {
-            return `${startFormatted} - Now (${months} months)`;
-        }
+      // If endDate is null, show "Now" instead of calculating months
+      if (endDate === null) {
+        return `${startFormatted} - Now (${months} months)`;
+      }
 
-        // Return formatted string like "May 2024 - Now (6 months)"
-        return `${startFormatted} - ${endFormatted} (${months} months)`;
-        };
+      // Return formatted string like "May 2024 - Now (6 months)"
+      return `${startFormatted} - ${endFormatted} (${months} months)`;
+    };
 
     const getUserId = async () => {
       try {
@@ -180,22 +191,24 @@ export default {
       }
     };
     const fetchEducationsUser = async () => {
-        await getUserId()
+      await getUserId();
       try {
         const data = await getEducationUser(userId.value);
-        dataEducations.value = data.data;
+        dataEducations.value = data.data.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    const deleteEducationUser = async(educationId) => {
+    const deleteEducationUser = async (educationId) => {
       try {
         const data = {
           userId: userId.value,
           id: educationId,
         };
-        console.log(data)
+        console.log(data);
         const result = await Swal.fire({
           title: "Are you sure?",
           text: "You won't be able to revert this action!",
@@ -203,13 +216,13 @@ export default {
           showCancelButton: true,
           confirmButtonText: "Yes, delete it!",
           cancelButtonText: "No, cancel!",
-          reverseButtons: true, 
+          reverseButtons: true,
         });
 
         if (result.isConfirmed) {
-          await deleteEducation(data); 
-          await fetchEducationsUser(); 
-          eventBus.emit("checkProgres"); 
+          await deleteEducation(data);
+          await fetchEducationsUser();
+          eventBus.emit("checkProgres");
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -241,7 +254,7 @@ export default {
       deleteEducationUser,
       formatPeriod,
       userId,
-      openModalAdd
+      openModalAdd,
     };
   },
 };

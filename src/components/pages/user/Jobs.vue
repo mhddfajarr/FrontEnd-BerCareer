@@ -62,7 +62,7 @@
                   : 'far fa-bookmark text-gray-400 mr-2'
               "
             ></i>
-            {{ isSaved ? "Remove from favorite" : "Save Job" }}
+            {{ isSaved ? "Remove save job" : "Save Job" }}
           </button>
 
           <!-- Tombol Share -->
@@ -135,6 +135,7 @@ import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import moment from "moment";
 import ModalShareLink from "../../User/modalShareLink.vue";
 
+
 export default {
   components: {
     Breadcrumbs,
@@ -158,6 +159,8 @@ export default {
     const dataExperience = ref([]);
     const dataEducation = ref([]);
     const dataSkill = ref([]);
+    const router = useRouter();
+
 
     const fetchAllAplication = async () => {
       try {
@@ -191,7 +194,20 @@ export default {
     dataEducation.value.length < 1 ||  
     dataSkill.value.length < 1      
   ) {
-    Swal.fire("Please complete your profile first.", "", "info");
+    Swal.fire({
+  title: "Please complete your profile first.",
+  icon: "info",
+  showCancelButton: true,
+  cancelButtonText: "Close",
+  confirmButtonText: "Go to Profile",
+  confirmButtonColor: "#0a4d80", 
+  cancelButtonColor: "#d33", 
+}).then((result) => {
+  if (result.isConfirmed) {
+    router.push("/profile");
+  }
+});
+
     return;
   }  else {
     try {
@@ -237,7 +253,7 @@ export default {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Success add job to favorite!",
+          title: "Success save job!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
@@ -291,7 +307,7 @@ export default {
           toast: true,
           position: "top-end",
           icon: "success",
-          title: "Deleted save job!",
+          title: "Removed save job!",
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
@@ -321,7 +337,6 @@ export default {
         const userId = id.value;
         const data = await getProfileUser(userId);
         dataProfile.value = data.data;
-        console.log("ya ini berhaisl ygy", dataProfile);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

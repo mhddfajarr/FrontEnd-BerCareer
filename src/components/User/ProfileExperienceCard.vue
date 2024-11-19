@@ -3,10 +3,17 @@
     <div class="flex items-center mb-2 cursor-pointer" @click="toggleShow">
       <span class="mr-2">
         <i
-          :class="showItems ? 'fas fa-chevron-down text-gray-700' : 'fas fa-chevron-right text-gray-700'"
+          :class="
+            showItems
+              ? 'fas fa-chevron-down text-gray-700'
+              : 'fas fa-chevron-right text-gray-700'
+          "
         ></i>
       </span>
-      <h1 class="text-xl font-bold text-black">Experience</h1>
+      <h1 class="text-xl font-bold text-black">
+        Experience
+        <span v-if="dataExperience.length < 1"  class="text-red-500">*</span>
+      </h1>
     </div>
     <div class="mt-5 bg-gray-700 h-px mb-4"></div>
 
@@ -97,6 +104,7 @@
       :showModal="showModalExperience"
       :experienceId="modalId"
       @close="showModalExperience = false"
+      @click.self="showModalExperience =false" 
     />
   </div>
 </template>
@@ -143,20 +151,21 @@ export default {
     };
 
     const openModalAdd = () => {
-      showItems.value =true;  
+      showItems.value = true;
       modalId.value = null;
       showModalExperience.value = true;
     };
 
     // Fetch pengalaman kerja dari API
     const fetchExperienceUser = async () => {
-      try {
-        const data = await getExperienceUser(userId.value);
-        dataExperience.value = data.data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  try {
+    const data = await getExperienceUser(userId.value);
+    dataExperience.value = data.data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 
     // Format tanggal periode
     const formatPeriod = (startDate, endDate) => {
@@ -211,7 +220,7 @@ export default {
         if (result.isConfirmed) {
           await deleteExperience(data);
           await fetchExperienceUser();
-          eventBus.emit("checkProgres"); 
+          eventBus.emit("checkProgres");
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -221,7 +230,6 @@ export default {
             timer: 1500,
             timerProgressBar: true,
           });
-
         }
       } catch (error) {
         console.error("Gagal menghapus pekerjaan:", error);
@@ -230,7 +238,8 @@ export default {
 
     onMounted(async () => {
       await getUserId();
-      fetchExperienceUser();
+      await fetchExperienceUser();
+      console.log("ini data", dataExperience)
     });
 
     return {
