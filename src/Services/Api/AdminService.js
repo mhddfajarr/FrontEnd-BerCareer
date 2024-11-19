@@ -37,6 +37,7 @@ export const addJob = async (jobData) => {
     requirement: jobData.Requirement,
     salary: jobData.Salary,
     location: jobData.Location,
+    postDate: jobData.postDate,
     userId: jobData.uid,
   };
   console.log(newJob);
@@ -123,37 +124,37 @@ export const deleteJob = async (userId, jobId) => {
   }
 };
 
-    /**
-     * Memperbarui data pekerjaan berdasarkan jobId.
-     * @param {string} jobId - ID pekerjaan yang akan diperbarui.
-     * @param {object} updatedJob - Data pekerjaan yang diperbarui.
-     * @param {string} token - Token autentikasi pengguna.
-     * @returns {object} Data pekerjaan yang diperbarui dari respons API.
-     * @throws Error jika terjadi masalah dalam proses permintaan.
-     */
-    export const updateJob = async (jobId, updatedJob, token) => {
-    if (!token) {
-        throw new Error("Authentication token is missing.");
-    }
+/**
+ * Memperbarui data pekerjaan berdasarkan jobId.
+ * @param {string} jobId - ID pekerjaan yang akan diperbarui.
+ * @param {object} updatedJob - Data pekerjaan yang diperbarui.
+ * @param {string} token - Token autentikasi pengguna.
+ * @returns {object} Data pekerjaan yang diperbarui dari respons API.
+ * @throws Error jika terjadi masalah dalam proses permintaan.
+ */
+export const updateJob = async (jobId, updatedJob, token) => {
+  if (!token) {
+    throw new Error("Authentication token is missing.");
+  }
 
-    try {
-        const response = await axios.put(`${API_URL}/`, updatedJob, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-        });
+  try {
+    const response = await axios.put(`${API_URL}/`, updatedJob, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
 
-        if (response.data) {
-        return response.data; // Kembalikan data pekerjaan yang diperbarui
-        } else {
-        throw new Error("Unexpected response structure");
-        }
-    } catch (exception) {
-        console.error("Error updating job:", error.response?.data || error.message);
-        throw error; // Lempar kesalahan untuk ditangani di Vue.js
+    if (response.data) {
+      return response.data; // Kembalikan data pekerjaan yang diperbarui
+    } else {
+      throw new Error("Unexpected response structure");
     }
-    };
+  } catch (exception) {
+    console.error("Error updating job:", error.response?.data || error.message);
+    throw error; // Lempar kesalahan untuk ditangani di Vue.js
+  }
+};
 
 export const getRoles = async () => {
   const token = localStorage.getItem("authToken");
