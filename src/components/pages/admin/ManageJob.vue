@@ -32,7 +32,7 @@
                         >
                             <!-- Modal Container -->
                             <div
-                            class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3"
+                            class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3 max-h-[90vh] overflow-hidden"
                             >
                             <!-- Modal Header -->
                             <div
@@ -46,8 +46,9 @@
                                 ✕
                                 </button>
                             </div>
-                            <!-- Modal Body -->
-                            <div class="modal-body">
+
+                            <!-- Modal Body with scrollable content -->
+                            <div class="modal-body overflow-y-auto max-h-[60vh]">
                                 <form @submit.prevent="addJobHandler">
                                 <div class="card-body">
                                     <h4 class="text-lg font-bold mb-2">Title</h4>
@@ -57,6 +58,7 @@
                                     placeholder="Title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
@@ -72,6 +74,7 @@
                                         class="hidden"
                                     ></div>
                                     </div>
+
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
@@ -81,27 +84,65 @@
                                     placeholder="Requirement"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
                                     <h4 class="text-lg font-bold mb-2">Job Type</h4>
-                                    <input
+                                    <select
                                     v-model="newJobType"
-                                    type="text"
-                                    placeholder="Type"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Type
+                                    </option>
+                                    <option value="Fulltime">Fulltime</option>
+                                    <option value="Contract">Contract</option>
+                                    </select>
+
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
-                                    <input
+                                    <select
                                     v-model="newJobSalary"
-                                    type="text"
-                                    placeholder="Salary"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Salary
+                                    </option>
+                                    <option value="3,000,000 - 5,000,000">
+                                        Rp 3,000,000 - Rp 5,000,000
+                                    </option>
+                                    <option value="5,000,000 - 8,000,000">
+                                        Rp 5,000,000 - Rp 8,000,000
+                                    </option>
+                                    <option value="8,000,000 - 12,000,000">
+                                        Rp 8,000,000 - Rp 12,000,000
+                                    </option>
+                                    <option value="12,000,000 - 15,000,000">
+                                        Rp 12,000,000 - Rp 15,000,000
+                                    </option>
+                                    <option value="15,000,000 - 20,000,000">
+                                        Rp 15,000,000 - Rp 20,000,000
+                                    </option>
+                                    <option value="20,000,000 - 30,000,000">
+                                        Rp 20,000,000 - Rp 30,000,000
+                                    </option>
+                                    <option value="30,000,000+">
+                                        Above Rp 30,000,000
+                                    </option>
+                                    </select>
+
                                     <h4 class="text-lg font-bold mb-2">Location</h4>
-                                    <input
+                                    <select
                                     v-model="newJobLocation"
-                                    type="text"
-                                    placeholder="Location"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Location
+                                    </option>
+                                    <option value="Jakarta">Jakarta</option>
+                                    <option value="Bogor">Bogor</option>
+                                    <option value="Depok">Depok</option>
+                                    <option value="Tanggerang">Tanggerang</option>
+                                    <option value="Bekasi">Bekasi</option>
+                                    </select>
+
                                     <input
                                     v-model="newJobUserId"
                                     type="text"
@@ -111,6 +152,7 @@
                                 </div>
                                 </form>
                             </div>
+
                             <!-- Modal Footer -->
                             <div class="mt-6 flex justify-end space-x-4">
                                 <button
@@ -135,7 +177,7 @@
                         >
                             <!-- Modal Container -->
                             <div
-                            class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3"
+                            class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3 max-h-[90vh] overflow-hidden"
                             >
                             <!-- Modal Header -->
                             <div
@@ -149,11 +191,12 @@
                                 ✕
                                 </button>
                             </div>
-                            <!-- Modal Body -->
-                            <div class="modal-body">
+
+                            <!-- Modal Body with scrollable content -->
+                            <div class="modal-body overflow-y-auto max-h-[60vh]">
                                 <form @submit.prevent="handleUpdateJob">
                                 <div class="card-body">
-                                    <!-- Job ID -->
+                                    <!-- Job ID (hidden) -->
                                     <input
                                     v-bind:value="jobId"
                                     disabled
@@ -166,21 +209,23 @@
                                     placeholder="Enter job title"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
                                     <h4 class="text-lg font-bold mb-2">
                                     Description
                                     </h4>
-                                    <input
-                                    v-model="editJobDescription"
-                                    type="text"
-                                    placeholder="Enter job title"
-                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
-                                    <!-- <QuillEditor
-                                        v-model="editJobDescription"
-                                        placeholder="Edit Description"
-                                        theme="snow"
+                                    <div>
+                                    <QuillEditor
+                                        v-model:content="editJobDescription"
+                                        type="text"
+                                        placeholder="Description"
                                         class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                        ></QuillEditor> -->
+                                    ></QuillEditor>
+                                    <div
+                                        v-html="editJobDescription"
+                                        class="hidden"
+                                    ></div>
+                                    </div>
+
                                     <h4 class="text-lg font-bold mb-2">
                                     Requirement
                                     </h4>
@@ -190,27 +235,64 @@
                                     placeholder="Enter job requirement"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                     />
+
                                     <h4 class="text-lg font-bold mb-2">Job Type</h4>
-                                    <input
+                                    <select
                                     v-model="editJobType"
-                                    type="text"
-                                    placeholder="Enter job type (e.g., Full-time)"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Type
+                                    </option>
+                                    <option value="Fulltime">Fulltime</option>
+                                    <option value="Contract">Contract</option>
+                                    </select>
+
                                     <h4 class="text-lg font-bold mb-2">Salary</h4>
-                                    <input
+                                    <select
                                     v-model="editJobSalary"
-                                    type="text"
-                                    placeholder="Enter salary"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Salary
+                                    </option>
+                                    <option value="3,000,000 - 5,000,000">
+                                        Rp 3,000,000 - Rp 5,000,000
+                                    </option>
+                                    <option value="5,000,000 - 8,000,000">
+                                        Rp 5,000,000 - Rp 8,000,000
+                                    </option>
+                                    <option value="8,000,000 - 12,000,000">
+                                        Rp 8,000,000 - Rp 12,000,000
+                                    </option>
+                                    <option value="12,000,000 - 15,000,000">
+                                        Rp 12,000,000 - Rp 15,000,000
+                                    </option>
+                                    <option value="15,000,000 - 20,000,000">
+                                        Rp 15,000,000 - Rp 20,000,000
+                                    </option>
+                                    <option value="20,000,000 - 30,000,000">
+                                        Rp 20,000,000 - Rp 30,000,000
+                                    </option>
+                                    <option value="30,000,000+">
+                                        Above Rp 30,000,000
+                                    </option>
+                                    </select>
+
                                     <h4 class="text-lg font-bold mb-2">Location</h4>
-                                    <input
+                                    <select
                                     v-model="editJobLocation"
-                                    type="text"
-                                    placeholder="Enter location"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    />
+                                    >
+                                    <option disabled value="">
+                                        Select Job Location
+                                    </option>
+                                    <option value="Jakarta">Jakarta</option>
+                                    <option value="Bogor">Bogor</option>
+                                    <option value="Depok">Depok</option>
+                                    <option value="Tanggerang">Tanggerang</option>
+                                    <option value="Bekasi">Bekasi</option>
+                                    </select>
                                 </div>
                                 <!-- Modal Footer with buttons -->
                                 <div class="mt-6 flex justify-end space-x-4">
@@ -254,7 +336,7 @@
                             <select
                             v-model="perPage"
                             @change="updatePagination"
-                            class="select select-bordered"
+                            class="select select-bordered bg-white"
                             >
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -278,7 +360,7 @@
                         <table class="table bg-white text-black w-full">
                             <thead class="text-black text-center">
                             <tr>
-                                <th></th>
+                                <th>No</th>
                                 <th @click="sortTable('title')">Title</th>
                                 <th @click="sortTable('description')">
                                 Description
@@ -298,7 +380,9 @@
                                 v-for="(job, index) in paginatedJobs"
                                 :key="job.jobId"
                             >
-                                <td><input type="checkbox" class="checkbox" /></td>
+                                <td>
+                                {{ index + 1 }}
+                                </td>
                                 <td>{{ job.title }}</td>
                                 <td v-html="job.description"></td>
                                 <td>{{ job.salary }}</td>
@@ -307,19 +391,23 @@
                                 <td>{{ job.location }}</td>
                                 <td>{{ job.applicantsCount || 0 }}</td>
                                 <td class="text-center">
-                                <button
+                                <div class="flex justify-center items-center">
+                                    <button
                                     type="button"
                                     class="btn bg-yellow-500 text-white border-none"
                                     @click="openEditModal(job.jobId)"
-                                >
+                                    >
                                     <i class="fas fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button
-                                    @click="deleteJobHandler(job.userId, job.jobId)"
-                                    class="btn bg-red-500 ml-2 text-white"
-                                >
+                                    </button>
+                                    <button
+                                    @click="
+                                        deleteJobHandler(job.userId, job.jobId)
+                                    "
+                                    class="btn bg-red-500 ml-2 text-white border-none"
+                                    >
                                     <i class="fas fa-solid fa-trash"></i>
-                                </button>
+                                    </button>
+                                </div>
                                 </td>
                             </tr>
                             </tbody>
@@ -499,13 +587,44 @@
             Location: newJobLocation.value,
             uid: id.value,
         };
+
         console.log("Job data to be added:", newJob);
 
         try {
+            // Tambahkan pekerjaan baru
             await addJob(newJob);
             console.log("Job successfully added!");
+
+            // Tampilkan notifikasi (opsional)
+            Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: "Job added successfully.",
+            showConfirmButton: false,
+            timer: 1500,
+            });
+
+            // Tutup modal
+            showModal.value = false;
+
+            // Segarkan data pekerjaan tanpa reload halaman
+            await fetchJobDetail();
+
+            // Reset form input
+            newJobTitle.value = "";
+            newJobDescription.value = "";
+            newJobRequirement.value = "";
+            newJobSalary.value = "";
+            newJobType.value = "";
+            newJobLocation.value = "";
         } catch (exception) {
             console.error("Error adding job:", exception);
+
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Failed to add job. Please try again.",
+            });
         }
         };
 
@@ -550,10 +669,11 @@
         }
 
         // Data pekerjaan yang diperbarui
+        const editdescriptionHTML = getInsertValues(editJobDescription.value);
         const updatedJob = {
             jobId: jobId.value,
             title: editJobTitle.value,
-            description: editJobDescription.value,
+            description: editdescriptionHTML,
             requirement: editJobRequirement.value,
             type: editJobType.value,
             salary: editJobSalary.value,
@@ -586,13 +706,8 @@
             updated: updatedJob,
             token: token,
             });
-            const updatedData = await updateJob(jobId.value, updatedJob, token);
 
-            // Perbarui data di state jobs
-            const index = jobs.value.findIndex((job) => job.jobId === jobId.value);
-            if (index !== -1) {
-            jobs.value.splice(index, 1, updatedData);
-            }
+            await updateJob(jobId.value, updatedJob, token);
 
             Swal.fire({
             icon: "success",
@@ -602,7 +717,20 @@
             timer: 1500,
             });
 
+            // Tutup modal
             editModal.value = false;
+
+            // Segarkan data pekerjaan
+            await fetchJobDetail();
+
+            // Reset form input
+            jobId.value = null;
+            editJobTitle.value = "";
+            editJobDescription.value = "";
+            editJobRequirement.value = "";
+            editJobType.value = "";
+            editJobSalary.value = "";
+            editJobLocation.value = "";
         } catch (error) {
             Swal.fire({
             icon: "error",
