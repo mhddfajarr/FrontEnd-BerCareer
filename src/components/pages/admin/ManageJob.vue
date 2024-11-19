@@ -355,9 +355,9 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto rounded-lg">
                         <table class="table bg-white text-black w-full">
-                            <thead class="text-black text-center">
+                            <thead class="text-white text-md text-center bg-primary">
                             <tr>
                                 <th>No</th>
                                 <th @click="sortTable('title')">Title</th>
@@ -393,7 +393,7 @@
                                 <div class="flex justify-center items-center">
                                     <button
                                     type="button"
-                                    class="btn bg-yellow-500 text-white border-none"
+                                    class="px-4 py-3 rounded-md hover:bg-yellow-400 bg-yellow-500 text-white border-none"
                                     @click="openEditModal(job.jobId)"
                                     >
                                     <i class="fas fa-solid fa-pen-to-square"></i>
@@ -402,7 +402,7 @@
                                     @click="
                                         deleteJobHandler(job.userId, job.jobId)
                                     "
-                                    class="btn bg-red-500 ml-2 text-white border-none"
+                                    class="px-4 py-3 rounded-md hover:bg-red-400 bg-red-500 ml-2 text-white border-none"
                                     >
                                     <i class="fas fa-solid fa-trash"></i>
                                     </button>
@@ -419,7 +419,7 @@
                     >
                         <!-- Pagination controls -->
                         <button
-                        class="btn bg-primary text-white"
+                        class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                         :disabled="currentPage <= 1"
                         @click="changePage(currentPage - 1)"
                         >
@@ -429,7 +429,7 @@
                         >Page {{ currentPage }} of {{ totalPages }}</span
                         >
                         <button
-                        class="btn bg-primary text-white"
+                        class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                         :disabled="currentPage >= totalPages"
                         @click="changePage(currentPage + 1)"
                         >
