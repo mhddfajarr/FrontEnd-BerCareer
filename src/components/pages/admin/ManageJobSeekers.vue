@@ -354,7 +354,7 @@ export default {
         Swal.fire({
           icon: "error",
           title: "Invalid Status",
-          text: "Status must be 0 (Pending), 1 (Approved), or 2 (Rejected).",
+          text: "Status must be 1 (Approved), or 2 (Rejected).",
         });
         return;
       }
