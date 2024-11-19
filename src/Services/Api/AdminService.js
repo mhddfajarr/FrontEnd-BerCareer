@@ -157,7 +157,6 @@
     };
 
     export const updateStatus = async (data, token) => {
-        debugger;
         if (!token) {
             throw new Error("Authentication token is missing.");
         }
