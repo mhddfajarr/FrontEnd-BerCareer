@@ -150,12 +150,15 @@ export const updateJob = async (jobId, updatedJob, token) => {
   }
 };
 
-// Memperbarui status aplikasi
 export const updateStatus = async (data, token) => {
   if (!token) {
     throw new Error("Authentication token is missing.");
   }
   console.log(data);
+
+  // if (!data || !data.applicationId || data.newStatus === undefined) {
+  //     throw new Error("Invalid data: 'applicationId' and 'status' are required.");
+  // }
 
   try {
     const response = await axios.patch(
@@ -173,14 +176,38 @@ export const updateStatus = async (data, token) => {
     );
 
     return response.data; // Kembalikan data yang diperbarui
-  } catch (error) {
+  } catch (exception) {
     console.error(
       "Error updating status:",
-      error.response?.data || error.message
+      exception.response?.data || exception.message
     );
-    throw error;
+    throw exception;
   }
 };
+
+try {
+  const response = await axios.patch(
+    `${API_URL_APPLICATION}`,
+    {
+      applicationId: data.applicationId,
+      status: Number(data.status), // Konversi status ke angka
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return response.data; // Kembalikan data yang diperbarui
+} catch (error) {
+  console.error(
+    "Error updating status:",
+    error.response?.data || error.message
+  );
+  throw error;
+}
 
 // Mendapatkan semua role
 export const getRoles = async () => {
