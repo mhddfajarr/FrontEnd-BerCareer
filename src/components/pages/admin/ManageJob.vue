@@ -32,7 +32,7 @@
                       >
                         <!-- Modal Container -->
                         <div
-                          class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3"
+                          class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3 max-h-[90vh] overflow-hidden"
                         >
                           <!-- Modal Header -->
                           <div
@@ -46,17 +46,19 @@
                               ✕
                             </button>
                           </div>
-                          <!-- Modal Body -->
-                          <div class="modal-body">
+
+                          <!-- Modal Body with scrollable content -->
+                          <div class="modal-body overflow-y-auto max-h-[60vh]">
                             <form @submit.prevent="addJobHandler">
                               <div class="card-body">
                                 <h4 class="text-lg font-bold mb-2">Title</h4>
                                 <input
-                                  v-model="newJobTitle"
+                                  v-model="newJob.title"
                                   type="text"
                                   placeholder="Title"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
+
                                 <h4 class="text-lg font-bold mb-2">
                                   Description
                                 </h4>
@@ -67,31 +69,17 @@
                                     placeholder="Description"
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   ></QuillEditor>
-                                  <div
-                                    v-html="newJobDescription"
-                                    class="hidden"
-                                  ></div>
                                 </div>
+
                                 <h4 class="text-lg font-bold mb-2">
                                   Requirement
                                 </h4>
                                 <input
-                                  v-model="newJobRequirement"
+                                  v-model="newJob.requirement"
                                   type="text"
                                   placeholder="Requirement"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
-                                <h4 class="text-lg font-bold mb-2">Job Type</h4>
-                                <select
-                                  v-model="newJobType"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                >
-                                  <option disabled value="">
-                                    Select Job Type
-                                  </option>
-                                  <option value="Fulltime">Fulltime</option>
-                                  <option value="Contract">Contract</option>
-                                </select>
                                 <h4
                                   for="newDueDate"
                                   class="text-lg font-bold mb-2"
@@ -101,13 +89,26 @@
                                 <input
                                   type="date"
                                   id="newDueDate"
-                                  v-model="newDueDate"
+                                  v-model="newJob.dueDate"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   required
                                 />
+
+                                <h4 class="text-lg font-bold mb-2">Job Type</h4>
+                                <select
+                                  v-model="newJob.type"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                >
+                                  <option disabled value="">
+                                    Select Job Type
+                                  </option>
+                                  <option value="Fulltime">Fulltime</option>
+                                  <option value="Contract">Contract</option>
+                                </select>
+
                                 <h4 class="text-lg font-bold mb-2">Salary</h4>
                                 <select
-                                  v-model="newJobSalary"
+                                  v-model="newJob.salary"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 >
                                   <option disabled value="">
@@ -135,9 +136,10 @@
                                     Above Rp 30,000,000
                                   </option>
                                 </select>
+
                                 <h4 class="text-lg font-bold mb-2">Location</h4>
                                 <select
-                                  v-model="newJobLocation"
+                                  v-model="newJob.location"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 >
                                   <option disabled value="">
@@ -149,6 +151,7 @@
                                   <option value="Tanggerang">Tanggerang</option>
                                   <option value="Bekasi">Bekasi</option>
                                 </select>
+
                                 <input
                                   v-model="newJobUserId"
                                   type="text"
@@ -158,6 +161,7 @@
                               </div>
                             </form>
                           </div>
+
                           <!-- Modal Footer -->
                           <div class="mt-6 flex justify-end space-x-4">
                             <button
@@ -182,7 +186,7 @@
                       >
                         <!-- Modal Container -->
                         <div
-                          class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3"
+                          class="bg-white p-6 rounded-lg shadow-lg w-11/12 md:w-1/3 max-h-[90vh] overflow-hidden"
                         >
                           <!-- Modal Header -->
                           <div
@@ -196,11 +200,12 @@
                               ✕
                             </button>
                           </div>
-                          <!-- Modal Body -->
-                          <div class="modal-body">
+
+                          <!-- Modal Body with scrollable content -->
+                          <div class="modal-body overflow-y-auto max-h-[60vh]">
                             <form @submit.prevent="handleUpdateJob">
                               <div class="card-body">
-                                <!-- Job ID -->
+                                <!-- Job ID (hidden) -->
                                 <input
                                   v-bind:value="jobId"
                                   disabled
@@ -213,16 +218,11 @@
                                   placeholder="Enter job title"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
+
                                 <h4 class="text-lg font-bold mb-2">
                                   Description
                                 </h4>
-                                <!-- <input
-                                    v-model="editJobDescription"
-                                    type="text"
-                                    placeholder="Enter job title"
-                                    class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                    /> -->
-                                <div v-if="editJob.description !== undefined">
+                                <div>
                                   <QuillEditor
                                     v-model:content="editJob.description"
                                     content-type="html"
@@ -240,6 +240,20 @@
                                   placeholder="Enter job requirement"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
+                                <h4
+                                  for="editDueDate"
+                                  class="text-lg font-bold mb-2"
+                                >
+                                  Due Date
+                                </h4>
+                                <input
+                                  type="date"
+                                  id="editDueDate"
+                                  v-model="editJob.formatedDueDate"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                  required
+                                />
+
                                 <h4 class="text-lg font-bold mb-2">Job Type</h4>
                                 <select
                                   v-model="editJob.type"
@@ -297,33 +311,6 @@
                                   <option value="Tanggerang">Tanggerang</option>
                                   <option value="Bekasi">Bekasi</option>
                                 </select>
-                                <h4
-                                  for="dueDate"
-                                  class="text-lg font-bold mb-2"
-                                >
-                                  Due Date
-                                </h4>
-                                <input
-                                  type="date"
-                                  id="dueDate"
-                                  v-model="editJob.formatedDueDate"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                  required
-                                />
-                                <h4 class="text-lg font-bold mb-2">Salary</h4>
-                                <input
-                                  v-model="editJob.salary"
-                                  type="text"
-                                  placeholder="Enter salary"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                />
-                                <h4 class="text-lg font-bold mb-2">Location</h4>
-                                <input
-                                  v-model="editJob.location"
-                                  type="text"
-                                  placeholder="Enter location"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                />
                               </div>
                               <!-- Modal Footer with buttons -->
                               <div class="mt-6 flex justify-end space-x-4">
@@ -367,7 +354,7 @@
                         <select
                           v-model="perPage"
                           @change="updatePagination"
-                          class="select select-bordered"
+                          class="select select-bordered bg-white"
                         >
                           <option value="5">5</option>
                           <option value="10">10</option>
@@ -387,11 +374,13 @@
                     </div>
                   </div>
                   <div class="card-body">
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto rounded-lg">
                       <table class="table bg-white text-black w-full">
-                        <thead class="text-black text-center">
+                        <thead
+                          class="text-white text-md text-center bg-primary"
+                        >
                           <tr>
-                            <th></th>
+                            <th>No</th>
                             <th @click="sortTable('title')">Title</th>
                             <th @click="sortTable('description')">
                               Description
@@ -411,7 +400,9 @@
                             v-for="(job, index) in paginatedJobs"
                             :key="job.jobId"
                           >
-                            <td><input type="checkbox" class="checkbox" /></td>
+                            <td>
+                              {{ index + 1 }}
+                            </td>
                             <td>{{ job.title }}</td>
                             <td v-html="job.description"></td>
                             <td>{{ job.salary }}</td>
@@ -420,19 +411,23 @@
                             <td>{{ job.location }}</td>
                             <td>{{ job.applicantsCount || 0 }}</td>
                             <td class="text-center">
-                              <button
-                                type="button"
-                                class="btn bg-yellow-500 text-white border-none"
-                                @click="openEditModal(job.jobId)"
-                              >
-                                <i class="fas fa-solid fa-pen-to-square"></i>
-                              </button>
-                              <button
-                                @click="deleteJobHandler(job.userId, job.jobId)"
-                                class="btn bg-red-500 ml-2 text-white"
-                              >
-                                <i class="fas fa-solid fa-trash"></i>
-                              </button>
+                              <div class="flex justify-center items-center">
+                                <button
+                                  type="button"
+                                  class="px-4 py-3 rounded-md hover:bg-yellow-400 bg-yellow-500 text-white border-none"
+                                  @click="openEditModal(job.jobId)"
+                                >
+                                  <i class="fas fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button
+                                  @click="
+                                    deleteJobHandler(job.userId, job.jobId)
+                                  "
+                                  class="px-4 py-3 rounded-md hover:bg-red-400 bg-red-500 ml-2 text-white border-none"
+                                >
+                                  <i class="fas fa-solid fa-trash"></i>
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         </tbody>
@@ -445,7 +440,7 @@
                   >
                     <!-- Pagination controls -->
                     <button
-                      class="btn bg-primary text-white"
+                      class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       :disabled="currentPage <= 1"
                       @click="changePage(currentPage - 1)"
                     >
@@ -455,7 +450,7 @@
                       >Page {{ currentPage }} of {{ totalPages }}</span
                     >
                     <button
-                      class="btn bg-primary text-white"
+                      class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       :disabled="currentPage >= totalPages"
                       @click="changePage(currentPage + 1)"
                     >
@@ -502,6 +497,7 @@ export default {
     const perPage = ref(10);
     const currentPage = ref(1);
     const totalPages = ref(1);
+    const newJob = ref({});
     const newJobTitle = ref("");
     const newJobDescription = ref("");
     const newJobType = ref("");
@@ -600,23 +596,39 @@ export default {
     };
 
     const addJobHandler = async () => {
-      const descriptionHTML = getInsertValues(newJobDescription.value);
-      const newJob = {
-        Title: newJobTitle.value,
-        Description: descriptionHTML,
-        Requirement: newJobRequirement.value,
-        Salary: newJobSalary.value,
-        Type: newJobType.value,
-        Location: newJobLocation.value,
+      // const descriptionHTML = getInsertValues(newJobDescription.value);
+      // const newJob = {
+      //   Title: newJobTitle.value,
+      //   Description: descriptionHTML,
+      //   Requirement: newJobRequirement.value,
+      //   Salary: newJobSalary.value,
+      //   Type: newJobType.value,
+      //   Location: newJobLocation.value,
+      //   PostDate: new Date(),
+      //   DueDate: newDueDate.value,
+      //   uid: id.value,
+      // };
+      newJob.value.description = getInsertValues(newJobDescription.value);
+      const newInsertedJob = {
+        Title: newJob.value.title,
+        Description: newJob.value.description,
+        Requirement: newJob.value.requirement,
+        Salary: newJob.value.salary,
+        Type: newJob.value.type,
+        Location: newJob.value.location,
         PostDate: new Date(),
-        DueDate: newDueDate.value,
+        DueDate: newJob.value.dueDate,
         uid: id.value,
       };
-      console.log("Job data to be added:", newJob);
+      console.log("Job data to be added:", newInsertedJob);
 
       try {
-        await addJob(newJob);
+        await addJob(newInsertedJob);
+        await fetchJobDetail();
+        showModal.value = false;
         console.log("Job successfully added!");
+        newJob.value = {};
+        newJobDescription.value = "";
       } catch (exception) {
         console.error("Error adding job:", exception);
       }
@@ -701,7 +713,7 @@ export default {
         if (index !== -1) {
           jobs.value.splice(index, 1, updatedData);
         }
-
+        await fetchJobDetail();
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -742,8 +754,10 @@ export default {
           totalPages.value = Math.ceil(
             filteredJobs.value.length / perPage.value
           ); // Recalculate total pages
+          await fetchJobDetail();
           Swal.fire("Deleted!", "Job has been deleted.", "success");
         } catch (error) {
+          await fetchJobDetail();
           Swal.fire("Error", "There was an error deleting the job.", "error");
         }
       }
@@ -787,6 +801,7 @@ export default {
       openEditModal,
       handleUpdateJob,
       editJob,
+      newJob,
       dueDate,
     };
   },
