@@ -184,11 +184,15 @@
           </div>
         </div>
       </div>
+      <div v-if="loading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+      </div>
     </section>
   </div>
 </template>
 
 <script>
+import { ref, computed, onMounted } from "vue";
 import { getAllData, updateStatus } from "../../../Services/Api/AdminService";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -198,77 +202,77 @@ export default {
   components: {
     ModalComponent,
   },
-  data() {
-    return {
-      // Jobs Data
-      dataJobs: [],
-      filteredJobs: [],
-      searchQuery: "",
-      selectedJob: null,
-      jobsPagination: {
-        currentPage: 1,
-        itemsPerPage: 5, // Default items per page for jobs
-      },
-      pageOptions: [5, 10, 15], // Options for items per page
-      // Applications Data
-      dataApplications: [],
-      filteredApplications: [],
-      applicationsPagination: {
-        currentPage: 1,
-        itemsPerPage: 5, // Default items per page for applications
-      },
-      // Sorting options
-      sortKey: "jobTitle", // default sorting by jobTitle
-      sortOrder: "asc", // default ascending order
-    };
-  },
-  computed: {
-    // Jobs Pagination
-    jobsTotalPages() {
+  setup() {
+    // State variables
+    const dataJobs = ref([]);
+    const filteredJobs = ref([]);
+    const searchQuery = ref("");
+    const selectedJob = ref(null);
+    const jobsPagination = ref({
+      currentPage: 1,
+      itemsPerPage: 5, // Default items per page for jobs
+    });
+    const pageOptions = ref([5, 10, 15]); // Options for items per page
+    const dataApplications = ref([]);
+    const filteredApplications = ref([]);
+    const applicationsPagination = ref({
+      currentPage: 1,
+      itemsPerPage: 5, // Default items per page for applications
+    });
+    const sortKey = ref("jobTitle"); // default sorting by jobTitle
+    const sortOrder = ref("asc"); // default ascending order
+    const loading = ref(false); // Loading state
+
+    // Computed properties
+    const jobsTotalPages = computed(() => {
       return Math.ceil(
-        this.filteredJobs.length / this.jobsPagination.itemsPerPage
+        filteredJobs.value.length / jobsPagination.value.itemsPerPage
       );
-    },
-    paginatedJobs() {
+    });
+
+    const paginatedJobs = computed(() => {
       const start =
-        (this.jobsPagination.currentPage - 1) *
-        this.jobsPagination.itemsPerPage;
-      const end = start + this.jobsPagination.itemsPerPage;
+        (jobsPagination.value.currentPage - 1) *
+        jobsPagination.value.itemsPerPage;
+      const end = start + jobsPagination.value.itemsPerPage;
 
       // Apply sorting before slicing
-      const sortedJobs = this.sortJobs(this.filteredJobs);
+      const sortedJobs = sortJobs(filteredJobs.value);
       return sortedJobs.slice(start, end);
-    },
-    // Applications Pagination
-    applicationsTotalPages() {
+    });
+
+    const applicationsTotalPages = computed(() => {
       return Math.ceil(
-        this.filteredApplications.length /
-          this.applicationsPagination.itemsPerPage
+        filteredApplications.value.length /
+          applicationsPagination.value.itemsPerPage
       );
-    },
-    paginatedApplications() {
+    });
+
+    const paginatedApplications = computed(() => {
       const start =
-        (this.applicationsPagination.currentPage - 1) *
-        this.applicationsPagination.itemsPerPage;
-      const end = start + this.applicationsPagination.itemsPerPage;
-      return this.filteredApplications.slice(start, end);
-    },
-  },
-  methods: {
-    showModal(modalId) {
+        (applicationsPagination.value.currentPage - 1) *
+        applicationsPagination.value.itemsPerPage;
+      const end = start + applicationsPagination.value.itemsPerPage;
+      return filteredApplications.value.slice(start, end);
+    });
+
+    // Methods
+    const showModal = (modalId) => {
       const modal = document.getElementById(modalId);
       if (modal) modal.showModal();
-    },
-    async fetchJobDetail() {
+    };
+
+    const fetchJobDetail = async () => {
       try {
         const response = await getAllData();
-        this.dataJobs = response.data || [];
-        this.filteredJobs = [...this.dataJobs];
+        dataJobs.value = response.data || [];
+        filteredJobs.value = [...dataJobs.value];
       } catch (error) {
         console.error("Error fetching jobs:", error);
       }
-    },
-    async fetchApplications() {
+    };
+
+    const fetchApplications = async () => {
       try {
         const token = localStorage.getItem("authToken");
         const response = await axios.get(
@@ -277,66 +281,69 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        this.dataApplications = response.data.data.map((app) => ({
+        dataApplications.value = response.data.data.map((app) => ({
           ...app,
           newStatus: "", // Add a property for new status
         }));
-        this.filteredApplications = [...this.dataApplications];
+        filteredApplications.value = [...dataApplications.value];
       } catch (error) {
         console.error("Error fetching applications:", error);
       }
-    },
-    // Sort jobs based on selected key and order
-    sortJobs(jobs) {
+    };
+
+    const sortJobs = (jobs) => {
       return jobs.sort((a, b) => {
-        const fieldA = a[this.sortKey].toLowerCase();
-        const fieldB = b[this.sortKey].toLowerCase();
-        if (this.sortOrder === "asc") {
+        const fieldA = a[sortKey.value].toLowerCase();
+        const fieldB = b[sortKey.value].toLowerCase();
+        if (sortOrder.value === "asc") {
           return fieldA < fieldB ? -1 : fieldA > fieldB ? 1 : 0;
         } else {
           return fieldA < fieldB ? 1 : fieldA > fieldB ? -1 : 0;
         }
       });
-    },
-    // Handle sort change
-    changeSort(sortKey) {
-      if (this.sortKey === sortKey) {
-        this.sortOrder = this.sortOrder === "asc" ? "desc" : "asc";
+    };
+
+    const changeSort = (newSortKey) => {
+      if (sortKey.value === newSortKey) {
+        sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
       } else {
-        this.sortKey = sortKey;
-        this.sortOrder = "asc"; // Reset to ascending when a new column is selected
+        sortKey.value = newSortKey;
+        sortOrder.value = "asc"; // Reset to ascending when a new column is selected
       }
-    },
-    filterBySearch() {
-      const query = this.searchQuery.toLowerCase();
-      this.filteredJobs = this.dataJobs.filter(
+    };
+
+    const filterBySearch = () => {
+      const query = searchQuery.value.toLowerCase();
+      filteredJobs.value = dataJobs.value.filter(
         (job) =>
           job.title.toLowerCase().includes(query) ||
           job.description.toLowerCase().includes(query) ||
           (job.location && job.location.toLowerCase().includes(query))
       );
-    },
-    filterJobsByTitle(job) {
-      this.selectedJob = job;
-      this.searchQuery = "";
-      this.filteredApplications = this.dataApplications.filter(
+    };
+
+    const filterJobsByTitle = (job) => {
+      selectedJob.value = job;
+      searchQuery.value = "";
+      filteredApplications.value = dataApplications.value.filter(
         (app) => app.jobTitle === job.title
       );
-      this.applicationsPagination.currentPage = 1;
-    },
-    changeJobsPage(page) {
-      this.jobsPagination.currentPage = page;
-    },
-    changeApplicationsPage(page) {
-      this.applicationsPagination.currentPage = page;
-    },
-    // Update number of items per page for applications
-    updateItemsPerPage() {
-      this.applicationsPagination.currentPage = 1; // Reset to the first page when items per page changes
-    },
+      applicationsPagination.value.currentPage = 1;
+    };
 
-    // Function to update application status
-    async updateApplicationStatus(application) {
+    const changeJobsPage = (page) => {
+      jobsPagination.value.currentPage = page;
+    };
+
+    const changeApplicationsPage = (page) => {
+      applicationsPagination.value.currentPage = page;
+    };
+
+    const updateItemsPerPage = () => {
+      applicationsPagination.value.currentPage = 1; // Reset to the first page when items per page changes
+    };
+
+    const updateApplicationStatus = async (application) => {
       const token = localStorage.getItem("authToken");
 
       // Validasi token
@@ -367,10 +374,11 @@ export default {
 
       console.log("Data being sent to API:", updatedStatus); // Debugging
 
+      loading.value = true; // Show loading overlay
       try {
         const updatedApplication = await updateStatus(updatedStatus, token);
 
-        const index = this.dataApplications.findIndex(
+        const index = dataApplications.value.findIndex(
           (app) => app.applicationId === application.applicationId
         );
 
@@ -400,18 +408,81 @@ export default {
             error.response?.data?.message ||
             "An error occurred while updating the status.",
         });
+      } finally {
+        loading.value = false; // Hide loading overlay
       }
-    },
-  },
-  created() {
-    // Fetch job and application data when the component is created
-    this.fetchJobDetail();
-    this.fetchApplications();
+    };
+
+    onMounted(() => {
+      fetchJobDetail();
+      fetchApplications();
+    });
+
+    return {
+      dataJobs,
+      filteredJobs,
+      searchQuery,
+      selectedJob,
+      jobsPagination,
+      pageOptions,
+      dataApplications,
+      filteredApplications,
+      applicationsPagination,
+      sortKey,
+      sortOrder,
+      loading,
+      jobsTotalPages,
+      paginatedJobs,
+      applicationsTotalPages,
+      paginatedApplications,
+      showModal,
+      fetchJobDetail,
+      fetchApplications,
+      sortJobs,
+      changeSort,
+      filterBySearch,
+      filterJobsByTitle,
+      changeJobsPage,
+      changeApplicationsPage,
+      updateItemsPerPage,
+      updateApplicationStatus,
+    };
   },
 };
 </script>
 
-<style>
+<style scoped>
+/* Loading overlay styles */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 .tabs {
   -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
   scrollbar-width: thin; /* For Firefox */
