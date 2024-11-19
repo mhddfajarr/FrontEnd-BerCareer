@@ -170,8 +170,8 @@ export default defineComponent({
     });
     const genderOptions = [
       { value: null, text: "Select Gender" },
-      { value: 0, text: "Laki-Laki" },
-      { value: 1, text: "Perempuan" },
+      { value: 0, text: "Male" },
+      { value: 1, text: "Female" },
     ];
     const selectedGender = ref();
 

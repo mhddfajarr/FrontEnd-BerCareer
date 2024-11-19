@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white p-6 rounded-lg shadow-md">
-    <div class="flex items-center mb-2 cursor-pointer" >
-      <span class="mr-2 " @click="toggleShow">
+    <div class="flex items-center mb-2 cursor-pointer">
+      <span class="mr-2" @click="toggleShow">
         <i
           :class="
             showItems
@@ -11,16 +11,15 @@
         ></i>
       </span>
       <div class="flex justify-between w-full items-center">
-        <h1 class="text-xl font-bold text-black" @click="toggleShow">Skill</h1>
+        <h1 class="text-xl font-bold text-black" @click="toggleShow">Skill
+          <span v-if="dataSkill.length < 1"  class="text-red-500">*</span>
+        </h1>
         <button
           v-if="dataSkill.length > 0"
-          @click="isEdit = !isEdit "
+          @click="isEdit = !isEdit"
           class="flex items-center bg-gray-200 rounded-md hover:bg-gray-300 hover:text-gray-600 text-gray-400 px-2 py-1 transition-all duration-250 ease-in-out ml-auto"
         >
-          <i
-            :class="isEdit ? 'fas fa-times' : 'fas fa-trash'"
-            class="mr-2"
-          ></i>
+          <i :class="isEdit ? 'fas fa-times' : 'fas fa-trash'" class="mr-2"></i>
           <span>{{ isEdit ? "Close Delete" : "Remove Skill" }}</span>
         </button>
       </div>
@@ -44,6 +43,7 @@
         </button>
       </div>
     </div>
+
     <div class="flex justify-center mt-7">
       <button
         @click="openModal"
@@ -56,6 +56,7 @@
         v-if="showModalSkill"
         :showModal="showModalSkill"
         @close="closeModal"
+        @click.self="closeModal" 
       />
     </div>
   </div>
@@ -85,13 +86,13 @@ export default {
     };
 
     const openModal = () => {
-        showItems.value =true;
+      showItems.value = true;
       showModalSkill.value = true;
     };
-
     const closeModal = () => {
       showModalSkill.value = false;
     };
+
     const getUserId = async () => {
       try {
         const dataUser = await decodeToken();
@@ -101,6 +102,7 @@ export default {
         console.error("Error decoding token:", error);
       }
     };
+
     const fetchSkillUser = async () => {
       try {
         const data = await getSkillUser(userId.value);
@@ -109,6 +111,7 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
+
     const deleteSkillUser = async (skillId) => {
       try {
         const data = {
@@ -128,7 +131,7 @@ export default {
         if (result.isConfirmed) {
           await deleteSkill(data);
           await fetchSkillUser();
-          eventBus.emit("checkProgres"); 
+          eventBus.emit("checkProgres");
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -143,12 +146,14 @@ export default {
         console.error("Gagal menghapus pekerjaan:", error);
       }
     };
+
     eventBus.on("newSkill", fetchSkillUser);
     onMounted(async () => {
       await getUserId();
       await fetchSkillUser();
       console.log(dataSkill);
     });
+
     return {
       showItems,
       toggleShow,
