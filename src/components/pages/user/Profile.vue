@@ -75,6 +75,21 @@
                 <span v-else>-</span>
               </span>
             </li>
+            <li class="flex items-center">
+              <i class="fab fa-linkedin text-gray-600"></i>
+              <span class="ml-2 text-gray-700">LinkedIn</span>
+              <span class="ml-auto text-gray-500">
+                <a
+                  v-if="dataProfile.linkedin"
+                  :href="dataProfile.linkedin"
+                  target="_blank"
+                  class="text-primaryHover hover:text-primary hover:underline"
+                >
+                  Profile LinkedIn
+                </a>
+                <span v-else>-</span>
+              </span>
+            </li>
           </ul>
         </div>
         <button
@@ -98,9 +113,7 @@
             <template v-if="requiredPersonalInfo"
               >{{ requiredPersonalInfo }},
             </template>
-            <template v-if="requiredImage"
-              >{{ requiredImage }},
-            </template>
+            <template v-if="requiredImage">{{ requiredImage }}, </template>
             <template v-if="requiredExperience"
               >{{ requiredExperience }},
             </template>
@@ -126,8 +139,13 @@
           class="bg-white px-6 md:px-10 h-full rounded-lg shadow-md md:col-span-8 border-t-4 border-primary flex flex-col"
         >
           <div class="mt-3">
-            <h1 class="text-2xl font-bold text-black mb-2">Personal Info
-              <span v-if="requiredPersonalInfo == 'Personal Info'"  class="text-red-500">*</span>
+            <h1 class="text-2xl font-bold text-black mb-2">
+              Personal Info
+              <span
+                v-if="requiredPersonalInfo == 'Personal Info'"
+                class="text-red-500"
+                >*</span
+              >
             </h1>
             <hr class="border-gray-300 mb-4" />
           </div>
@@ -310,11 +328,11 @@ export default {
       await fetchSkill();
       if (dataProfile.value.phoneNumber != null) {
         progress.value += 20;
-        requiredPersonalInfo.value =""
+        requiredPersonalInfo.value = "";
       }
       if (dataProfile.value.profileImage != null) {
         progress.value += 10;
-         requiredImage.value =""
+        requiredImage.value = "";
       }
       if (dataExperience.value.length > 0) {
         progress.value += 20;
@@ -322,11 +340,11 @@ export default {
       }
       if (dataEducation.value.length > 0) {
         progress.value += 20;
-        requiredEducation.value = ""
+        requiredEducation.value = "";
       }
       if (dataSkill.value.length > 0) {
         progress.value += 10;
-        requiredSkill.value =""
+        requiredSkill.value = "";
       }
       if (progress.value === 100) {
         isComplete.value = true;
@@ -350,6 +368,7 @@ export default {
       await getUserId();
 
       await fetchProfileUser();
+      console.log("youwas",dataProfile)
     });
 
     return {

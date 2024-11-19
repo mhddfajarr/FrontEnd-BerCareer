@@ -125,12 +125,21 @@
                 class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               />
             </div>
-            <div class="flex items-center">
+            <div class="flex items-center mb-4">
               <i class="fab fa-github text-gray-500 mr-2"></i>
               <input
                 type="text"
                 v-model="linkGithub"
                 placeholder="Link to github"
+                class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+              />
+            </div>
+            <div class="flex items-center">
+              <i class="fab fa-linkedin text-gray-500 mr-2"></i>
+              <input
+                type="text"
+                v-model="linkedin"
+                placeholder="Link to LinkedIn"
                 class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
               />
             </div>
@@ -190,6 +199,8 @@ export default {
     const newData = ref(false);
     const oldLinkGithub = ref(null);
     const oldLinkPersonalWebsite = ref(null);
+    const linkedin = ref(null);
+    const oldLinkedin = ref(null);
 
     // Close modal
     const closeModal = () => {
@@ -246,6 +257,7 @@ export default {
       if (
         !selectedFile.value &&
         !linkPersonalWebsite.value &&
+        !linkedin &&
         !linkGithub.value
       ) {
         closeModal();
@@ -278,7 +290,7 @@ export default {
           console.error("Error uploading image:", error);
         }
       }
-      if (linkPersonalWebsite.value || linkGithub.value) {
+      if (linkPersonalWebsite.value || linkGithub.value || linkedin.value) {
         try {
           const profileData = {
             userId: userId.value,
@@ -292,6 +304,7 @@ export default {
               dataProfile.value.linkPersonalWebsite,
             profileImage: dataProfile.value.profileImage,
             linkGithub: linkGithub.value || dataProfile.value.linkGithub,
+            linkedin: linkedin.value || dataProfile.value.linkedin,
           };
           const data = await updateProfile(profileData);
           successMessage.value += "Profile updated successfully!";
@@ -347,10 +360,11 @@ export default {
         console.error("Error fetching data:", error);
       }
     };
-    watch([linkGithub, linkPersonalWebsite, selectedFile], () => {
+    watch([linkGithub, linkPersonalWebsite, linkedin, selectedFile], () => {
       if (
         linkGithub.value !== oldLinkGithub.value ||
         linkPersonalWebsite.value !== oldLinkPersonalWebsite.value ||
+        linkedin.value !== oldLinkedin.value ||
         selectedFile.value
       ) {
         newData.value = true;
@@ -362,9 +376,11 @@ export default {
     const cekNewData = () => {
       oldLinkGithub.value = dataProfile.value.linkGithub;
       oldLinkPersonalWebsite.value = dataProfile.value.linkPersonalWebsite;
+      oldLinkedin.value = dataProfile.value.linkedin;
 
       linkGithub.value = dataProfile.value.linkGithub;
       linkPersonalWebsite.value = dataProfile.value.linkPersonalWebsite;
+      linkedin.value = dataProfile.value.linkedin;
     };
     onMounted(async () => {
       await getUserId();
@@ -389,6 +405,8 @@ export default {
       handleDrop,
       removeImage,
       submitForm,
+      linkedin,
+      oldLinkedin,
     };
   },
 };
