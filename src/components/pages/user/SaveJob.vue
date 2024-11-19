@@ -102,8 +102,10 @@ export default {
         dataSaveJobs.value = data.data;
         console.log("Saved jobs:", dataSaveJobs.value);
         dataSaveJobs.value.forEach((job) => {
-          if (job.postDate && job.dueDate) {
+          if (job.postDate) {
             job.postDate = moment(job.postDate).format("MMMM DD, YYYY");
+          }
+          if (job.dueDate) {
             job.dueDate = moment(job.dueDate).format("MMMM DD, YYYY");
           }
           const dueDate = moment(job.dueDate, "MMMM DD, YYYY").toDate();

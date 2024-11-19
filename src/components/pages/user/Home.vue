@@ -238,8 +238,10 @@ export default {
         jobs.value = data.data;
         console.log(jobs);
         jobs.value.forEach((job) => {
-          if (job.postDate && job.dueDate) {
+          if (job.postDate) {
             job.postDate = moment(job.postDate).format("MMMM DD, YYYY");
+          }
+          if (job.dueDate) {
             job.dueDate = moment(job.dueDate).format("MMMM DD, YYYY");
           }
         });

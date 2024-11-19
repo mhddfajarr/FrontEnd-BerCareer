@@ -44,16 +44,12 @@
         <div class="flex flex-wrap items-center mb-7 mt-7">
           <!-- Tombol Apply -->
 
-          <div
-            v-if="isExpired"
-            class="cursor-not-allowed tooltip"
-            data-tip="This job is expired"
-          >
+          <div v-if="isExpired" class="cursor-not-allowed">
             <button
               class="bg-gray-200 hover:bg-gray-300 font-semibold text-gray-700 px-4 py-2 rounded-md mr-2 mb-2 w-full sm:w-auto text-sm sm:text-base btn-disabled cursor-pointer"
               @click="postApplyJob(jobs.jobId)"
             >
-              {{ isApplied ? "Applied" : "Apply" }}
+              This job is expired
             </button>
           </div>
           <div v-else>
@@ -125,8 +121,14 @@
             <span>Posted on {{ jobs.postDate }}</span>
           </li>
           <li class="flex items-center p-2">
-            <i class="fas fa-calendar-check text-gray-600 mr-2"></i>
-            <span>Due to {{ jobs.dueDate }}</span>
+            <div v-if="isExpired">
+              <i class="fas fa-calendar-check text-red-600 mr-2"></i>
+              <span class="text-red-600">Due to {{ jobs.dueDate }}</span>
+            </div>
+            <div v-else>
+              <i class="fas fa-calendar-check text-gray-600 mr-2"></i>
+              <span>Due to {{ jobs.dueDate }}</span>
+            </div>
           </li>
         </ul>
       </div>
@@ -328,20 +330,24 @@ export default {
         const data = await getJobsById(jobId);
         jobs.value = data.data;
 
-        if (jobs.value && jobs.value.postDate && jobs.value.dueDate) {
+        console.log(jobs.value.title + " : " + "Due : " + jobs.value.dueDate);
+        if (jobs.value && jobs.value.postDate) {
           jobs.value.postDate = moment(jobs.value.postDate).format(
             "MMMM DD, YYYY"
           );
+        }
+        if (jobs.value.dueDate) {
           jobs.value.dueDate = moment(jobs.value.dueDate).format(
             "MMMM DD, YYYY"
           );
-
           const dueDate = moment(jobs.value.dueDate, "MMMM DD, YYYY")
             .startOf("day")
             .toDate();
           const today = moment().startOf("day").toDate();
           isExpired.value = dueDate < today;
         }
+        console.log(jobs.value.title + " : " + "Due : " + jobs.value.dueDate);
+        // console.log(jobs.value.title + " : " + "Due : " + jobs.value.dueDate);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
