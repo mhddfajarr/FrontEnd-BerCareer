@@ -102,6 +102,7 @@
           v-if="showModalCardProfile"
           :showModal="showModalCardProfile"
           @close="showModalCardProfile = false"
+          @click.self="showModalCardProfile = false" 
         />
       </div>
 
@@ -196,6 +197,7 @@
               v-if="showModalProfile"
               :showModal="showModalProfile"
               @close="showModalProfile = false"
+              @click.self="showModalProfile = false" 
             />
           </div>
         </div>

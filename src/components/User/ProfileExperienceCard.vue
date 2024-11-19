@@ -104,6 +104,7 @@
       :showModal="showModalExperience"
       :experienceId="modalId"
       @close="showModalExperience = false"
+      @click.self="showModalExperience =false" 
     />
   </div>
 </template>

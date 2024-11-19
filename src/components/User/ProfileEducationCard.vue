@@ -111,6 +111,7 @@
       :showModal="showModalEducation"
       :educationId="modalId"
       @close="showModalEducation = false"
+      @click.self="showModalEducation = false" 
     />
   </div>
 </template>
