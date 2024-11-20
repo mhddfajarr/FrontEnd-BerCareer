@@ -118,9 +118,9 @@
           <i class="fas fa-user-clock mr-1"></i>
           <span class="">{{ job.type }}</span>
         </p>
-        <p><i class="fas fa-map-marker-alt mr-2"></i> {{ job.location }}</p>
-        <p><i class="fas fa-briefcase mr-1"></i> {{ job.requirement }}</p>
-        <p><i class="fas fa-money-bill-wave mr-1"></i> {{ job.salary }}</p>
+        <p><i class="fas fa-map-marker-alt mr-2 text-red-500"></i> {{ job.location }}</p>
+        <p><i class="fas fa-briefcase mr-1 text-primaryHover"></i> {{ job.requirement }}</p>
+        <p><i class="fas fa-money-bill-wave mr-1 text-green-500"></i> {{ job.salary }}</p>
       </div>
       <hr class="mt-4 mb-2" />
       <div class="flex justify-between items-center">

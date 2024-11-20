@@ -254,7 +254,6 @@ export default {
         experience.value = data.data.filter(
           (item) => item.experienceId === props.experienceId
         );
-        console.log("Filtered experience:", experience.value); // Menampilkan hasil filter
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -410,7 +409,6 @@ export default {
         console.log("id experience:", props.experienceId);
         isEditForm.value = true;
       }
-      console.log(experience);
     });
 
     return {

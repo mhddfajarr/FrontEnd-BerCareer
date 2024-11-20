@@ -47,13 +47,13 @@
             <span class=""> {{ job.jobType }}</span>
           </p>
           <p class="font-semibold">
-            <i class="fas fa-map-marker-alt mr-3"></i>{{ job.jobLocation }}
+            <i class="fas fa-map-marker-alt mr-3 text-red-500"></i>{{ job.jobLocation }}
           </p>
           <p class="font-semibold">
-            <i class="fas fa-briefcase mr-2"></i>{{ job.jobRequirement }}
+            <i class="fas fa-briefcase mr-2 text-primaryHover"></i>{{ job.jobRequirement }}
           </p>
           <p class="font-semibold">
-            <i class="fas fa-money-bill-wave mr-1"></i> {{ job.jobSalary }}
+            <i class="fas fa-money-bill-wave mr-1 text-green-500"></i> {{ job.jobSalary }}
           </p>
           <p class="text-right">Apply Date {{ job.applyDate }}</p>
         </div>

@@ -24,19 +24,19 @@
         <hr class="my-4" />
         <div class="mb-4">
           <div class="flex items-center text-gray-600 mb-2">
-            <i class="fas fa-briefcase mr-2"></i>
+            <i class="fas fa-user-clock mr-2"></i>
             <span>{{ jobs.type }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
-            <i class="fas fa-map-marker-alt mr-2"></i>
+            <i class="fas fa-map-marker-alt mr-2 text-red-500"></i>
             <span>{{ jobs.location }}</span>
           </div>
           <div class="flex items-center text-gray-600 mb-2">
-            <i class="fas fa-briefcase mr-2"></i>
+            <i class="fas fa-briefcase mr-2 text-primaryHover"></i>
             <span>{{ jobs.requirement }}</span>
           </div>
           <div class="flex items-center text-gray-600">
-            <i class="fas fa-money-bill-wave mr-2"></i>
+            <i class="fas fa-money-bill-wave mr-2 text-green-500"></i>
             <span>{{ jobs.salary }}</span>
           </div>
         </div>
