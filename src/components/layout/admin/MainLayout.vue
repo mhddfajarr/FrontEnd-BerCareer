@@ -5,7 +5,7 @@
       :class="isSidebarVisible ? 'flex-1 max-w-[calc(100%-15rem)]' : 'w-full'"
       class="transition-all duration-300 flex flex-col"
     >
-      <Navbar @toggleSidebar="toggleSidebar" :Name="name" :Avatar="avatar" />
+      <Navbar @toggleSidebar="toggleSidebar" :Name="name" :Avatar="avatar" :Role="role" />
       <main class="flex-1 p-4 color-main-content overflow-x-auto">
         <RouterView />
       </main>

@@ -240,12 +240,18 @@
           </div>
         </div>
       </div>
-      <div v-if="loading" class="loading-overlay">
+      <div v-if="loading" class="loading-overlay flex flex-col">
         <div
           class="animate-spin inline-block w-12 h-12 border-4 border-current border-t-transparent text-white rounded-full"
           role="status"
           aria-label="loading"
         ></div>
+
+        <div class="pt-5">
+          <h1 class="text-lg text-white font-semibold">
+            Sending notification to applicant email
+          </h1>
+        </div>
       </div>
     </section>
   </div>
@@ -473,7 +479,13 @@ export default {
               };
             }
             fetchApplications();
-            Swal.fire("Saved!", "Status updated successfully.", "success");
+            Swal.fire({
+              title: "Success !",
+              icon: "success",
+              text: "Status updated successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
           } catch (error) {
             console.error(
               "Error updating status:",
@@ -589,7 +601,6 @@ select[disabled] {
   justify-content: center;
   z-index: 9999;
 }
-
 
 .tabs {
   -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
