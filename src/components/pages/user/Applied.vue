@@ -96,7 +96,6 @@ export default {
       try {
         const data = await getApplyUser(id.value);
         applyJobArray.value = data.data;
-        console.log(applyJobArray);
         applyJobArray.value.forEach((job) => {
           if (job.dueDate) {
             const dueDate = moment(job.dueDate).toDate();

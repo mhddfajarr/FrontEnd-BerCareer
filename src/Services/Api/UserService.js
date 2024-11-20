@@ -231,7 +231,6 @@ const API_DETAIL_PROFILE = "https://localhost:7147/api/Details";
 export const getExperienceUser = async (userId) => {
   const token = localStorage.getItem("authToken");
   if (!token) throw new Error("Token is missing or expired");
-  console.log(`Fetching experiences for user: ${userId}`);
   try {
     const response = await axios.get(
       `${API_DETAIL_PROFILE}/Experiences?userId=${encodeURIComponent(userId)}`,
@@ -317,7 +316,6 @@ export const updateExperience = async (data) => {
 export const getEducationUser = async (userId) => {
   const token = localStorage.getItem("authToken");
   if (!token) throw new Error("Token is missing or expired");
-  console.log(`Fetching experiences for user: ${userId}`);
   try {
     const response = await axios.get(
       `${API_DETAIL_PROFILE}/Educations?userId=${encodeURIComponent(userId)}`,
@@ -399,7 +397,6 @@ export const updateEducation = async (data) => {
 export const getSkillUser = async (userId) => {
   const token = localStorage.getItem("authToken");
   if (!token) throw new Error("Token is missing or expired");
-  console.log(`Fetching experiences for user: ${userId}`);
   try {
     const response = await axios.get(
       `${API_DETAIL_PROFILE}/Skills?userId=${encodeURIComponent(userId)}`,

@@ -284,7 +284,6 @@ export default {
           const profileImageUrl = data.data.profileImage;
           dataProfile.value.profileImage = profileImageUrl;
           successMessage.value += "Image updated successfully!";
-          console.log("Image upload successful:", data);
         } catch (error) {
           failed.value = true;
           console.error("Error uploading image:", error);
@@ -308,7 +307,6 @@ export default {
           };
           const data = await updateProfile(profileData);
           successMessage.value += "Profile updated successfully!";
-          console.log("Profile update successful:", data);
         } catch (error) {
           failed.value = true;
           console.error("Error updating profile:", error);

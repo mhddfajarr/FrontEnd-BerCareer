@@ -97,7 +97,6 @@ export default {
       try {
         const dataUser = await decodeToken();
         userId.value = dataUser.uid;
-        console.log(userId.value); // Debugging ID User
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -151,7 +150,6 @@ export default {
     onMounted(async () => {
       await getUserId();
       await fetchSkillUser();
-      console.log(dataSkill);
     });
 
     return {

@@ -314,7 +314,6 @@ export default defineComponent({
       try {
         const dataUser = await decodeToken();
         userId.value = dataUser.uid;
-        console.log(userId.value);
       } catch (error) {
         console.error("Error decoding token:", error);
       }
@@ -378,13 +377,11 @@ export default defineComponent({
         education.value = data.data.filter(
           (item) => item.educationId === props.educationId
         );
-        console.log("Filtered education:", education.value); // Menampilkan hasil filter
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     onMounted(async () => {
-      console.log("ini daari prop", props.educationId);
       await getUserId();
       await fetchEducationUser();
       if (props.educationId) {
@@ -398,8 +395,6 @@ export default defineComponent({
         console.log("id education:", props.educationId);
         isEditForm.value = true;
       }
-      console.log(education);
-      console.log(userId);
     });
 
     return {

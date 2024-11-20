@@ -266,8 +266,7 @@ export default {
           console.log(id.value);
           return;
         }
-        const response = await getDataUser(userId); // Memanggil API untuk mendapatkan data user
-        console.log(response);
+        const response = await getDataUser(userId); 
 
         if (response && response.data && response.data.fullName) {
           // Ambil kata pertama dari fullName
@@ -291,7 +290,6 @@ export default {
     };
     onMounted(async () => {
       if (cekLogin.value) {
-        // Pastikan ini memeriksa nilai reaktif .value
         await getUserId();
         await fetchDataUser();
       }

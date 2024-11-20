@@ -183,7 +183,6 @@ export default defineComponent({
         if (dataProfile.value.gender !== null) {
           selectedGender.value = dataProfile.value.gender; 
         }
-        console.log(dataProfile);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -193,7 +192,6 @@ export default defineComponent({
       try {
         const dataUser = await decodeToken();
         id.value = dataUser.uid;
-        console.log(id.value);
       } catch (error) {
         console.error("Error decoding token:", error);
       }

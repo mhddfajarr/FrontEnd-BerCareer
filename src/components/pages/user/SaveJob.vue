@@ -118,7 +118,6 @@ export default {
     onMounted(async () => {
       await getUserId();
       await fetchSavedJobs();
-      console.log(dataSaveJobs);
     });
 
     return {

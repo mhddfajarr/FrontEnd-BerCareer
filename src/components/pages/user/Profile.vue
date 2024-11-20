@@ -368,9 +368,7 @@ export default {
 
     onMounted(async () => {
       await getUserId();
-
       await fetchProfileUser();
-      console.log("youwas",dataProfile)
     });
 
     return {

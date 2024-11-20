@@ -239,7 +239,6 @@ export default {
     onMounted(async () => {
       await getUserId();
       await fetchExperienceUser();
-      console.log("ini data", dataExperience)
     });
 
     return {
