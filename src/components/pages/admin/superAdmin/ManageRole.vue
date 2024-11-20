@@ -1,10 +1,14 @@
 <template>
-  <div class="content-wrapper" :key="componentKey">
-    <div class="breadcrumbs text-sm mb-4">
-      <ul>
-        <li><a>Dashboard</a></li>
-        <li><a>Manage Role Portal</a></li>
-      </ul>
+  <div class="content-wrapper">
+    <!-- Breadcrumb -->
+    <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
+      <nav class="text-mint-700">
+        <router-link to="/admin" class="hover:underline">Dashboard</router-link>
+        <span class="mx-2">/</span>
+        <router-link to="/ManageRole" class="hover:underline"
+          >Manage Role Portal</router-link
+        >
+      </nav>
     </div>
     <h1 class="text-3xl font-bold text-primary mb-2">Manage Role Portal</h1>
 
@@ -17,7 +21,9 @@
                 <div class="card-header">
                   <div class="card-body">
                     <div class="flex justify-between items-center space-x-4">
-                      <div class="flex items-center space-x-2 bg-white">
+                      <div
+                        class="flex justify-end items-center w-full space-x-2 bg-white"
+                      >
                         <details class="dropdown bg-white border-none">
                           <summary
                             class="btn m-1 bg-slate-200 hover:bg-primaryHover border-none"
@@ -31,19 +37,18 @@
                               <a>All</a>
                             </li>
                             <li
-                              v-for="(role, index) in dataRoles"
-                              :key="role.userId"
-                              @click="filterRolesByName(role.roleName)"
+                              v-for="(role, index) in uniqueRoles"
+                              :key="index"
+                              @click="filterRolesByName(role)"
                             >
-                              <a>{{ role.roleName }}</a>
+                              <a>{{ role }}</a>
                             </li>
                           </ul>
                         </details>
-                        <!-- Data per page selection -->
                         <select
                           v-model="perPage"
                           @change="updatePagination"
-                          class="select select-bordered"
+                          class="select select-bordered bg-white"
                         >
                           <option value="5">5</option>
                           <option value="10">10</option>
@@ -62,14 +67,14 @@
                       </div>
                     </div>
                   </div>
-
                   <div class="card-body">
-                    <!-- Responsive Table Wrapper -->
-                    <div class="overflow-x-auto">
+                    <div class="overflow-x-auto rounded-lg">
                       <table class="table bg-white text-black w-full">
-                        <thead class="text-black text-center">
+                        <thead
+                          class="text-white text-md text-center bg-primary"
+                        >
                           <tr>
-                            <th></th>
+                            <th>No</th>
                             <th @click="sortTable('userName')">Name</th>
                             <th @click="sortTable('userEmail')">Email</th>
                             <th @click="sortTable('roleName')">Role Name</th>
@@ -80,7 +85,9 @@
                             v-for="(role, index) in filteredAdminRoles"
                             :key="role.userId"
                           >
-                            <td><input type="checkbox" class="checkbox" /></td>
+                            <td>
+                              {{ index + 1 + (currentPage - 1) * perPage }}
+                            </td>
                             <td>{{ role.userName }}</td>
                             <td>{{ role.userEmail }}</td>
                             <td>
@@ -104,15 +111,6 @@
                                 </option>
                               </select>
                             </td>
-                            <td class="text-center">
-                              <!-- Delete Button -->
-                              <button
-                                @click="deleteJobHandler(job.userId, job.jobId)"
-                                class="btn bg-red-500 ml-2 text-white"
-                              >
-                                <i class="fas fa-solid fa-trash"></i>
-                              </button>
-                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -124,7 +122,7 @@
                   >
                     <!-- Pagination controls -->
                     <button
-                      class="btn bg-primary text-white"
+                      class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       :disabled="currentPage <= 1"
                       @click="changePage(currentPage - 1)"
                     >
@@ -134,7 +132,7 @@
                       >Page {{ currentPage }} of {{ totalPages }}</span
                     >
                     <button
-                      class="btn bg-primary text-white"
+                      class="bg-primary hover:bg-primaryHover text-white font-semibold py-2 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed"
                       :disabled="currentPage >= totalPages"
                       @click="changePage(currentPage + 1)"
                     >
@@ -201,6 +199,14 @@ export default {
       return filteredRoles.value.slice(start, end);
     });
 
+    const uniqueRoles = computed(() => {
+      const roleNames = dataRoles.value
+        .map((role) => role.roleName)
+        .filter((roleName) => roleName !== "Super Admin");
+      // roleNames.value.filter((role) => role.roleName !== "Super Admin");
+      return [...new Set(roleNames)];
+    });
+
     const filteredAdminRoles = computed(() => {
       return paginatedRoles.value.filter(
         (role) => role.roleName !== "Super Admin"
@@ -221,29 +227,28 @@ export default {
       selectedName.value = name;
       searchQuery.value = ""; // Reset search query when filtering by title
 
-      let uniqueRoles = new Set();
       let filtered = [];
 
       if (name === "All") {
-        filtered = dataRoles.value.filter((role) => {
-          if (!uniqueRoles.has(role.roleName)) {
-            uniqueRoles.add(role.roleName);
-            return true;
-          }
-          return false;
-        });
+        filtered = dataRoles.value;
       } else {
-        filtered = dataRoles.value.filter((role) => {
-          if (role.roleName === name && !uniqueRoles.has(role.roleName)) {
-            uniqueRoles.add(role.roleName);
-            return true;
-          }
-          return false;
-        });
+        filtered = dataRoles.value.filter((role) => role.roleName === name);
       }
 
       filteredRoles.value = filtered;
       totalPages.value = Math.ceil(filteredRoles.value.length / perPage.value); // Recalculate total pages
+    };
+
+    // Handle search filtering
+    const filterBySearch = () => {
+      const query = searchQuery.value.toLowerCase();
+      filteredRoles.value = dataRoles.value.filter(
+        (role) =>
+          role.roleName.toLowerCase().includes(query) ||
+          role.userName.toLowerCase().includes(query) ||
+          role.userEmail.toLowerCase().includes(query)
+      );
+      totalPages.value = Math.ceil(filteredRoles.value.length / perPage.value); // Recalculate total pages after search
     };
 
     // Handle page change
@@ -280,6 +285,8 @@ export default {
       changePage,
       updatePagination,
       filteredAdminRoles,
+      filterBySearch,
+      uniqueRoles,
     };
   },
   methods: {
