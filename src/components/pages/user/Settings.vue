@@ -3,7 +3,7 @@
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-full mx-auto">
       <div v-if="isGoogle">
         <!--? Warning text -->
-        <div role="alert" class="alert m-2">
+        <div role="alert" class="alert m-2 bg-yellow-100 border-none text-gray-700">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
