@@ -4,7 +4,10 @@
       <div v-if="isGoogle">
         <div v-if="!isVerified">
           <!--? Warning text -->
-          <div role="alert" class="alert m-2">
+          <div
+            role="alert"
+            class="alert m-2 bg-yellow-100 border-none text-gray-700"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
