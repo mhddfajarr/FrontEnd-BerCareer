@@ -22,7 +22,7 @@
       <hr class="border-gray-500 border-1 mb-4" />
       <div v-if="Role == 'Super Admin'">
         <ul :class="[isSidebarVisible ? '' : 'mt-5']">
-          <li
+          <!-- <li
             class="py-2 px-2 flex items-center mb-1"
             :class="{ active: $route.path === '/admin' }"
           >
@@ -37,13 +37,16 @@
                 >Dashboard</span
               >
             </RouterLink>
-          </li>
+          </li> -->
 
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/ManageRole' }"
+            :class="{ active: $route.name === 'ManageRole' }"
           >
-            <RouterLink to="ManageRole" class="w-full flex items-center">
+            <RouterLink
+              :to="{ name: 'ManageRole' }"
+              class="w-full flex items-center"
+            >
               <i
                 class="fas fa-solid fa-briefcase text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"
@@ -61,9 +64,12 @@
         <ul :class="[isSidebarVisible ? '' : 'mt-5']">
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/admin' }"
+            :class="{ active: $route.name === 'Dashboard' }"
           >
-            <RouterLink to="admin" class="w-full flex items-center">
+            <RouterLink
+              :to="{ name: 'Dashboard' }"
+              class="w-full flex items-center"
+            >
               <i
                 class="fas fa-home text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"
@@ -78,9 +84,12 @@
 
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/ManageJob' }"
+            :class="{ active: $route.name === 'ManageJob' }"
           >
-            <RouterLink to="ManageJob" class="w-full flex items-center">
+            <RouterLink
+              :to="{ name: 'ManageJob' }"
+              class="w-full flex items-center"
+            >
               <i
                 class="fas fa-solid fa-briefcase text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"
@@ -94,9 +103,12 @@
           </li>
           <li
             class="py-2 px-2 flex items-center mb-1"
-            :class="{ active: $route.path === '/ManageJobseekers' }"
+            :class="{ active: $route.name === 'ManageJobseekers' }"
           >
-            <RouterLink to="ManageJobseekers" class="w-full flex items-center">
+            <RouterLink
+              :to="{ name: 'ManageJobseekers' }"
+              class="w-full flex items-center"
+            >
               <i
                 class="fas fa-solid fa-people-roof text-lg ml-2"
                 :class="[isSidebarVisible ? '' : 'ml-2.5']"

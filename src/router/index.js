@@ -28,8 +28,10 @@ const routes = [
         try {
           const decodedToken = await decodeToken();
           const role = decodedToken.role;
-          if (role == "User") {
+          if (role === "User") {
             next({ name: "Home" });
+          } else if (role === "Super Admin" && to.name !== "ManageRole") {
+            next({ name: "ManageRole" });
           } else {
             next();
           }
@@ -46,37 +48,94 @@ const routes = [
         path: "",
         name: "Dashboard",
         component: Dashboard,
+        beforeEnter: async (to, from, next) => {
+          const token = localStorage.getItem("authToken");
+          if (token) {
+            try {
+              const decodedToken = await decodeToken();
+              const role = decodedToken.role;
+              if (role === "Super Admin") {
+                next({ name: "ManageRole" });
+              } else {
+                next();
+              }
+            } catch (error) {
+              console.error("Error decoding token:", error);
+              next({ name: "Home" });
+            }
+          } else {
+            next({ name: "Home" });
+          }
+        },
       },
       {
-        path: "/managejob",
+        path: "managejob",
         name: "ManageJob",
         component: ManageJob,
+        beforeEnter: async (to, from, next) => {
+          const token = localStorage.getItem("authToken");
+          if (token) {
+            try {
+              const decodedToken = await decodeToken();
+              const role = decodedToken.role;
+              if (role === "Super Admin") {
+                next({ name: "ManageRole" });
+              } else {
+                next();
+              }
+            } catch (error) {
+              console.error("Error decoding token:", error);
+              next({ name: "Home" });
+            }
+          } else {
+            next({ name: "Home" });
+          }
+        },
       },
       {
-        path: "/managejobseekers",
+        path: "managejobseekers",
         name: "ManageJobseekers",
         component: ManageJobseekers,
+        beforeEnter: async (to, from, next) => {
+          const token = localStorage.getItem("authToken");
+          if (token) {
+            try {
+              const decodedToken = await decodeToken();
+              const role = decodedToken.role;
+              if (role === "Super Admin") {
+                next({ name: "ManageRole" });
+              } else {
+                next();
+              }
+            } catch (error) {
+              console.error("Error decoding token:", error);
+              next({ name: "Home" });
+            }
+          } else {
+            next({ name: "Home" });
+          }
+        },
       },
       {
-        path: "/profileadmin",
-        name: "ProfileAdmin",
-        component: ProfileAdmin,
-      },
-      {
-        path: "/managerole",
+        path: "managerole",
         name: "ManageRole",
         component: ManageRole,
         beforeEnter: async (to, from, next) => {
-          try {
-            const decodedToken = await decodeToken();
-            const role = decodedToken.role;
-            if (role == "Admin") {
-              next({ name: "Admin" });
-            } else {
-              next();
+          const token = localStorage.getItem("authToken");
+          if (token) {
+            try {
+              const decodedToken = await decodeToken();
+              const role = decodedToken.role;
+              if (role === "Super Admin") {
+                next();
+              } else {
+                next({ name: "Home" });
+              }
+            } catch (error) {
+              console.error("Error decoding token:", error);
+              next({ name: "Home" });
             }
-          } catch (error) {
-            console.error("Error decoding token:", error);
+          } else {
             next({ name: "Home" });
           }
         },
@@ -92,8 +151,10 @@ const routes = [
         try {
           const decodedToken = await decodeToken();
           const role = decodedToken.role;
-          if (role == "Admin" || role == "Super Admin") {
+          if (role == "Admin") {
             router.push({ name: "Dashboard" });
+          } else if (role == "Super Admin") {
+            router.push({ name: "ManageRole" });
           } else {
             next();
           }

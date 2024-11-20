@@ -3,8 +3,6 @@
     <!-- Breadcrumb -->
     <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
       <nav class="text-mint-700">
-        <router-link to="/admin" class="hover:underline">Dashboard</router-link>
-        <span class="mx-2">/</span>
         <router-link to="/ManageRole" class="hover:underline"
           >Manage Role Portal</router-link
         >
@@ -301,7 +299,7 @@ export default {
         roleId: roleId,
       };
       Swal.fire({
-        title: "Are You Sure About Updating the User Role?",
+        title: "Are you sure you want to update the user role?",
         icon: "info",
         showCancelButton: true,
         cancelButtonText: "Close",
