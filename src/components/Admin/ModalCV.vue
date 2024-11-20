@@ -24,6 +24,7 @@
             <h1 class="text-2xl text-gray-800 font-bold">
               {{ dataProfile.fullName }}
             </h1>
+            <p> {{ dataProfile.email }}</p>
           </div>
         </div>
         <p class="text-gray-700 mb-4 text-left">
@@ -270,7 +271,7 @@ export default {
       await fetchProfileUser();
       await fetchEducationsUser();
       await fetchSkillUser();
-      console.log("ini data", dataEducations.value); // Log the fetched data
+      console.log("ini data profile", dataProfile); // Log the fetched data
     });
 
     return {

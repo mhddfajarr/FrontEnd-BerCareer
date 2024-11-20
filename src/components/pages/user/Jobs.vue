@@ -204,7 +204,10 @@ export default {
     const postApplyJob = async (jobId) => {
       // cek login
       if (!token) {
-        Swal.fire("Error", "Please login first.", "error");
+        Swal.fire("info", "Please login first.", "info");
+        router.push("/login");
+        const params = route.params.id
+        localStorage.setItem("redirect", params);
         return;
       }
       if (isApplied.value) {
@@ -427,7 +430,6 @@ export default {
         fetchSkill();
         fetchAllAplication();
       }
-
       window.scrollTo({
         top: 0,
         behavior: "smooth",
