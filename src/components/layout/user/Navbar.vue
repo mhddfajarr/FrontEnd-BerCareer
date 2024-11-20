@@ -293,7 +293,7 @@ export default {
       if (cekLogin.value) {
         // Pastikan ini memeriksa nilai reaktif .value
         await getUserId();
-        fetchDataUser();
+        await fetchDataUser();
       }
 
       document.addEventListener("click", handleOutsideClick);
