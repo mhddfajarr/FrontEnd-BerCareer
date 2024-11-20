@@ -77,7 +77,7 @@
                             <th>No</th>
                             <th @click="sortTable('userName')">Name</th>
                             <th @click="sortTable('userEmail')">Email</th>
-                            <th @click="sortTable('roleName')">Role Name</th>
+                            <th @click="sortTable('roleName')">Role</th>
                           </tr>
                         </thead>
                         <tbody class="text-center">
@@ -173,9 +173,10 @@ export default {
     const dataRoles = ref([]);
     const dataRolesOptions = ref([]);
     const filteredRoles = ref([]);
-    const perPage = ref(10); // Default number of roles per page
-    const currentPage = ref(1); // Default to first page
-    const totalPages = ref(1); // For pagination calculation
+    const perPage = ref(10);
+    const currentPage = ref(1);
+    const totalPages = ref(1);
+    const token = localStorage.getItem("authToken");
 
     const fetchRoleDetail = async () => {
       try {
@@ -287,6 +288,8 @@ export default {
       filteredAdminRoles,
       filterBySearch,
       uniqueRoles,
+      fetchRoleDetail,
+      token,
     };
   },
   methods: {
@@ -297,8 +300,38 @@ export default {
         userId: userId,
         roleId: roleId,
       };
-      changeRole(roleData).then(() => {
-        window.location.reload();
+      Swal.fire({
+        title: "Are You Sure About Updating the User Role?",
+        icon: "info",
+        showCancelButton: true,
+        cancelButtonText: "Close",
+        confirmButtonText: "Update",
+        confirmButtonColor: "#0a4d80",
+        cancelButtonColor: "#d33",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            if (!this.token) {
+              Swal.fire({
+                icon: "error",
+                title: "Authentication Error",
+                text: "Please log in again.",
+              });
+              throw error;
+            }
+            await changeRole(roleData);
+            this.fetchRoleDetail();
+            Swal.fire({
+              title: "Success !",
+              icon: "success",
+              text: "Role updated successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } catch (error) {
+            console.error("Error updating role:", error);
+          }
+        }
       });
     },
   },
