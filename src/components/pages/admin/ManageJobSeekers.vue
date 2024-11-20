@@ -428,7 +428,7 @@ export default {
 
     const updateApplicationStatus = async (application) => {
       Swal.fire({
-        title: "Are You Sure About Updating the Application Status?",
+        title: "Are you sure you want to update the application status?",
         icon: "info",
         showCancelButton: true,
         cancelButtonText: "Close",
