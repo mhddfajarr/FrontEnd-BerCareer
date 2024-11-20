@@ -2,26 +2,31 @@
   <div class="p-6 flex flex-col justify-center w-full md:w-2/3 mx-auto">
     <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-full mx-auto">
       <div v-if="isGoogle">
-        <!--? Warning text -->
-        <div role="alert" class="alert m-2 bg-yellow-100 border-none text-gray-700">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="stroke-info h-6 w-6 shrink-0"
+        <div v-if="!isVerified">
+          <!--? Warning text -->
+          <div
+            role="alert"
+            class="alert m-2 bg-yellow-100 border-none text-gray-700"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              stroke="#0A4D80"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            ></path>
-          </svg>
-          <span
-            >Your account is created from Google sign in, get your temporary
-            password from your email</span
-          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              class="stroke-info h-6 w-6 shrink-0"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                stroke="#0A4D80"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span
+              >Your account is created from Google sign in, get your temporary
+              password from your email</span
+            >
+          </div>
         </div>
       </div>
       <h2 class="text-2xl font-bold text-left text-gray-700 mb-6">
@@ -141,6 +146,7 @@ export default {
     const buttonSubmit = ref(true);
     const dataProfile = ref({});
     const isGoogle = ref(false);
+    const isVerified = ref(false);
 
     const validationMessage = computed(() => {
       if (repeatPassword.value && repeatPassword.value !== newPassword.value) {
@@ -162,6 +168,8 @@ export default {
       try {
         await changePassword(dataPassword);
         resetForm();
+        await checkGoogleStatus();
+        await fetchProfileUser();
         Swal.fire({
           toast: true,
           position: "top-end",
@@ -196,6 +204,7 @@ export default {
             dataProfile.value.postDate
           ).format("MMMM DD, YYYY");
         }
+        // console.log(dataProfile.value);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -205,8 +214,11 @@ export default {
       try {
         const userId = id.value;
         const data = await checkGoogleUser(userId);
-        if (data.data) {
+        if (data.data.isGoogle) {
           isGoogle.value = true;
+        }
+        if (data.data.isVerified) {
+          isVerified.value = true;
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -245,6 +257,7 @@ export default {
       resetForm,
       buttonSubmit,
       isGoogle,
+      isVerified,
     };
   },
 };
