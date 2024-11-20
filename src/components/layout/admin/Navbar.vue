@@ -18,7 +18,7 @@
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
             <img
-              :src="getAvatarUrl(Avatar)"
+              :src="getAvatarUrl(Role)"
               alt="Profile"
               class="w-10 h-10 rounded-full mr-2"
               :referrerpolicy="
@@ -136,7 +136,7 @@ import { getDataUser } from "../../../Services/Api/UserService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 
 export default {
-  props: ["Name", "Avatar"],
+  props: ["Name", "Avatar", "Role"],
   setup(props) {
     const passwordModal = ref(false);
     const cekLogin = ref(localStorage.getItem("authToken") ? true : false);
@@ -169,16 +169,16 @@ export default {
       });
     };
 
-    const getAvatarUrl = (avatar) => {
-      const defaultAvatarUrl =
-        "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
-      if (!avatar) {
-        return defaultAvatarUrl;
+    const getAvatarUrl = (role) => {
+      // console.log(role);
+      const defaultAvatarUrl = ref(
+        "https://www.pngmart.com/files/21/Admin-Profile-PNG-Clipart.png"
+      );
+      if (role == "Super Admin") {
+        defaultAvatarUrl.value =
+          "https://www.pngmart.com/files/21/Admin-Profile-Vector-PNG-Clipart.png";
       }
-      if (avatar.startsWith("https") || avatar.startsWith("http")) {
-        return avatar;
-      }
-      return defaultAvatarUrl;
+      return defaultAvatarUrl.value;
     };
 
     const toggleDropdown = () => {
