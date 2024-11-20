@@ -136,16 +136,19 @@
                                 <option disabled value="">
                                     Select Job Salary
                                   </option>
-                                  <option value="3,000,000 - 5,000,000">
+                                  <option value="Negotiable">
+                                    Negotiable
+                                  </option>
+                                  <option value="Rp 3,000,000 - Rp 5,000,000">
                                     Rp 3,000,000 - Rp 5,000,000
                                   </option>
-                                  <option value="5,000,000 - 8,000,000">
+                                  <option value="Rp 5,000,000 - Rp 8,000,000">
                                     Rp 5,000,000 - Rp 8,000,000
                                   </option>
-                                  <option value="8,000,000 - 12,000,000">
+                                  <option value="Rp 8,000,000 - Rp 12,000,000">
                                     Rp 8,000,000 - Rp 10,000,000
                                   </option>
-                                  <option value="30,000,000+">
+                                  <option value="Above Rp 10,000,000">
                                     Above Rp 10,000,000
                                   </option>
                                 </select>
@@ -307,16 +310,19 @@
                                   <option disabled value="">
                                     Select Job Salary
                                   </option>
-                                  <option value="3,000,000 - 5,000,000">
+                                  <option value="Negotiable">
+                                    Negotiable
+                                  </option>
+                                  <option value="Rp 3,000,000 - Rp 5,000,000">
                                     Rp 3,000,000 - Rp 5,000,000
                                   </option>
-                                  <option value="5,000,000 - 8,000,000">
+                                  <option value="Rp 5,000,000 - Rp 8,000,000">
                                     Rp 5,000,000 - Rp 8,000,000
                                   </option>
-                                  <option value="8,000,000 - 12,000,000">
+                                  <option value="Rp 8,000,000 - Rp 12,000,000">
                                     Rp 8,000,000 - Rp 10,000,000
                                   </option>
-                                  <option value="30,000,000+">
+                                  <option value="Above Rp 10,000,000">
                                     Above Rp 10,000,000
                                   </option>
                                 </select>
