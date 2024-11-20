@@ -184,6 +184,7 @@ export default {
     const router = useRouter();
 
     const isExpired = ref(false);
+    
 
     const fetchAllAplication = async () => {
       try {

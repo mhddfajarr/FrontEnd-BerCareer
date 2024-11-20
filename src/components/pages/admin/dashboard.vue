@@ -1,9 +1,10 @@
     <template>
     <div class="content-wrapper">
-        <div class="breadcrumbs text-sm mb-4">
-        <ul>
-            <li><a>Dashboard</a></li>
-        </ul>
+        <!-- Breadcrumb -->
+        <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
+        <nav class="text-mint-700">
+            <router-link to="/admin" class="hover:underline">Dashboard</router-link>
+        </nav>
         </div>
         <h1 class="text-3xl font-bold text-primary mb-2">Dashboard</h1>
         <!-- Main content -->

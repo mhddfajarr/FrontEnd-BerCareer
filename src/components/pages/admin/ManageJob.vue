@@ -1,10 +1,14 @@
 <template>
   <div class="content-wrapper">
-    <div class="breadcrumbs text-sm mb-4">
-      <ul>
-        <li><a>Dashboard</a></li>
-        <li><a>Manage Job Portal</a></li>
-      </ul>
+    <!-- Breadcrumb -->
+    <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
+      <nav class="text-mint-700">
+        <router-link to="/admin" class="hover:underline">Dashboard</router-link>
+        <span class="mx-2">/</span>
+        <router-link to="/ManageJob" class="hover:underline"
+          >Manage Job Portal</router-link
+        >
+      </nav>
     </div>
     <h1 class="text-3xl font-bold text-primary mb-2">Manage Job Portal</h1>
 
@@ -51,7 +55,7 @@
                           <div class="modal-body overflow-y-auto max-h-[60vh]">
                             <form @submit.prevent="addJobHandler">
                               <div class="card-body">
-                                <h4 class="text-lg font-bold mb-2">Title</h4>
+                                <span class="text-lg font-bold">Title</span>
                                 <input
                                   v-model="newJob.title"
                                   type="text"
@@ -59,9 +63,9 @@
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
 
-                                <h4 class="text-lg font-bold mb-2">
-                                  Description
-                                </h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Description</span
+                                >
                                 <div>
                                   <QuillEditor
                                     v-model:content="newJobDescription"
@@ -71,21 +75,11 @@
                                   ></QuillEditor>
                                 </div>
 
-                                <h4 class="text-lg font-bold mb-2">
-                                  Requirement
-                                </h4>
-                                <input
-                                  v-model="newJob.requirement"
-                                  type="text"
-                                  placeholder="Requirement"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                />
-                                <h4
+                                <span
                                   for="newDueDate"
-                                  class="text-lg font-bold mb-2"
+                                  class="text-lg font-bold mt-4"
+                                  >Due Date</span
                                 >
-                                  Due Date
-                                </h4>
                                 <input
                                   type="date"
                                   id="newDueDate"
@@ -94,7 +88,33 @@
                                   required
                                 />
 
-                                <h4 class="text-lg font-bold mb-2">Job Type</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Requirement</span
+                                >
+                                <select
+                                  v-model="newJob.requirement"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                >
+                                  <option disabled value="">
+                                    Select Requirement
+                                  </option>
+                                  <option value="Freshgraduate">
+                                    Freshgraduate
+                                  </option>
+                                  <option value="Min. 1 - 2 Years">
+                                    Min. 1 - 2 Years
+                                  </option>
+                                  <option value="Min. 3 - 5 Years">
+                                    Min. 3 - 5 Years
+                                  </option>
+                                  <option value="Above 5 Years">
+                                    Above 5 Years
+                                  </option>
+                                </select>
+
+                                <span class="text-lg font-bold mt-4"
+                                  >Job Type</span
+                                >
                                 <select
                                   v-model="newJob.type"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -106,7 +126,9 @@
                                   <option value="Contract">Contract</option>
                                 </select>
 
-                                <h4 class="text-lg font-bold mb-2">Salary</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Salary</span
+                                >
                                 <select
                                   v-model="newJob.salary"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -137,7 +159,9 @@
                                   </option>
                                 </select>
 
-                                <h4 class="text-lg font-bold mb-2">Location</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Location</span
+                                >
                                 <select
                                   v-model="newJob.location"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -211,7 +235,7 @@
                                   disabled
                                   class="w-full text-gray-400 border bg-gray-100 rounded px-3 py-2 mt-1 focus:outline-none cursor-not-allowed hidden"
                                 />
-                                <h4 class="text-lg font-bold mb-2">Title</h4>
+                                <span class="text-lg font-bold">Title</span>
                                 <input
                                   v-model="editJob.title"
                                   type="text"
@@ -219,9 +243,9 @@
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                 />
 
-                                <h4 class="text-lg font-bold mb-2">
-                                  Description
-                                </h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Description</span
+                                >
                                 <div>
                                   <QuillEditor
                                     v-model:content="editJob.description"
@@ -231,21 +255,12 @@
                                     class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   ></QuillEditor>
                                 </div>
-                                <h4 class="text-lg font-bold mb-2">
-                                  Requirement
-                                </h4>
-                                <input
-                                  v-model="editJob.requirement"
-                                  type="text"
-                                  placeholder="Enter job requirement"
-                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
-                                />
-                                <h4
+
+                                <span
                                   for="editDueDate"
-                                  class="text-lg font-bold mb-2"
+                                  class="text-lg font-bold mt-4"
+                                  >Due Date</span
                                 >
-                                  Due Date
-                                </h4>
                                 <input
                                   type="date"
                                   id="editDueDate"
@@ -253,8 +268,33 @@
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
                                   required
                                 />
+                                <span class="text-lg font-bold mt-4"
+                                  >Requirement</span
+                                >
+                                <select
+                                  v-model="editJob.requirement"
+                                  class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
+                                >
+                                  <option disabled value="">
+                                    Select Requirement
+                                  </option>
+                                  <option value="Freshgraduate">
+                                    Freshgraduate
+                                  </option>
+                                  <option value="Min. 1 - 2 Years">
+                                    Min. 1 - 2 Years
+                                  </option>
+                                  <option value="Min. 3 - 5 Years">
+                                    Min. 3 - 5 Years
+                                  </option>
+                                  <option value="Above 5 Years">
+                                    Above 5 Years
+                                  </option>
+                                </select>
 
-                                <h4 class="text-lg font-bold mb-2">Job Type</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Job Type</span
+                                >
                                 <select
                                   v-model="editJob.type"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -266,7 +306,9 @@
                                   <option value="Contract">Contract</option>
                                 </select>
 
-                                <h4 class="text-lg font-bold mb-2">Salary</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Salary</span
+                                >
                                 <select
                                   v-model="editJob.salary"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -297,7 +339,9 @@
                                   </option>
                                 </select>
 
-                                <h4 class="text-lg font-bold mb-2">Location</h4>
+                                <span class="text-lg font-bold mt-4"
+                                  >Location</span
+                                >
                                 <select
                                   v-model="editJob.location"
                                   class="w-full text-gray-700 border bg-white rounded px-3 py-2 mt-1 focus:outline-none focus:ring focus:ring-primary/50"
@@ -401,7 +445,7 @@
                             :key="job.jobId"
                           >
                             <td>
-                              {{ index + 1 }}
+                              {{ index + 1 + (currentPage - 1) * pageSize }}
                             </td>
                             <td>{{ job.title }}</td>
                             <td v-html="job.description"></td>
@@ -409,12 +453,14 @@
                             <td>{{ job.type }}</td>
                             <td>{{ job.requirement }}</td>
                             <td>{{ job.location }}</td>
-                            <td>{{ job.applicantsCount || 0 }}</td>
+                            <td>
+                              {{ totalApplications[job.jobId] || 0 }} Applicants
+                            </td>
                             <td class="text-center">
                               <div class="flex justify-center items-center">
                                 <button
                                   type="button"
-                                  class="px-4 py-3 rounded-md hover:bg-yellow-400 bg-yellow-500 text-white border-none"
+                                  class="px-4 py-3 rounded-md hover:bg-yellow-400 bg-yellow-500 text-white border-none tooltip" data-tip="Edit"
                                   @click="openEditModal(job.jobId)"
                                 >
                                   <i class="fas fa-solid fa-pen-to-square"></i>
@@ -423,7 +469,7 @@
                                   @click="
                                     deleteJobHandler(job.userId, job.jobId)
                                   "
-                                  class="px-4 py-3 rounded-md hover:bg-red-400 bg-red-500 ml-2 text-white border-none"
+                                  class="px-4 py-3 rounded-md hover:bg-red-400 bg-red-500 ml-2 text-white border-none tooltip" data-tip="Delete"
                                 >
                                   <i class="fas fa-solid fa-trash"></i>
                                 </button>
@@ -475,6 +521,7 @@ import {
   deleteJob,
   addJob,
   updateJob,
+  getAllAplication,
 } from "../../../Services/Api/AdminService";
 import { decodeToken } from "../../../Services/JWT/JwtDecode";
 import Swal from "sweetalert2";
@@ -486,6 +533,13 @@ import { uid } from "ckeditor5";
 export default {
   components: {
     QuillEditor,
+  },
+  data() {
+    return {
+      currentPage: 1, // Pastikan halaman awal dimulai dari 1
+      pageSize: 10, // Tentukan jumlah item per halaman
+      paginatedJobs: [], // Data pekerjaan untuk halaman
+    };
   },
   setup() {
     // State variables
@@ -513,14 +567,44 @@ export default {
     const editJob = ref({});
     const dueDate = ref("");
     const jobs = ref([]); // Asumsikan ini daftar pekerjaan
+    const totalApplications = ref({}); // Data jumlah aplikasi per jobId
 
-    // Fetch job details from API
+    // Fungsi mengambil semua aplikasi
+    const fetchAllAplication = async () => {
+      try {
+        const response = await getAllAplication(); // Panggil API
+
+        const applications = response.data; // Ambil array dari properti `data`
+
+        if (!Array.isArray(applications)) {
+          throw new Error(
+            "Expected an array in the 'data' property but got something else"
+          );
+        }
+
+        // Inisialisasi objek untuk menyimpan jumlah aplikasi berdasarkan jobId
+        const applicationsByJobId = {};
+
+        // Hitung jumlah aplikasi berdasarkan jobId
+        applications.forEach((application) => {
+          const jobId = application.jobId;
+          applicationsByJobId[jobId] = (applicationsByJobId[jobId] || 0) + 1;
+        });
+
+        // Simpan hasil dalam totalApplications
+        totalApplications.value = applicationsByJobId;
+      } catch (error) {
+        console.error("Error fetching applications:", error);
+      }
+    };
+
+    // Fungsi mengambil data pekerjaan
     const fetchJobDetail = async () => {
       try {
-        const response = await getAllData();
+        const response = await getAllData(); // Ambil data pekerjaan
         dataJobs.value = response.data;
-        filteredJobs.value = response.data; // Initialize filteredJobs with all data
-        totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Calculate total pages
+        filteredJobs.value = response.data; // Inisialisasi data yang difilter
+        totalPages.value = Math.ceil(filteredJobs.value.length / perPage.value); // Hitung total halaman
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -766,6 +850,7 @@ export default {
     onMounted(() => {
       getUserId();
       fetchJobDetail();
+      fetchAllAplication();
     });
 
     return {
@@ -803,10 +888,14 @@ export default {
       editJob,
       newJob,
       dueDate,
+      fetchJobDetail,
+      fetchAllAplication,
+      totalApplications,
     };
   },
 };
 </script>
+
 <style>
 .ql-editor {
   height: 15vh;

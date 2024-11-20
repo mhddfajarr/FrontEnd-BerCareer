@@ -1,21 +1,25 @@
 <template>
   <div class="content-wrapper">
-    <!-- Breadcrumbs -->
-    <div class="breadcrumbs text-sm mb-4">
-      <ul>
-        <li><a>Dashboard</a></li>
-        <li><a>Manage Jobseekers</a></li>
-      </ul>
+    <!-- Breadcrumb -->
+    <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
+      <nav class="text-mint-700">
+        <router-link to="/admin" class="hover:underline">Dashboard</router-link>
+        <span class="mx-2">/</span>
+        <router-link to="/ManageJobseekers" class="hover:underline"
+          >Manage Jobseekers</router-link
+        >
+      </nav>
     </div>
-
     <!-- Title -->
     <h1 class="text-3xl font-bold text-primary mb-2">Manage Jobseekers</h1>
 
     <section class="content">
       <div class="container-fluid">
-        <div class="grid grid-cols-3 gap-4">
+        <div class="flex justify-between">
           <!-- Job List Card -->
-          <div class="card bg-white shadow-xl col-span-1">
+          <div
+            class="card bg-white w-96 shadow-xl mb-4 border-t-4 border-t-primary"
+          >
             <div class="card-body text-gray-700">
               <h2 class="card-title">List Jobs</h2>
               <input
@@ -37,6 +41,12 @@
                     </thead>
                     <tbody>
                       <tr
+                        class="cursor-pointer hover:bg-gray-200 font-semibold text-gray-700"
+                        @click="resetJobFilter"
+                      >
+                        <td>All</td>
+                      </tr>
+                      <tr
                         v-for="(job, index) in filteredJobs"
                         :key="job.id"
                         @click="filterJobsByTitle(job)"
@@ -52,7 +62,9 @@
           </div>
 
           <!-- Job Details and Applications -->
-          <div class="card bg-white shadow-xl col-span-2">
+          <div
+            class="card bg-white w-full md:w-11/12 lg:w-9/12 xl:w-full shadow-xl ml-4 mb-4 mx-auto border-t-4 border-t-primary"
+          >
             <div class="card-body text-gray-700">
               <!-- Job Details -->
               <div>
@@ -65,31 +77,51 @@
                 <p v-else class="mt-4">Please select a job to view details.</p>
               </div>
 
-              <!-- Pilih jumlah item per halaman -->
-              <div class="flex items-center justify-end mb-4 mt-4">
-                <label class="flex items-center">
-                  <span class="mr-2">Show</span>
+              <!-- Filter Status -->
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                  <label for="statusFilter" class="mr-2 font-semibold">
+                    Filter by Status:
+                  </label>
                   <select
-                    v-model="applicationsPagination.itemsPerPage"
-                    @change="updateItemsPerPage"
-                    class="select select-bordered w-20 bg-white"
+                    id="statusFilter"
+                    v-model="selectedStatus"
+                    @change="filterApplicationsByStatus"
+                    class="select select-bordered w-40 bg-white"
                   >
-                    <option
-                      v-for="option in pageOptions"
-                      :key="option"
-                      :value="option"
-                    >
-                      {{ option }}
-                    </option>
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
                   </select>
-                  <span class="ml-2">entries</span>
-                </label>
+                </div>
+
+                <!-- Pilih jumlah item per halaman -->
+                <div class="flex items-center">
+                  <label class="flex items-center">
+                    <span class="mr-2">Show</span>
+                    <select
+                      v-model="applicationsPagination.itemsPerPage"
+                      @change="updateItemsPerPage"
+                      class="select select-bordered w-20 bg-white"
+                    >
+                      <option
+                        v-for="option in pageOptions"
+                        :key="option"
+                        :value="option"
+                      >
+                        {{ option }}
+                      </option>
+                    </select>
+                    <span class="ml-2">entries</span>
+                  </label>
+                </div>
               </div>
 
               <!-- Applications Table -->
               <div class="w-full overflow-x-auto rounded-md">
                 <table class="table table-auto w-full">
-                  <thead class="bg-primary text-white text-md">
+                  <thead class="bg-primary text-white text-md text-center">
                     <tr>
                       <th>Detail</th>
                       <th>Job Title</th>
@@ -101,11 +133,18 @@
                       <th>Action</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="text-center">
+                    <tr v-if="paginatedApplications.length === 0">
+                      <td colspan="8" class="text-gray-500">
+                        No data available
+                      </td>
+                    </tr>
                     <tr
+                      v-else
                       v-for="application in paginatedApplications"
                       :key="application.applicationId"
                     >
+                      <!-- Tombol untuk membuka modal -->
                       <td>
                         <button
                           class="btn bg-primary text-white hover:bg-primaryHover border-none btn-circle"
@@ -115,7 +154,11 @@
                         >
                           <i class="fas fa-solid fa-info"></i>
                         </button>
+
+                        <!-- Modal Komponen -->
                         <ModalComponent
+                          v-for="application in paginatedApplications"
+                          :key="application.applicationId"
                           :modalId="'modal-' + application.applicationId"
                           :userId="application.userId"
                         />
@@ -126,20 +169,31 @@
                       <td>{{ application.education }}</td>
                       <td>{{ application.skills }}</td>
                       <td>
-                        {{
-                          application.progress === "Pending"
-                            ? "Pending"
-                            : "Completed"
-                        }}
+                        <span
+                          class="badge"
+                          :class="{
+                            'badge-success text-white':
+                              application.progress === 'Approved',
+                            'badge-error text-white':
+                              application.progress === 'Rejected',
+                            'badge-warning text-white':
+                              application.progress === 'Pending',
+                          }"
+                        >
+                          {{ application.progress }}
+                        </span>
                       </td>
                       <td>
                         <select
                           class="select select-bordered w-32 bg-white"
                           v-model="application.status"
                           @change="updateApplicationStatus(application)"
+                          :disabled="
+                            application.progress === 'Approved' ||
+                            application.progress === 'Rejected'
+                          "
                         >
-                          <option value="" disabled>Select Status</option>
-                          <option value="0">Pending</option>
+                          <option disabled selected>Select Status</option>
                           <option value="1">Approved</option>
                           <option value="2">Rejected</option>
                         </select>
@@ -160,7 +214,7 @@
                     )
                   "
                 >
-                  Previous
+                  <i class="fas fa-solid fa-angles-left"></i>
                 </button>
                 <span class="mx-2">
                   Page {{ applicationsPagination.currentPage }} of
@@ -177,7 +231,7 @@
                     )
                   "
                 >
-                  Next
+                  <i class="fas fa-solid fa-angles-right"></i>
                 </button>
               </div>
             </div>
@@ -210,18 +264,18 @@ export default {
     const selectedJob = ref(null);
     const jobsPagination = ref({
       currentPage: 1,
-      itemsPerPage: 5, // Default items per page for jobs
+      itemsPerPage: 5,
     });
-    const pageOptions = ref([5, 10, 15]); // Options for items per page
+    const pageOptions = ref([5, 10, 15]);
     const dataApplications = ref([]);
-    const filteredApplications = ref([]);
     const applicationsPagination = ref({
       currentPage: 1,
-      itemsPerPage: 5, // Default items per page for applications
+      itemsPerPage: 5,
     });
-    const sortKey = ref("jobTitle"); // default sorting by jobTitle
-    const sortOrder = ref("asc"); // default ascending order
-    const loading = ref(false); // Loading state
+    const sortKey = ref("jobTitle");
+    const sortOrder = ref("asc");
+    const loading = ref(false);
+    const selectedStatus = ref("");
 
     // Computed properties
     const jobsTotalPages = computed(() => {
@@ -235,10 +289,24 @@ export default {
         (jobsPagination.value.currentPage - 1) *
         jobsPagination.value.itemsPerPage;
       const end = start + jobsPagination.value.itemsPerPage;
-
-      // Apply sorting before slicing
       const sortedJobs = sortJobs(filteredJobs.value);
       return sortedJobs.slice(start, end);
+    });
+
+    const filteredApplications = computed(() => {
+      let filtered = selectedJob.value
+        ? dataApplications.value.filter(
+            (application) => application.jobTitle === selectedJob.value.title
+          )
+        : dataApplications.value;
+
+      if (selectedStatus.value) {
+        filtered = filtered.filter(
+          (application) => application.progress === selectedStatus.value
+        );
+      }
+
+      return filtered;
     });
 
     const applicationsTotalPages = computed(() => {
@@ -257,11 +325,6 @@ export default {
     });
 
     // Methods
-    const showModal = (modalId) => {
-      const modal = document.getElementById(modalId);
-      if (modal) modal.showModal();
-    };
-
     const fetchJobDetail = async () => {
       try {
         const response = await getAllData();
@@ -283,9 +346,9 @@ export default {
         );
         dataApplications.value = response.data.data.map((app) => ({
           ...app,
-          newStatus: "", // Add a property for new status
+          isDisabled:
+            app.progress === "Approved" || app.progress === "Rejected",
         }));
-        filteredApplications.value = [...dataApplications.value];
       } catch (error) {
         console.error("Error fetching applications:", error);
       }
@@ -308,7 +371,7 @@ export default {
         sortOrder.value = sortOrder.value === "asc" ? "desc" : "asc";
       } else {
         sortKey.value = newSortKey;
-        sortOrder.value = "asc"; // Reset to ascending when a new column is selected
+        sortOrder.value = "asc";
       }
     };
 
@@ -325,10 +388,13 @@ export default {
     const filterJobsByTitle = (job) => {
       selectedJob.value = job;
       searchQuery.value = "";
-      filteredApplications.value = dataApplications.value.filter(
-        (app) => app.jobTitle === job.title
-      );
       applicationsPagination.value.currentPage = 1;
+    };
+
+    const resetJobFilter = () => {
+      selectedJob.value = null;
+      filteredJobs.value = [...dataJobs.value];
+      jobsPagination.value.currentPage = 1;
     };
 
     const changeJobsPage = (page) => {
@@ -340,78 +406,105 @@ export default {
     };
 
     const updateItemsPerPage = () => {
-      applicationsPagination.value.currentPage = 1; // Reset to the first page when items per page changes
+      applicationsPagination.value.currentPage = 1;
     };
 
     const updateApplicationStatus = async (application) => {
-      const token = localStorage.getItem("authToken");
+      Swal.fire({
+        title: "Are you sure about updating your status?",
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: "Save",
+        denyButtonText: `Don't save`,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const token = localStorage.getItem("authToken");
 
-      // Validasi token
-      if (!token) {
-        Swal.fire({
-          icon: "error",
-          title: "Authentication Error",
-          text: "Please log in again.",
-        });
-        return;
-      }
+          if (!token) {
+            Swal.fire({
+              icon: "error",
+              title: "Authentication Error",
+              text: "Please log in again.",
+            });
+            return;
+          }
 
-      // Validasi status
-      if (![0, 1, 2].includes(Number(application.status))) {
-        Swal.fire({
-          icon: "error",
-          title: "Invalid Status",
-          text: "Status must be 1 (Approved), or 2 (Rejected).",
-        });
-        return;
-      }
+          const updatedStatus = {
+            applicationId: application.applicationId,
+            status: Number(application.status),
+          };
 
-      // Siapkan data untuk pembaruan
-      const updatedStatus = {
-        applicationId: application.applicationId,
-        status: Number(application.status), // Konversi ke angka
-      };
+          loading.value = true;
+          try {
+            const updatedApplication = await updateStatus(updatedStatus, token);
 
-      console.log("Data being sent to API:", updatedStatus); // Debugging
+            const index = dataApplications.value.findIndex(
+              (app) => app.applicationId === application.applicationId
+            );
 
-      loading.value = true; // Show loading overlay
-      try {
-        const updatedApplication = await updateStatus(updatedStatus, token);
+            if (index !== -1) {
+              dataApplications.value[index] = {
+                ...dataApplications.value[index],
+                status: updatedApplication.status,
+                progress:
+                  updatedApplication.status === 1
+                    ? "Approved"
+                    : updatedApplication.status === 2
+                    ? "Rejected"
+                    : "Pending",
+              };
+            }
 
-        const index = dataApplications.value.findIndex(
-          (app) => app.applicationId === application.applicationId
-        );
+            Swal.fire("Saved!", "Status updated successfully.", "success");
+          } catch (error) {
+            console.error(
+              "Error updating status:",
+              error.response?.data || error.message
+            );
+            Swal.fire({
+              icon: "error",
+              title: "Update Failed",
+              text:
+                error.response?.data?.message ||
+                "An error occurred while updating the status.",
+            });
+          } finally {
+            loading.value = false;
+          }
+        } else if (result.isDenied) {
+          Swal.fire("Changes are not saved", "", "info");
+        }
+      });
+    };
 
-        // if (index !== -1) {
-        //     this.$set(this.dataApplications, index, {
-        //         ...this.dataApplications[index],
-        //         status: updatedApplication.status, // Perbarui status
-        //     });
-        // }
-
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Status updated successfully.",
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      } catch (error) {
-        console.error(
-          "Error updating status:",
-          error.response?.data || error.message
-        );
-        Swal.fire({
-          icon: "error",
-          title: "Update Failed",
-          text:
-            error.response?.data?.message ||
-            "An error occurred while updating the status.",
-        });
-      } finally {
-        loading.value = false; // Hide loading overlay
+    const showModal = (modalId) => {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.showModal();
       }
     };
+
+    const closeModal = (modalId) => {
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.close();
+      }
+    };
+
+    // Adding additional computed properties and methods
+    const jobsPaginationDetails = computed(() => ({
+      currentPage: jobsPagination.value.currentPage,
+      itemsPerPage: jobsPagination.value.itemsPerPage,
+    }));
+
+    const filteredAndSortedJobs = computed(() => {
+      return sortJobs(filteredJobs.value);
+    });
+
+    const applicationsPaginationDetails = computed(() => ({
+      currentPage: applicationsPagination.value.currentPage,
+      itemsPerPage: applicationsPagination.value.itemsPerPage,
+    }));
 
     onMounted(() => {
       fetchJobDetail();
@@ -435,17 +528,22 @@ export default {
       paginatedJobs,
       applicationsTotalPages,
       paginatedApplications,
-      showModal,
       fetchJobDetail,
       fetchApplications,
       sortJobs,
       changeSort,
       filterBySearch,
       filterJobsByTitle,
+      resetJobFilter,
       changeJobsPage,
       changeApplicationsPage,
       updateItemsPerPage,
       updateApplicationStatus,
+      selectedStatus,
+      jobsPaginationDetails,
+      filteredAndSortedJobs,
+      applicationsPaginationDetails,
+      showModal,
     };
   },
 };
