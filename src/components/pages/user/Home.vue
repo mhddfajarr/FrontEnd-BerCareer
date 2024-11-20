@@ -146,7 +146,7 @@
 
   <!-- Show More Button -->
   <!-- Pagination Controls -->
-  <div class="relative w-full flex items-center justify-center space-x-4 mb-10">
+  <div class="relative w-full flex items-center justify-center space-x-4 mb-10" >
   <!-- Previous Button -->
   <button
     @click="prevPage(); scrollToSection()"

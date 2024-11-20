@@ -1,13 +1,11 @@
 <template>
   <div class="content-wrapper">
     <!-- Breadcrumb -->
-    <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
-      <nav class="text-mint-700">
+    <div class="bg-gray-200 p-3 mb-4 flex justify-end rounded-lg">
+      <nav class="text-gray-600 text-sm">
         <router-link to="/admin" class="hover:underline">Dashboard</router-link>
         <span class="mx-2">/</span>
-        <router-link to="/ManageJobseekers" class="hover:underline"
-          >Manage Jobseekers</router-link
-        >
+        <span class="text-gray-400">Manage Job Portal</span>
       </nav>
     </div>
     <!-- Title -->
@@ -185,17 +183,21 @@
                       </td>
                       <td>
                         <select
-                          class="select select-bordered w-32 bg-white"
-                          v-model="application.status"
+                          class="select border-2 select-bordered w-32 bg-white"
+                          v-model="application.progress"
                           @change="updateApplicationStatus(application)"
                           :disabled="
                             application.progress === 'Approved' ||
                             application.progress === 'Rejected'
                           "
                         >
-                          <option disabled selected>Select Status</option>
-                          <option value="1">Approved</option>
-                          <option value="2">Rejected</option>
+                          <option
+                            v-for="option in statusOptions"
+                            :key="option.value"
+                            :value="option.value"
+                          >
+                            {{ option.text }}
+                          </option>
                         </select>
                       </td>
                     </tr>
@@ -239,7 +241,11 @@
         </div>
       </div>
       <div v-if="loading" class="loading-overlay">
-        <div class="loading-spinner"></div>
+        <div
+          class="animate-spin inline-block w-12 h-12 border-4 border-current border-t-transparent text-white rounded-full"
+          role="status"
+          aria-label="loading"
+        ></div>
       </div>
     </section>
   </div>
@@ -276,7 +282,12 @@ export default {
     const sortOrder = ref("asc");
     const loading = ref(false);
     const selectedStatus = ref("");
-
+    const statusOptions = [
+      { value: "Pending", text: "Update Status" },
+      { value: "Approved", text: "Approved" },
+      { value: "Rejected", text: "Rejected" },
+    ];
+    const status = ref(null);
     // Computed properties
     const jobsTotalPages = computed(() => {
       return Math.ceil(
@@ -411,11 +422,13 @@ export default {
 
     const updateApplicationStatus = async (application) => {
       Swal.fire({
-        title: "Are you sure about updating your status?",
-        showDenyButton: true,
+        title: "Are You Sure About Updating the Application Status?",
+        icon: "info",
         showCancelButton: true,
-        confirmButtonText: "Save",
-        denyButtonText: `Don't save`,
+        cancelButtonText: "Close",
+        confirmButtonText: "Update",
+        confirmButtonColor: "#0a4d80",
+        cancelButtonColor: "#d33",
       }).then(async (result) => {
         if (result.isConfirmed) {
           const token = localStorage.getItem("authToken");
@@ -428,10 +441,15 @@ export default {
             });
             return;
           }
-
+          if (application.progress == "Approved") {
+            status.value = 1;
+          }
+          if (application.progress == "Rejected") {
+            status.value = 2;
+          }
           const updatedStatus = {
             applicationId: application.applicationId,
-            status: Number(application.status),
+            status: status.value,
           };
 
           loading.value = true;
@@ -454,7 +472,7 @@ export default {
                     : "Pending",
               };
             }
-
+            fetchApplications();
             Swal.fire("Saved!", "Status updated successfully.", "success");
           } catch (error) {
             console.error(
@@ -509,9 +527,11 @@ export default {
     onMounted(() => {
       fetchJobDetail();
       fetchApplications();
+      console.log("ini data aplication", dataApplications);
     });
 
     return {
+      statusOptions,
       dataJobs,
       filteredJobs,
       searchQuery,
@@ -550,6 +570,12 @@ export default {
 </script>
 
 <style scoped>
+select[disabled] {
+  background-color: white; /* Warna putih */
+  color: gray; /* Opsional: Warna teks untuk disabled */
+  cursor: not-allowed; /* Menunjukkan bahwa elemen tidak bisa diklik */
+  opacity: 1; /* Pastikan tidak terlihat transparan */
+}
 /* Loading overlay styles */
 .loading-overlay {
   position: fixed;
@@ -564,23 +590,7 @@ export default {
   z-index: 9999;
 }
 
-.loading-spinner {
-  border: 16px solid #f3f3f3;
-  border-top: 16px solid #3498db;
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 .tabs {
   -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
   scrollbar-width: thin; /* For Firefox */

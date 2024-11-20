@@ -21,12 +21,6 @@
               :src="getAvatarUrl(Role)"
               alt="Profile"
               class="w-10 h-10 rounded-full mr-2"
-              :referrerpolicy="
-                Avatar &&
-                (Avatar.startsWith('https') || Avatar.startsWith('http'))
-                  ? 'no-referrer'
-                  : ''
-              "
             />
           </div>
         </div>
@@ -230,7 +224,7 @@ export default {
       isDropdownVisible,
       username,
       logout,
-      getAvatarUrl,
+      // getAvatarUrl,
       toggleDropdown,
       closeDropdown,
       handleOutsideClick,

@@ -1,26 +1,26 @@
     <template>
     <div class="content-wrapper">
-        <!-- Breadcrumb -->
-        <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
-        <nav class="text-mint-700">
+        <!-- Breadcrumb
+        <div class="bg-gray-200 p-3 mb-4 flex justify-end rounded-lg">
+        <nav class="text-gray-600 text-sm">
             <router-link to="/admin" class="hover:underline">Dashboard</router-link>
         </nav>
-        </div>
+        </div> -->
         <h1 class="text-3xl font-bold text-primary mb-2">Dashboard</h1>
         <!-- Main content -->
         <div class="flex justify-between gap-4">
         <!-- Menambahkan gap antar card -->
-        <div class="card w-full shadow-xl border-t-4 border-t-primary bg-white">
-            <div class="card-body">
-            <h2 class="card-title">Total Applicants</h2>
+        <div class="card w-full shadow-xl  bg-white">
+            <div class="card-body text-gray-700">
+            <h2 class="card-title text-2xl"> <i class="fas fa-user-friends text-3xl text-primary"></i>Total Applicants</h2>
             <p>The total number of applicants available.</p>
             <h1 class="text-5xl font-bold">{{ totalApplications }}</h1>
             </div>
         </div>
-
-        <div class="card w-full shadow-xl border-t-4 border-t-primary bg-white">
-            <div class="card-body">
-            <h2 class="card-title">Total Post Job</h2>
+        
+        <div class="card w-full shadow-xl  bg-white">
+            <div class="card-body text-gray-700">
+            <h2 class="card-title text-2xl"> <i class="fas fa-clipboard-list text-3xl text-primary"></i>Total Post Job</h2>
             <p>Number of jobs posted on the platform</p>
             <h1 class="text-5xl font-bold">{{ totalPostJobs }}</h1>
             <!-- Menampilkan total jumlah pekerjaan -->

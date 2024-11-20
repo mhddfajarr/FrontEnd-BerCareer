@@ -5,7 +5,12 @@
       class="w-full max-w-md bg-white rounded-lg shadow-md p-6 mb-8 sm:p-8 border"
     >
       <div class="mb-6 md:mb-8 flex justify-center">
-        <router-link to="/"><img src="/src/assets/images/berCareer-logo.png" alt="Logo" class="h-20" /></router-link>
+        <router-link to="/"
+          ><img
+            src="/src/assets/images/berCareer-logo.png"
+            alt="Logo"
+            class="h-20"
+        /></router-link>
       </div>
 
       <form class="space-y-4 md:space-y-6">
@@ -99,14 +104,32 @@
         <!-- Google Login Button -->
         <div :class="buttonLogin ? 'hidden' : 'flex justify-center'">
           <button
-          @click="loginWithAuth0()"
-           type="button" class="w-full flex font-semibold items-center justify-center gap-2 bg-white text-black py-2.5 px-4 rounded-xl hover:bg-gray-100 focus:outline-none border-[1.4px] border-gray-200 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5">
-            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.818C14.282,16.118,18.742,14,24,14c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C17.019,4,11.007,7.689,6.306,14.691z"/>
-            <path fill="#4CAF50" d="M24,44c5.135,0,9.84-1.975,13.387-5.189l-6.179-5.095C28.45,35.979,26.308,36.8,24,36.8c-5.2,0-9.607-3.331-11.264-8.017l-6.644,5.131C9.949,40.621,16.638,44,24,44z"/>
-            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.947,2.674-2.552,4.994-4.495,6.716c0.001-0.001,0.002,0.001,0.003,0.002l6.179,5.095C43.437,34.974,44,29.682,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-          </svg>
+            @click="loginWithAuth0()"
+            type="button"
+            class="w-full flex font-semibold items-center justify-center gap-2 bg-white text-black py-2.5 px-4 rounded-xl hover:bg-gray-100 focus:outline-none border-[1.4px] border-gray-200 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 48 48"
+              class="w-5 h-5"
+            >
+              <path
+                fill="#FFC107"
+                d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
+              />
+              <path
+                fill="#FF3D00"
+                d="M6.306,14.691l6.571,4.818C14.282,16.118,18.742,14,24,14c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C17.019,4,11.007,7.689,6.306,14.691z"
+              />
+              <path
+                fill="#4CAF50"
+                d="M24,44c5.135,0,9.84-1.975,13.387-5.189l-6.179-5.095C28.45,35.979,26.308,36.8,24,36.8c-5.2,0-9.607-3.331-11.264-8.017l-6.644,5.131C9.949,40.621,16.638,44,24,44z"
+              />
+              <path
+                fill="#1976D2"
+                d="M43.611,20.083H42V20H24v8h11.303c-0.947,2.674-2.552,4.994-4.495,6.716c0.001-0.001,0.002,0.001,0.003,0.002l6.179,5.095C43.437,34.974,44,29.682,44,24C44,22.659,43.862,21.35,43.611,20.083z"
+              />
+            </svg>
             Continue with Google
           </button>
         </div>
@@ -184,20 +207,36 @@ export default {
           console.log("Login successful:", response);
 
           localStorage.setItem("authToken", response.data);
-
-          // Menampilkan toast
-          Swal.fire({
-            toast: true,
-            position: "top-end", // Posisi di pojok kanan atas
-            icon: "success",
-            title: "Login successful!",
-            showConfirmButton: false,
-            timer: 1500, // Menampilkan toast selama 1.5 detik
-            timerProgressBar: true,
-            didClose: () => {
-              router.push({ name: "Home" });
-            },
-          });
+          const params = localStorage.getItem("redirect");
+          if (params) {
+            Swal.fire({
+              toast: true,
+              position: "top-end", // Posisi di pojok kanan atas
+              icon: "success",
+              title: "Login successful!",
+              showConfirmButton: false,
+              timer: 1500, // Menampilkan toast selama 1.5 detik
+              timerProgressBar: true,
+              didClose: () => {
+                router.push({ name: "Jobs", params: { id: params } });
+                localStorage.removeItem("redirect");
+              },
+            });
+          } else {
+            // Menampilkan toast
+            Swal.fire({
+              toast: true,
+              position: "top-end", // Posisi di pojok kanan atas
+              icon: "success",
+              title: "Login successful!",
+              showConfirmButton: false,
+              timer: 1500, // Menampilkan toast selama 1.5 detik
+              timerProgressBar: true,
+              didClose: () => {
+                router.push({ name: "Home" });
+              },
+            });
+          }
         } catch (error) {
           // Tampilkan pesan error jika login gagal
           Swal.fire({
