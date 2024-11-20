@@ -265,8 +265,10 @@ export default {
 
     const saveJob = async (jobId) => {
       if (!token) {
-        Swal.fire("Error", "Please login first.", "error");
-        return;
+        Swal.fire("info", "Please login first.", "info");
+        router.push("/login");
+        const params = route.params.id
+        localStorage.setItem("redirect", params);
       }
       try {
         const data = {
