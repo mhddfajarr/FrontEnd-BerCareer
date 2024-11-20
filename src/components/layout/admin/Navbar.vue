@@ -224,11 +224,10 @@ export default {
       isDropdownVisible,
       username,
       logout,
-      // getAvatarUrl,
+      getAvatarUrl,
       toggleDropdown,
       closeDropdown,
       handleOutsideClick,
-      // avatar,
       router,
       id,
     };
