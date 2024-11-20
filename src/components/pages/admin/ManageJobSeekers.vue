@@ -276,13 +276,13 @@ export default {
     const selectedJob = ref(null);
     const jobsPagination = ref({
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
     });
     const pageOptions = ref([5, 10, 15]);
     const dataApplications = ref([]);
     const applicationsPagination = ref({
       currentPage: 1,
-      itemsPerPage: 5,
+      itemsPerPage: 10,
     });
     const sortKey = ref("jobTitle");
     const sortOrder = ref("asc");
