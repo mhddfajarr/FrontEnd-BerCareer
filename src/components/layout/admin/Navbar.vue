@@ -18,15 +18,9 @@
         <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
             <img
-              :src="getAvatarUrl(Avatar)"
+              src="../../../assets/images/default.png"
               alt="Profile"
               class="w-10 h-10 rounded-full mr-2"
-              :referrerpolicy="
-                Avatar &&
-                (Avatar.startsWith('https') || Avatar.startsWith('http'))
-                  ? 'no-referrer'
-                  : ''
-              "
             />
           </div>
         </div>
@@ -169,17 +163,17 @@ export default {
       });
     };
 
-    const getAvatarUrl = (avatar) => {
-      const defaultAvatarUrl =
-        "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
-      if (!avatar) {
-        return defaultAvatarUrl;
-      }
-      if (avatar.startsWith("https") || avatar.startsWith("http")) {
-        return avatar;
-      }
-      return defaultAvatarUrl;
-    };
+    // const getAvatarUrl = (avatar) => {
+    //   const defaultAvatarUrl =
+    //     "https://storage.googleapis.com/a1aa/image/EAszZfc2DORhC69L8qU6XOAvuejiWJUqZVkwvRgeGteFQXfdC.jpg";
+    //   if (!avatar) {
+    //     return defaultAvatarUrl;
+    //   }
+    //   if (avatar.startsWith("https") || avatar.startsWith("http")) {
+    //     return avatar;
+    //   }
+    //   return defaultAvatarUrl;
+    // };
 
     const toggleDropdown = () => {
       isDropdownVisible.value = !isDropdownVisible.value;
@@ -230,7 +224,7 @@ export default {
       isDropdownVisible,
       username,
       logout,
-      getAvatarUrl,
+      // getAvatarUrl,
       toggleDropdown,
       closeDropdown,
       handleOutsideClick,

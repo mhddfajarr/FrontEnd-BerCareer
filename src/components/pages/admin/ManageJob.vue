@@ -1,12 +1,12 @@
 <template>
   <div class="content-wrapper">
     <!-- Breadcrumb -->
-    <div class="bg-gray-200 p-4 mb-4 flex justify-end rounded-lg">
-      <nav class="text-mint-700">
+    <div class="bg-gray-200 p-3 mb-4 flex justify-end rounded-lg">
+      <nav class="text-gray-600 text-sm">
         <router-link to="/admin" class="hover:underline">Dashboard</router-link>
         <span class="mx-2">/</span>
-        <router-link to="/ManageJob" class="hover:underline"
-          >Manage Job Portal</router-link
+        <span  class="text-gray-400"
+          >Manage Job Portal</span
         >
       </nav>
     </div>
@@ -384,7 +384,7 @@
                             <i class="fas fa-solid fa-filter"></i>
                           </summary>
                           <ul
-                            class="menu dropdown-content bg-white rounded-box z-[1] w-52 p-2 shadow border-none"
+                            class="menu dropdown-content text-gray-700 bg-white rounded-box z-[1] w-52 p-2 shadow border-none"
                           >
                             <li
                               v-for="(job, index) in dataJobs"
@@ -482,7 +482,7 @@
                   </div>
 
                   <div
-                    class="pagination-container flex justify-end items-center space-x-4 p-4"
+                    class="pagination-container flex justify-end items-center mb-5 mr-3 space-x-4 p-4"
                   >
                     <!-- Pagination controls -->
                     <button
